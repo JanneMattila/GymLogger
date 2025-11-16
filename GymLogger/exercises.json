@@ -1,0 +1,612 @@
+[
+  {
+    "id": "ex-1",
+    "name": "Barbell Bench Press",
+    "muscleGroup": "Chest",
+    "equipmentType": "Barbell",
+    "description": "Setup: Lie flat on bench with eyes under the bar, feet firmly planted on floor. Grip bar slightly wider than shoulder-width with wrists straight. Technique: Unrack and position bar over chest. Lower with controlled tempo to mid-chest, keeping elbows at 45° angle. Touch chest lightly, then press explosively while maintaining scapular retraction. Hints: Engage lats by 'bending the bar' to create tension. Keep shoulder blades pinched throughout. Drive through legs for stability. Warnings: Avoid bouncing bar off chest. Don't flare elbows to 90° (shoulder injury risk). Never lift feet during heavy sets.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-2",
+    "name": "Barbell Squats",
+    "muscleGroup": "Legs",
+    "equipmentType": "Barbell",
+    "description": "Setup: Bar on upper traps (high bar) or rear delts (low bar). Feet shoulder-width or slightly wider, toes 15-30° outward. Technique: Brace core hard, initiate by pushing hips back while simultaneously bending knees. Descend until thighs parallel or deeper if mobility allows. Knees track over toes. Drive through full foot to ascend, leading with chest. Hints: Focus on sitting 'between' your legs, not just back. Keep chest up and neutral spine. Maintain upright torso for high bar, more forward lean for low bar. Warnings: Never let knees cave inward (valgus collapse). Don't round lower back—stop depth if form breaks. Ensure full depth control before adding weight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-3",
+    "name": "Deadlifts",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Bar over mid-foot, shins nearly touching. Hip-width stance, hands just outside legs. Technique: Hinge at hips, grip bar, flatten back, and create tension before lifting. Drive through floor with legs while maintaining neutral spine. Bar travels in straight vertical line, brushing legs. Fully extend hips and knees at top. Reverse motion under control. Hints: Think 'leg press the floor away' rather than pulling. Keep bar against body throughout. Lats engaged ('protect your armpits'). Neck neutral. Warnings: Never round lower back under load. Don't jerk or yank the bar—pull slack out first. Avoid hyperextending at top. Drop hips too low and it becomes a squat (inefficient).",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-4",
+    "name": "Barbell Rows",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Hip hinge position with torso 30-45° to floor. Grip bar shoulder-width (or wider for variety). Knees slightly bent, back neutral. Technique: Pull bar to lower chest/upper abdomen, leading with elbows. Squeeze shoulder blades together at top. Lower with control, fully extending arms. Keep torso angle constant. Hints: Don't use momentum or body English. Initiate pull with lats, not arms. Think 'elbows back and up.' Retract scapula at peak contraction. Warnings: Avoid excessive torso swing (cheating reduces effectiveness). Don't round lower back—maintain neutral spine. Keep neck neutral, not hyperextended.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-5",
+    "name": "Overhead Press",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Barbell",
+    "description": "Setup: Bar racked at upper chest, hands just outside shoulders. Elbows slightly forward of bar. Feet hip-width, core braced. Technique: Press bar straight up, moving head back slightly to clear path. Fully extend arms overhead with bar over mid-foot. Bring head through at top. Lower with control to starting position. Hints: Keep wrists stacked over elbows. Squeeze glutes to prevent back hyperextension. Press in vertical line, not forward arc. Full lockout at top. Warnings: Never hyperextend lower back to compensate for limited mobility or excessive weight. Don't press the bar forward—it should travel vertically. Avoid leaning back excessively.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-6",
+    "name": "Pull-ups",
+    "muscleGroup": "Back",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Hang from bar with hands shoulder-width or slightly wider, palms facing away. Full dead hang with arms extended. Technique: Engage lats and pull elbows down and back, bringing chin over bar. Control descent to full extension. Avoid swinging or kipping. Hints: Depress shoulders ('pull shoulders into back pockets') before initiating pull. Lead with chest, not chin. Cross feet for stability. Think 'pull bar to chest' not 'chin to bar.' Warnings: Don't kip or use momentum (unless training CrossFit-style). Avoid shrugging shoulders up. Don't crane neck to get chin over—use full back engagement.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-7",
+    "name": "Dips",
+    "muscleGroup": "Chest",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Support body on parallel bars, arms fully extended, shoulders depressed. Lean forward 10-20° for chest emphasis, more upright for triceps. Technique: Lower body by bending elbows until upper arms parallel to ground (or slightly below). Press back up to full extension. Control tempo on descent. Hints: Keep elbows at 45° angle for chest activation. Don't flare elbows wide. Maintain forward lean throughout. Engage core to prevent swinging. Warnings: Don't descend too deep if shoulders lack mobility (risk of anterior shoulder strain). Avoid shrugging shoulders at top. Stop if you feel sharp shoulder pain.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-8",
+    "name": "Leg Press",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Sit with back and head against pad. Feet shoulder-width on platform, mid-foot centered. Technique: Release safety, lower platform under control until knees at 90° (or deeper if mobility allows without back rounding). Press through full foot, extending knees and hips. Don't lock out completely. Hints: Keep lower back flat against pad—no rounding or arching. Knees track over toes. Adjust foot position: higher for glutes/hams, lower for quads. Control eccentric phase. Warnings: Never let lower back lift off pad during descent (disc injury risk). Don't lock knees at top. Avoid bouncing at bottom.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-9",
+    "name": "Leg Curls",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust machine so pad rests on lower calves, just above ankles. Knees align with machine pivot. Lie face down, grip handles. Technique: Curl legs by flexing knees, bringing heels toward glutes. Squeeze hamstrings at peak contraction. Lower with control, stopping just before stack touches. Hints: Don't use hip flexion to cheat the weight up. Keep hips pressed to pad. Point toes or flex feet for variation. Pause briefly at top. Warnings: Avoid jerking or using momentum. Don't hyperextend lower back by lifting hips. If experiencing knee pain, check pad placement.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-10",
+    "name": "Walking Lunges",
+    "muscleGroup": "Legs",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand upright with dumbbells at sides or holding single weight at chest. Feet hip-width. Technique: Step forward with one leg, lowering hips until both knees at 90°. Front knee over ankle, back knee hovering above ground. Drive through front heel to step forward with opposite leg. Hints: Keep torso upright. Front shin vertical. Take controlled, moderate-length steps. Maintain balance by engaging core. Alternate legs each step. Warnings: Don't let front knee collapse inward or shoot forward past toes. Avoid leaning forward excessively. Don't step too far (overextension) or too short (reduced effectiveness).",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-11",
+    "name": "Romanian Deadlifts",
+    "muscleGroup": "Legs",
+    "equipmentType": "Barbell",
+    "description": "Setup: Stand holding bar at hip height, shoulder-width grip. Feet hip-width, slight knee bend. Technique: Hinge at hips, pushing them back while maintaining neutral spine. Lower bar down front of thighs until hamstrings feel stretched (typically mid-shin). Drive hips forward to return to start. Bar stays close to body. Hints: This is a hip hinge, not a squat—minimal knee bend. Feel stretch in hamstrings, not lower back. Keep shoulders back, chest up. Neck neutral. Warnings: Never round lower back. Don't squat the weight—hips move back, not down. Avoid overextending at top or dropping bar too low if flexibility is limited.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-12",
+    "name": "Bicep Curls",
+    "muscleGroup": "Arms",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand with dumbbells at sides, palms forward (supinated grip). Elbows close to torso. Technique: Curl weights up by flexing elbows, keeping upper arms stationary. Squeeze biceps at top. Lower with control to full extension. Avoid swinging. Hints: Keep elbows pinned to sides—only forearms move. Don't lean back or use body momentum. Supinate wrists fully at top for peak contraction. Control eccentric phase (3 seconds down). Warnings: Don't swing weights or use hip thrust. Avoid partial reps—full extension to full contraction. Don't let elbows drift forward.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-13",
+    "name": "Tricep Extensions",
+    "muscleGroup": "Arms",
+    "equipmentType": "Cable",
+    "description": "Setup: Face cable machine with rope or bar attachment at high position. Grip attachment, elbows at sides bent 90°. Technique: Extend elbows, pressing attachment down until arms fully straight. Keep elbows pinned to sides. Return with control, stopping at 90° or just before stack touches. Hints: Lean slightly forward for stability. Focus on elbow extension, not pressing. Keep shoulders down and back. Squeeze triceps at full extension. Warnings: Don't let elbows flare out to sides. Avoid using shoulder or lat involvement to push weight. Don't lean excessively forward or use body weight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-14",
+    "name": "Lat Pulldown",
+    "muscleGroup": "Back",
+    "equipmentType": "Cable",
+    "description": "Setup: Sit with thighs secured under pad. Grip bar slightly wider than shoulder-width, palms forward. Technique: Pull bar to upper chest by driving elbows down and back. Lean back slightly (10-15°). Squeeze lats at bottom. Return with control to full arm extension. Hints: Initiate with lats, not arms—think 'elbows to back pockets.' Keep chest up. Don't use momentum or excessive lean back. Retract scapula throughout. Warnings: Avoid pulling bar behind neck (shoulder injury risk). Don't lean back more than 15°. Never use jerking motion or drop weight uncontrolled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-15",
+    "name": "Cable Rows",
+    "muscleGroup": "Back",
+    "equipmentType": "Cable",
+    "description": "Setup: Sit at cable station with feet on platform, knees slightly bent. Grip handle, arms extended. Technique: Pull handle to lower chest/upper abdomen, driving elbows back. Keep torso upright (slight lean back acceptable). Squeeze shoulder blades together. Extend arms with control. Hints: Maintain neutral spine. Don't round or hyperextend back. Focus on scapular retraction at peak. Keep shoulders down. Think 'pull elbows, not hands.' Warnings: Avoid excessive torso swing or momentum. Don't round lower back. Keep movement controlled—don't let weight pull you forward.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-16",
+    "name": "Dumbbell Bench Press",
+    "muscleGroup": "Chest",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Lie on bench with dumbbells at chest level, elbows at 45°. Feet flat on floor. Technique: Press dumbbells up and slightly together, stopping just before they touch. Lower with control until elbows slightly below torso level. Maintain constant tension. Hints: Allow greater range of motion than barbell version. Keep wrists straight. Press in slight arc, not straight up. Squeeze chest at top. Control descent to get full stretch. Warnings: Don't bang dumbbells together at top. Avoid dropping elbows too low if shoulder mobility is limited. Never bounce weights off chest.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-17",
+    "name": "Incline Bench Press",
+    "muscleGroup": "Chest",
+    "equipmentType": "Barbell",
+    "description": "Setup: Bench at 30-45° incline (30° optimal for upper chest). Grip bar slightly wider than shoulders. Technique: Unrack and lower bar to upper chest (near clavicles). Press explosively while maintaining scapular retraction. Bar path slightly diagonal. Hints: Lower incline angle (30°) targets chest better than steep (45°+ becomes more shoulders). Keep shoulder blades pinched. Feet flat for leg drive. Elbows at 45-60° angle. Warnings: Don't go too steep (reduces chest activation). Avoid flaring elbows to 90°. Never bounce bar off chest.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-18",
+    "name": "Decline Bench Press",
+    "muscleGroup": "Chest",
+    "equipmentType": "Barbell",
+    "description": "Setup: Bench declined 15-30°, legs secured. Grip bar slightly wider than shoulders. Technique: Unrack and lower to lower chest/sternum area. Press up in slight arc toward face. Full extension at top. Hints: Shorter range of motion than flat bench—can typically handle more weight. Targets lower/mid chest. Maintain scapular retraction. Don't decline too steeply (reduces effectiveness). Warnings: Ensure legs are secure before unracking. Don't bounce bar. Avoid excessive decline angle.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-19",
+    "name": "Chest Flyes",
+    "muscleGroup": "Chest",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Lie on bench holding dumbbells above chest, arms extended with slight elbow bend. Technique: Lower dumbbells in wide arc, maintaining elbow angle. Descend until chest stretch felt. Bring dumbbells back together using chest, maintaining arm arc. Hints: This is an isolation move—keep elbow angle constant (don't turn into press). Feel stretch at bottom. Squeeze pecs at top. Use lighter weight than presses. Warnings: Don't straighten arms completely (elbow joint stress). Avoid going too deep if shoulder mobility is limited. Never use heavy weight or jerky movements.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-20",
+    "name": "Pec Deck",
+    "muscleGroup": "Chest",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust seat so handles at chest height. Sit with back against pad, forearms on pads or gripping handles. Technique: Bring arms together in front of chest using pec contraction. Squeeze hard at peak. Return with control to stretched position. Hints: Focus on chest squeeze, not arm movement. Keep slight elbow bend. Don't use momentum. Pause and contract at peak. Adjust seat for proper arm alignment. Warnings: Don't overstretch at starting position if shoulder mobility is limited. Avoid slamming weight stack. Keep movement controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-21",
+    "name": "Leg Extensions",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust machine so knee pivot aligns with machine pivot. Pad on lower shins. Sit with back against pad. Technique: Extend knees to lift weight, squeezing quads at top. Hold briefly. Lower with control, stopping before stack touches. Hints: Point toes forward or slightly out. Don't lock knees at top—stop just before. Focus on quad contraction. Adjust seat back for comfort. Warnings: Avoid slamming weight at bottom. Never use momentum or jerky movements (knee joint stress). If experiencing knee pain, reduce weight or check form.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-22",
+    "name": "Calf Raises",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Position shoulders under pads, balls of feet on platform edge, heels hanging off. Technique: Lower heels below platform for full stretch. Press up onto toes as high as possible, squeezing calves at top. Hold peak contraction 1-2 seconds. Lower with control. Hints: Full range of motion crucial for calf development. Pause at top and bottom. Keep knees locked (standing) or bent (seated for soleus focus). Toes forward, in, or out for variation. Warnings: Don't bounce at bottom (Achilles strain risk). Avoid partial reps. Use controlled tempo throughout.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-23",
+    "name": "Lateral Raises",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand with dumbbells at sides, slight elbow bend, palms facing body. Technique: Raise dumbbells out to sides in arc motion until arms parallel to floor. Lead with elbows, not hands. Lower with control. Keep torso still. Hints: Think 'pouring water from pitcher' at top—slight forward tilt of dumbbells. Keep elbows slightly higher than wrists. Don't swing or use momentum. Use lighter weight for strict form. Warnings: Don't raise above shoulder height (reduces delt tension, increases trap involvement). Avoid shrugging shoulders. Never swing weights or lean side to side.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-24",
+    "name": "Front Raises",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand holding dumbbells in front of thighs, palms facing body or down. Slight elbow bend. Technique: Raise dumbbells forward and up to shoulder height, maintaining arm angle. Lower with control. Keep core braced. Hints: Can alternate arms or lift together. Keep shoulders down. Don't swing weights. Stop at shoulder height. Use lighter weight than lateral raises. Warnings: Avoid raising above shoulder level. Don't lean back or use momentum. Never lock elbows.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-25",
+    "name": "Face Pulls",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Cable",
+    "description": "Setup: Rope attachment at face height. Grip ends of rope with palms facing each other. Step back for tension. Technique: Pull rope toward face, separating handles beside head. Elbows high and out. Squeeze rear delts and mid-traps. Return with control. Hints: Focus on pulling elbows back, not hands. External rotation at end of movement. Keep shoulders down. This targets rear delts and upper back. Use moderate weight. Warnings: Don't use excessive weight—compromises form. Avoid pulling with arms only. Keep movement smooth and controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-26",
+    "name": "Shrugs",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand holding dumbbells at sides, arms straight, shoulders down. Technique: Elevate shoulders straight up toward ears as high as possible. Squeeze traps at top. Lower with control to full stretch. Keep arms straight throughout. Hints: Think 'shoulders to ears,' not back. Don't roll shoulders (injury risk). Hold peak contraction 1-2 seconds. Can use heavy weight. Warnings: Never roll shoulders forward or backward. Avoid bending elbows. Don't use momentum or jerky movements.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-27",
+    "name": "Hammer Curls",
+    "muscleGroup": "Arms",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand with dumbbells at sides, palms facing body (neutral grip). Technique: Curl weights up keeping thumbs on top throughout. Elbows stay at sides. Squeeze at top. Lower with control. Hints: This targets brachialis and brachioradialis more than standard curls. Keep wrists straight. Maintain neutral grip throughout. Can alternate arms or curl together. Warnings: Don't swing or use momentum. Keep elbows pinned. Avoid leaning back.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-28",
+    "name": "Preacher Curls",
+    "muscleGroup": "Arms",
+    "equipmentType": "Barbell",
+    "description": "Setup: Sit at preacher bench, armpits resting on top pad. Arms extended over angled pad, gripping bar. Technique: Curl bar up, squeezing biceps at top. Lower with control to full extension without letting elbows lift off pad. Hints: Pad angle isolates biceps by preventing shoulder involvement. Keep triceps in contact with pad. Full range of motion crucial. Can use EZ-bar for wrist comfort. Warnings: Don't lift elbows off pad or lean back. Avoid dropping weight quickly (bicep tear risk). Never hyperextend elbows at bottom.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-29",
+    "name": "Skull Crushers",
+    "muscleGroup": "Arms",
+    "equipmentType": "Barbell",
+    "description": "Setup: Lie on bench holding bar above chest, arms extended. Angle arms back slightly (not straight vertical). Technique: Lower bar toward forehead/behind head by bending elbows. Keep upper arms stationary. Extend back to start. Hints: Upper arms should be angled back ~15° from vertical for constant tension. Elbows stay in—don't flare. Can lower to forehead, nose, or behind head. EZ-bar easier on wrists. Warnings: Keep elbows stable—don't let them drift forward or flare out. Use controlled tempo to protect elbows. Avoid excessive weight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-30",
+    "name": "Close Grip Bench Press",
+    "muscleGroup": "Arms",
+    "equipmentType": "Barbell",
+    "description": "Setup: Lie on bench, grip bar with hands 6-12 inches apart (inside shoulder width). Technique: Lower bar to lower chest/sternum with elbows tucked close to sides. Press up explosively. Elbows stay at ~30° from body. Hints: This emphasizes triceps while still working chest. Keep elbows tucked—not flared. Don't grip too narrow (wrist strain). Full lockout at top. Warnings: Avoid grip narrower than 6 inches (wrist/elbow stress). Don't let elbows flare wide. Keep wrists straight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-31",
+    "name": "Chin-ups",
+    "muscleGroup": "Back",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Hang from bar with hands shoulder-width, palms facing you (supinated/underhand grip). Technique: Pull up by driving elbows down, bringing chin over bar. Squeeze lats and biceps at top. Lower with control to full extension. Hints: Supinated grip emphasizes biceps more than pull-ups. Depress shoulders before pulling. Keep core tight. Can cross feet for stability. Warnings: Don't kip or swing. Avoid shrugging shoulders. Don't crane neck to get chin over.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-32",
+    "name": "T-Bar Rows",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Straddle loaded barbell (one end anchored or in corner). Grip handle attachment or bar. Hip hinge position, knees bent. Technique: Pull bar to chest, driving elbows back. Squeeze lats and mid-back at top. Lower with control. Keep torso angle stable. Hints: Wider grip targets lats, closer grip hits mid-back more. Keep chest up. Use neutral or pronated grip. Retract scapula at peak. Warnings: Don't round lower back. Avoid excessive torso movement. Keep core braced throughout.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-33",
+    "name": "Hyperextensions",
+    "muscleGroup": "Back",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Position hips on pad of hyperextension bench, feet secured. Start with torso perpendicular to floor or slightly lower. Technique: Hinge at hips to lower torso toward floor while maintaining neutral spine. Raise back up by contracting glutes and lower back to horizontal position. Hints: Focus on hip hinge movement, not spinal extension. Squeeze glutes at top. Can hold weight at chest for resistance. Keep neck neutral. Warnings: Don't hyperextend spine excessively at top—stop at horizontal. Avoid rounding back. If used for lower back, keep movement controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-34",
+    "name": "Plank",
+    "muscleGroup": "Core",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Forearms on floor, elbows under shoulders. Extend legs, supporting on toes. Body forms straight line. Technique: Hold position while maintaining neutral spine, engaged core, and squeezed glutes. Breathe normally. Hints: Don't let hips sag or pike up. Keep head neutral, looking at floor. Squeeze glutes and quads to maintain position. Start with 30-60 second holds. Warnings: Don't hold breath. Avoid letting lower back sag (puts stress on spine). Stop if form breaks.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-35",
+    "name": "Cable Crunches",
+    "muscleGroup": "Core",
+    "equipmentType": "Cable",
+    "description": "Setup: Kneel facing cable machine with rope attachment at high position. Hold rope ends beside head. Technique: Crunch down by flexing spine, bringing elbows toward thighs. Contract abs hard at bottom. Return with control, maintaining tension. Hints: Movement comes from spinal flexion, not hip flexion. Keep hips stationary. Focus on abs contraction, not pulling with arms. Exhale on crunch. Warnings: Don't pull with arms or use momentum. Avoid excessive weight that causes form breakdown. Keep movement controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-36",
+    "name": "Russian Twists",
+    "muscleGroup": "Core",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Sit with knees bent, feet off floor, torso at 45° angle. Hold weight at chest or clasp hands together. Technique: Rotate torso side to side, touching weight/hands to floor beside hips. Keep core engaged throughout. Move with control. Hints: Lean back to increase difficulty. Keep chest up and spine neutral. Focus on rotation from obliques. Can keep feet on floor for easier variation. Warnings: Don't round spine excessively. Avoid using momentum to swing. Keep movement controlled to engage obliques properly.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-37",
+    "name": "Swing Squat",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Position yourself on the swing squat machine with back against pad, feet on platform shoulder-width apart. Technique: Lower body by bending knees while keeping back pressed to pad. Descend until thighs parallel or deeper. Drive through heels to return to start. Hints: Machine provides guided movement pattern. Keep core engaged. Full range of motion for maximum effectiveness. Warnings: Don't let knees cave inward. Avoid locking out completely at top. Keep lower back against pad.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-38",
+    "name": "Abdominal Machine",
+    "muscleGroup": "Core",
+    "equipmentType": "Machine",
+    "description": "Setup: Sit on machine with chest pad adjusted to mid-chest level. Grip handles, feet secured. Technique: Crunch forward by flexing spine, bringing chest toward thighs. Contract abs fully. Return with control without letting weight stack touch. Hints: Focus on ab contraction, not pulling with arms. Exhale on crunch. Keep movement smooth and controlled. Adjust weight to allow 12-15 quality reps. Warnings: Don't use momentum or jerky movements. Avoid excessive weight that forces poor form. Keep neck neutral.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-39",
+    "name": "Bench Press Machine",
+    "muscleGroup": "Chest",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust seat so handles align with mid-chest. Sit with back flat against pad, feet on floor. Technique: Press handles forward until arms extended. Return with control, stopping before weight stack touches. Keep shoulder blades retracted. Hints: Machine provides stable path for pressing. Good for training to failure safely. Can focus purely on chest contraction. Keep elbows at 45° angle. Warnings: Don't bounce at bottom position. Avoid flaring elbows to 90°. Keep wrists straight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-40",
+    "name": "Rope Pushdown",
+    "muscleGroup": "Arms",
+    "equipmentType": "Cable",
+    "description": "Setup: Attach rope to high cable pulley. Grip rope ends with thumbs up, elbows at sides. Technique: Push rope down by extending elbows. At bottom, split rope ends apart for extra tricep contraction. Return with control to 90° elbow bend. Hints: Keep elbows pinned to sides. Split rope at bottom maximizes tricep engagement. Lean slightly forward for stability. Full extension crucial. Warnings: Don't let elbows drift forward or flare out. Avoid using body weight or momentum. Keep shoulders down.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-41",
+    "name": "Triceps Press Machine",
+    "muscleGroup": "Arms",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust seat so arms align with pivot point. Sit with upper arms on pad, hands gripping handles. Technique: Extend elbows to press handles down. Squeeze triceps at full extension. Return with control without letting weight stack touch. Hints: Machine isolates triceps effectively. Keep upper arms pressed to pads. Focus on elbow extension only. Warnings: Don't let elbows leave pads. Avoid jerky movements. Use controlled tempo.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-42",
+    "name": "Rope Skull Crushers",
+    "muscleGroup": "Arms",
+    "equipmentType": "Cable",
+    "description": "Setup: Use rope on low cable pulley. Lie on bench with head near cable, arms extended overhead holding rope. Technique: Lower rope toward forehead/behind head by bending elbows. Keep upper arms stationary. Extend back to start. Hints: Constant cable tension throughout movement. Keep elbows tucked, not flared. Can lower to forehead or behind head. Split rope at bottom for variation. Warnings: Keep upper arms stable—don't let them drift. Use controlled tempo to protect elbows. Avoid excessive weight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-43",
+    "name": "Cable Lateral Raise",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Cable",
+    "description": "Setup: Stand sideways to cable machine, handle in far hand at hip level. Technique: Raise arm out to side until parallel to floor. Lead with elbow. Lower with control. Constant tension from cable. Hints: Slight bend in elbow. Think 'pouring water' at top. Keep shoulders down. Cable provides constant resistance unlike dumbbells. Warnings: Don't raise above shoulder height. Avoid shrugging. No swinging or momentum.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-44",
+    "name": "Rope Face Pull",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Cable",
+    "description": "Setup: Rope attachment at face height. Grip rope ends, step back for tension. Technique: Pull rope toward face, separating handles beside head. Elbows high and out. External rotation at end. Squeeze rear delts and mid-traps. Hints: Focus on pulling elbows back, not hands. Keep shoulders down. Great for rear delt and posture. Use moderate weight for proper form. Warnings: Don't use excessive weight that compromises form. Avoid pulling with arms only. Keep movement smooth.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-45",
+    "name": "Bent Over Rows",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Hip hinge with torso at 45° angle. Grip barbell shoulder-width, knees slightly bent, back neutral. Technique: Pull bar to lower chest, driving elbows back. Squeeze shoulder blades at top. Lower with control to full arm extension. Hints: Maintain consistent torso angle. Lead pull with elbows. Keep bar close to body. Retract scapula at peak. Warnings: Never round lower back. Don't use excessive momentum. Keep neck neutral. Avoid standing too upright.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-46",
+    "name": "Close Grip Pulldown",
+    "muscleGroup": "Back",
+    "equipmentType": "Cable",
+    "description": "Setup: Use close grip handle (palms facing). Sit with thighs secured, arms extended overhead. Technique: Pull handle to upper chest by driving elbows down. Squeeze lats at bottom. Return with control to full extension. Hints: Close grip emphasizes lower lats. Keep chest up. Focus on lat engagement, not arm pull. Slight lean back acceptable. Warnings: Don't use excessive lean. Avoid jerky movements. Keep shoulders down and back.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-47",
+    "name": "Seated Incline Dumbbell Curl",
+    "muscleGroup": "Arms",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Set bench to 45-60° incline. Sit with back against pad, dumbbells hanging at sides with arms fully extended. Technique: Curl weights up, keeping upper arms perpendicular to floor. Squeeze biceps at top. Lower with control to full extension. Hints: Incline provides increased stretch on biceps. Keep elbows stationary—only forearms move. Full range of motion crucial. Can alternate arms or curl together. Warnings: Don't let elbows drift forward. Avoid swinging or using momentum. Keep back against pad.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-48",
+    "name": "Rope Hammer Curl",
+    "muscleGroup": "Arms",
+    "equipmentType": "Cable",
+    "description": "Setup: Rope on low cable pulley. Stand facing cable, grip rope ends with neutral grip (palms facing). Technique: Curl rope up keeping elbows at sides, maintaining neutral grip throughout. Squeeze at top. Lower with control. Hints: Constant cable tension. Targets brachialis and brachioradialis. Keep elbows pinned. Can separate rope ends at top. Warnings: Don't swing or use momentum. Avoid letting elbows drift forward. Keep wrists straight.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-49",
+    "name": "Cable Wrist Curl",
+    "muscleGroup": "Arms",
+    "equipmentType": "Cable",
+    "description": "Setup: Attach straight bar to low cable. Kneel or sit facing cable, forearms on bench with hands hanging off edge, palms up. Technique: Curl wrists up by flexing forearms. Squeeze at top. Lower with control. Keep forearms stationary. Hints: Isolates forearm flexors. Use light weight for high reps (15-20). Full range of motion. Can also do reverse grip for extensors. Warnings: Don't use heavy weight or jerky movements. Avoid letting forearms lift off support. Keep movement controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-50",
+    "name": "Rear Delt Fly",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Bend forward at hips to torso parallel with floor. Dumbbells hanging down, slight elbow bend. Technique: Raise dumbbells out to sides in arc motion. Lead with elbows. Squeeze rear delts at top. Lower with control. Hints: Keep torso stable and parallel. Focus on rear delt contraction. Don't use momentum. Can also do seated bent over. Warnings: Don't round lower back. Avoid swinging weights. Keep slight elbow bend constant.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-51",
+    "name": "Cable One Arm Lateral Raise",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Cable",
+    "description": "Setup: Stand sideways to cable, handle in far hand at hip level. Can hold support with near hand. Technique: Raise arm out to side to shoulder height. Lead with elbow. Lower with control. Complete set then switch sides. Hints: Cable provides constant tension. Focus on one side allows better mind-muscle connection. Keep shoulder down. Slight lean away acceptable. Warnings: Don't raise above shoulder height. Avoid momentum or swinging. Keep movement controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-52",
+    "name": "Barbell Pullover",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Lie perpendicular on bench with only upper back supported. Hold barbell above chest with arms slightly bent. Technique: Lower barbell back and over head in arc until arms parallel with torso. Feel stretch in lats. Pull back to start using lats. Hints: Keep arms slightly bent throughout. Focus on lat engagement, not arm movement. Can also target chest depending on technique. Control the stretch. Warnings: Don't overstretch if flexibility limited. Keep hips down. Avoid excessive weight until form mastered.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-53",
+    "name": "Pec Fly Machine",
+    "muscleGroup": "Chest",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust seat so handles at chest height. Sit with back against pad, grip handles with slight elbow bend. Technique: Bring handles together in front of chest using pec contraction. Squeeze hard at peak. Return with control to stretch position. Hints: Isolation exercise for chest. Focus on squeeze, not pressing. Keep slight elbow bend constant. Pause at peak contraction. Warnings: Don't overstretch at start if shoulder mobility limited. Avoid bouncing or using momentum. Keep movement controlled.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-54",
+    "name": "Low to High Cable Fly",
+    "muscleGroup": "Chest",
+    "equipmentType": "Cable",
+    "description": "Setup: Cables at low position. Stand in center holding handles, step forward into split stance. Technique: Raise handles up and together in arc motion to face level. Squeeze pecs at top. Lower with control. Targets upper chest. Hints: Maintain slight elbow bend. Focus on upper chest contraction. Keep torso stable. Can adjust height for different angles. Warnings: Don't use momentum or swing. Avoid straightening arms completely. Keep core engaged for stability.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-55",
+    "name": "Seated Cable Fly",
+    "muscleGroup": "Chest",
+    "equipmentType": "Cable",
+    "description": "Setup: Adjust seat between cable stations at chest height. Sit with back against pad, holding handles with arms extended to sides. Technique: Bring handles together in front of chest using pec contraction. Squeeze at center. Return with control to stretched position. Hints: Seated position provides stability. Constant cable tension throughout. Slight elbow bend. Focus on chest squeeze. Warnings: Don't overstretch at start. Avoid bouncing. Keep wrists straight and stable.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-56",
+    "name": "Barbell Overhand Bent Over Rows",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Hip hinge position, torso 45° angle. Overhand grip (palms down) on barbell, hands shoulder-width. Technique: Pull bar to lower chest, driving elbows back and up. Squeeze lats and mid-back at top. Lower with control. Keep torso angle constant. Hints: Overhand grip emphasizes upper back more than underhand. Keep bar close to body. Initiate with lats. Retract scapula fully. Warnings: Maintain neutral spine throughout. Don't use excessive body English. Keep neck neutral. Avoid rounding back.",
+    "isCustom": false,
+    "createdAt": "2025-10-31T00:00:00Z",
+    "updatedAt": "2025-10-31T00:00:00Z"
+  },
+  {
+    "id": "ex-57",
+    "name": "Pullover with Machine",
+    "muscleGroup": "Back",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust seat so shoulders align with pivot point. Sit with back against pad, place elbows on pads, grip handles. Technique: Pull arms down in arc motion, bringing elbows toward hips. Squeeze lats at bottom. Return with control to start position. Hints: Keep arms slightly bent throughout. Focus on lat engagement. Don't use momentum. Full range of motion for maximum lat stretch and contraction. Warnings: Don't overstretch at top position. Avoid pulling with arms instead of lats. Keep core engaged and torso stable.",
+    "isCustom": false,
+    "createdAt": "2025-11-01T00:00:00Z",
+    "updatedAt": "2025-11-01T00:00:00Z"
+  },
+  {
+    "id": "ex-58",
+    "name": "Seated Leg Curl",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Adjust machine so pad rests on lower calves, just above ankles. Sit with back against pad, thighs secured under pad. Technique: Curl legs by flexing knees, bringing heels toward glutes. Squeeze hamstrings at peak contraction. Lower with control. Hints: Don't use hip flexion to cheat. Keep torso stable against pad. Point toes or flex feet for variation. Pause briefly at top. Warnings: Avoid jerking or using momentum. Don't round back. If experiencing knee pain, check pad placement.",
+    "isCustom": false,
+    "createdAt": "2025-11-16T00:00:00Z",
+    "updatedAt": "2025-11-16T00:00:00Z"
+  },
+  {
+    "id": "ex-59",
+    "name": "Seated Calf",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Sit at seated calf machine with knees under pads, balls of feet on platform. Technique: Lower heels below platform for full stretch. Press up onto toes as high as possible, squeezing calves at top. Hold peak contraction 1-2 seconds. Lower with control. Hints: Seated position targets soleus muscle. Full range of motion crucial. Pause at top and bottom. Keep movement controlled. Warnings: Don't bounce at bottom (Achilles strain risk). Avoid partial reps. Use controlled tempo throughout.",
+    "isCustom": false,
+    "createdAt": "2025-11-16T00:00:00Z",
+    "updatedAt": "2025-11-16T00:00:00Z"
+  },
+  {
+    "id": "ex-60",
+    "name": "Incline Press",
+    "muscleGroup": "Chest",
+    "equipmentType": "Barbell",
+    "description": "Setup: Bench at 30-45° incline. Grip bar slightly wider than shoulders. Technique: Unrack and lower bar to upper chest. Press explosively while maintaining scapular retraction. Bar path slightly diagonal. Hints: Lower incline angle (30°) targets chest better than steep angles. Keep shoulder blades pinched. Elbows at 45-60° angle. Warnings: Don't go too steep (reduces chest activation). Avoid flaring elbows to 90°. Never bounce bar off chest.",
+    "isCustom": false,
+    "createdAt": "2025-11-16T00:00:00Z",
+    "updatedAt": "2025-11-16T00:00:00Z"
+  },
+  {
+    "id": "ex-61",
+    "name": "Barbell Pulldown",
+    "muscleGroup": "Back",
+    "equipmentType": "Barbell",
+    "description": "Setup: Use barbell attached to cable or machine at high position. Grip bar with hands shoulder-width or slightly wider. Technique: Pull bar down to upper chest by driving elbows down and back. Squeeze lats at bottom. Return with control to full arm extension. Keep chest up and shoulders back. Hints: Similar to lat pulldown but using barbell for different grip variation. Focus on lat engagement. Maintain upright torso or slight lean back. Keep shoulders down throughout. Warnings: Don't use excessive momentum. Avoid leaning back more than 15°. Keep movement controlled and smooth.",
+    "isCustom": false,
+    "createdAt": "2025-11-16T00:00:00Z",
+    "updatedAt": "2025-11-16T00:00:00Z"
+  }
+]

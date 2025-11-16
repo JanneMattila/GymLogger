@@ -1,0 +1,308 @@
+[
+  {
+    "name": "Monday - Legs",
+    "dayOfWeek": 1,
+    "isDefault": false,
+    "exercises": [
+      {
+        "exerciseName": "Barbell Squats",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 100,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Leg Extensions",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 146.8,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Seated Leg Curl",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 96.8,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Seated Calf",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 80,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Abdominal Machine",
+        "sets": 2,
+        "repsMin": 12,
+        "repsMax": 15,
+        "targetWeight": 80,
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "name": "Tuesday - Chest & Shoulders",
+    "dayOfWeek": 2,
+    "isDefault": false,
+    "exercises": [
+      {
+        "exerciseName": "Barbell Bench Press",
+        "sets": 3,
+        "repsMin": 6,
+        "repsMax": 8,
+        "targetWeight": 80,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Incline Press",
+        "sets": 2,
+        "repsMin": 6,
+        "repsMax": 8,
+        "targetWeight": 95,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Dips",
+        "sets": 2,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 110,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Overhead Press",
+        "sets": 2,
+        "repsMin": 6,
+        "repsMax": 8,
+        "targetWeight": 80,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Cable Lateral Raise",
+        "sets": 2,
+        "repsMin": 10,
+        "repsMax": 12,
+        "targetWeight": 4.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Rope Face Pull",
+        "sets": 2,
+        "repsMin": 12,
+        "repsMax": 15,
+        "targetWeight": 24.9,
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "name": "Wednesday - Back & Arms",
+    "dayOfWeek": 3,
+    "isDefault": false,
+    "exercises": [
+      {
+        "exerciseName": "Cable Rows",
+        "sets": 2,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 90.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Bent Over Rows",
+        "sets": 2,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 45,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Close Grip Pulldown",
+        "sets": 4,
+        "repsMin": 8,
+        "repsMax": 12,
+        "targetWeight": 90.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Seated Incline Dumbbell Curl",
+        "sets": 3,
+        "repsMin": 10,
+        "repsMax": 12,
+        "targetWeight": 17.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Preacher Curls",
+        "sets": 3,
+        "repsMin": 10,
+        "repsMax": 12,
+        "targetWeight": 33,
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "name": "Thursday - Legs",
+    "dayOfWeek": 4,
+    "isDefault": false,
+    "exercises": [
+      {
+        "exerciseName": "Barbell Squats",
+        "sets": 3,
+        "repsMin": 9,
+        "repsMax": 12,
+        "targetWeight": 110,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Leg Extensions",
+        "sets": 3,
+        "repsMin": 7,
+        "repsMax": 10,
+        "targetWeight": 146.8,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Seated Leg Curl",
+        "sets": 3,
+        "repsMin": 7,
+        "repsMax": 10,
+        "targetWeight": 96.8,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Seated Calf",
+        "sets": 3,
+        "repsMin": 6,
+        "repsMax": 10,
+        "targetWeight": 80,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Abdominal Machine",
+        "sets": 2,
+        "repsMin": 12,
+        "repsMax": 15,
+        "targetWeight": 80,
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "name": "Friday - Arms & Shoulders",
+    "dayOfWeek": 5,
+    "isDefault": false,
+    "exercises": [
+      {
+        "exerciseName": "Seated Incline Dumbbell Curl",
+        "sets": 2,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 17.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Cable Wrist Curl",
+        "sets": 2,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 61,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Rear Delt Fly",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 67.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Cable One Arm Lateral Raise",
+        "sets": 2,
+        "repsMin": 7,
+        "repsMax": 10,
+        "targetWeight": 5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Dips",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 110,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Barbell Pullover",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 47.5,
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "name": "Saturday - Chest & Back",
+    "dayOfWeek": 6,
+    "isDefault": false,
+    "exercises": [
+      {
+        "exerciseName": "Barbell Bench Press",
+        "sets": 3,
+        "repsMin": 6,
+        "repsMax": 8,
+        "targetWeight": 80,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Seated Cable Fly",
+        "sets": 3,
+        "repsMin": 9,
+        "repsMax": 12,
+        "targetWeight": 17.5,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Barbell Overhand Bent Over Rows",
+        "sets": 3,
+        "repsMin": 6,
+        "repsMax": 8,
+        "targetWeight": 90,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Pullover with Machine",
+        "sets": 3,
+        "repsMin": 8,
+        "repsMax": 10,
+        "targetWeight": 100,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Shrugs",
+        "sets": 2,
+        "repsMin": 10,
+        "repsMax": 12,
+        "targetWeight": 40,
+        "notes": ""
+      },
+      {
+        "exerciseName": "Deadlifts",
+        "sets": 3,
+        "repsMin": 6,
+        "repsMax": 8,
+        "targetWeight": 90,
+        "notes": ""
+      }
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "date": {
+                "type": "string"
+            },
+            "qty": {
+                "type": "integer"
+            },
+            "weight": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "date",
+            "qty",
+            "weight",
+            "title",
+            "description"
+        ]
+    }
+}

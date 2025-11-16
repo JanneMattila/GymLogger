@@ -1,0 +1,316 @@
+@GymLogger_HostAddress = http://localhost:5076
+
+### Auth Status
+GET {{GymLogger_HostAddress}}/api/auth/status
+Accept: application/json
+
+### Create Guest Session
+POST {{GymLogger_HostAddress}}/api/auth/guest
+Content-Type: application/json
+
+### Login (redirects to Microsoft)
+GET {{GymLogger_HostAddress}}/api/auth/login
+
+### Logout
+POST {{GymLogger_HostAddress}}/api/auth/logout
+
+###
+### EXERCISES
+###
+
+### Get All Exercises (shared + user's custom)
+GET {{GymLogger_HostAddress}}/api/exercises
+Accept: application/json
+
+### Create User Exercise
+POST {{GymLogger_HostAddress}}/api/exercises
+Content-Type: application/json
+
+{
+  "name": "Custom Exercise",
+  "description": "My custom exercise description",
+  "category": "strength",
+  "targetMuscleGroup": "Chest",
+  "equipment": "Barbell"
+}
+
+### Update User Exercise
+PUT {{GymLogger_HostAddress}}/api/users/me/exercises/user-exercise-id-here
+Content-Type: application/json
+
+{
+  "id": "user-exercise-id-here",
+  "name": "Updated Exercise Name",
+  "description": "Updated description",
+  "category": "strength",
+  "targetMuscleGroup": "Chest",
+  "equipment": "Dumbbells"
+}
+
+### Delete User Exercise
+DELETE {{GymLogger_HostAddress}}/api/users/me/exercises/user-exercise-id-here
+
+### Create Shared Exercise (Admin only)
+POST {{GymLogger_HostAddress}}/api/admin/exercises
+Content-Type: application/json
+
+{
+  "name": "New Shared Exercise",
+  "description": "Exercise for all users",
+  "category": "strength",
+  "targetMuscleGroup": "Back",
+  "equipment": "Cable"
+}
+
+###
+### PROGRAMS
+###
+
+### Get All Programs (optionally filtered by day)
+GET {{GymLogger_HostAddress}}/api/users/me/programs
+Accept: application/json
+
+### Get Programs for Specific Day
+GET {{GymLogger_HostAddress}}/api/users/me/programs?day=1
+Accept: application/json
+
+### Get Program By ID
+GET {{GymLogger_HostAddress}}/api/users/me/programs/program-id-here
+Accept: application/json
+
+### Create Program
+POST {{GymLogger_HostAddress}}/api/users/me/programs
+Content-Type: application/json
+
+{
+  "name": "Push Day",
+  "description": "Chest, shoulders, and triceps",
+  "daysOfWeek": [1, 3, 5],
+  "isActive": true,
+  "exercises": [
+    {
+      "exerciseId": "bench-press",
+      "exerciseName": "Bench Press",
+      "sets": 4,
+      "repsMin": 8,
+      "repsMax": 12,
+      "targetWeight": 135.0,
+      "restSeconds": 120,
+      "notes": "Warm up properly",
+      "orderIndex": 0
+    },
+    {
+      "exerciseId": "shoulder-press",
+      "exerciseName": "Shoulder Press",
+      "sets": 3,
+      "repsMin": 10,
+      "repsMax": 12,
+      "targetWeight": 95.0,
+      "restSeconds": 90,
+      "orderIndex": 1
+    }
+  ]
+}
+
+### Update Program
+PUT {{GymLogger_HostAddress}}/api/users/me/programs/program-id-here
+Content-Type: application/json
+
+{
+  "id": "program-id-here",
+  "name": "Updated Push Day",
+  "description": "Modified workout",
+  "daysOfWeek": [1, 3, 5],
+  "isActive": true,
+  "exercises": [
+    {
+      "exerciseId": "bench-press",
+      "exerciseName": "Bench Press",
+      "sets": 5,
+      "repsMin": 6,
+      "repsMax": 10,
+      "targetWeight": 155.0,
+      "restSeconds": 180,
+      "orderIndex": 0
+    }
+  ]
+}
+
+### Set Default Program
+PATCH {{GymLogger_HostAddress}}/api/users/me/programs/program-id-here/set-default
+
+### Delete Program
+DELETE {{GymLogger_HostAddress}}/api/users/me/programs/program-id-here
+
+###
+### SESSIONS
+###
+
+### Get Active Session
+GET {{GymLogger_HostAddress}}/api/users/me/sessions/active
+Accept: application/json
+
+### Get Last Session for Program
+GET {{GymLogger_HostAddress}}/api/users/me/sessions/last-for-program/program-id-here
+Accept: application/json
+
+### Get All Sessions (with optional date range)
+GET {{GymLogger_HostAddress}}/api/users/me/sessions
+Accept: application/json
+
+### Get Sessions in Date Range
+GET {{GymLogger_HostAddress}}/api/users/me/sessions?startDate=2025-11-01&endDate=2025-11-30
+Accept: application/json
+
+### Get Session By ID
+GET {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here
+Accept: application/json
+
+### Create Session
+POST {{GymLogger_HostAddress}}/api/users/me/sessions
+Content-Type: application/json
+
+{
+  "programId": "program-id-here",
+  "programName": "Push Day",
+  "date": "2025-11-02T10:00:00Z",
+  "isActive": true,
+  "notes": "Feeling strong today"
+}
+
+### Update Session
+PUT {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here
+Content-Type: application/json
+
+{
+  "id": "session-id-here",
+  "programId": "program-id-here",
+  "programName": "Push Day",
+  "date": "2025-11-02T10:00:00Z",
+  "isActive": false,
+  "notes": "Great workout",
+  "durationMinutes": 75,
+  "totalSets": 15,
+  "totalReps": 120,
+  "totalVolume": 12500.0
+}
+
+### Cleanup Session (recalculate stats)
+POST {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here/cleanup
+
+###
+### SETS
+###
+
+### Get Sets for Session
+GET {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here/sets
+Accept: application/json
+
+### Add Set to Session
+POST {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here/sets
+Content-Type: application/json
+
+{
+  "exerciseId": "bench-press",
+  "exerciseName": "Bench Press",
+  "programExerciseId": "program-exercise-id-here",
+  "setNumber": 1,
+  "weight": 135.0,
+  "reps": 10,
+  "isWarmup": false,
+  "notes": "Felt good"
+}
+
+### Update Set
+PUT {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here/sets/set-id-here
+Content-Type: application/json
+
+{
+  "id": "set-id-here",
+  "exerciseId": "bench-press",
+  "exerciseName": "Bench Press",
+  "programExerciseId": "program-exercise-id-here",
+  "setNumber": 1,
+  "weight": 145.0,
+  "reps": 8,
+  "isWarmup": false,
+  "notes": "Increased weight"
+}
+
+### Delete Set
+DELETE {{GymLogger_HostAddress}}/api/users/me/sessions/session-id-here/sets/set-id-here
+
+###
+### USER PREFERENCES
+###
+
+### Get User Preferences
+GET {{GymLogger_HostAddress}}/api/users/me/preferences
+Accept: application/json
+
+### Update User Preferences
+PUT {{GymLogger_HostAddress}}/api/users/me/preferences
+Content-Type: application/json
+
+{
+  "weightUnit": "lbs",
+  "defaultRestSeconds": 90,
+  "enableNotifications": true,
+  "warmupSets": [
+    { "percentage": 50, "reps": 10 },
+    { "percentage": 75, "reps": 5 }
+  ]
+}
+
+###
+### TEMPLATES
+###
+
+### Get Program Templates
+GET {{GymLogger_HostAddress}}/api/templates
+Accept: application/json
+
+###
+### STATS
+###
+
+### Get Stats By Exercise
+GET {{GymLogger_HostAddress}}/api/users/me/stats/by-exercise
+Accept: application/json
+
+### Get Stats By Program
+GET {{GymLogger_HostAddress}}/api/users/me/stats/by-program/program-id-here
+Accept: application/json
+
+### Get Stats By Muscle Group
+GET {{GymLogger_HostAddress}}/api/users/me/stats/by-muscle?muscleGroup=Chest
+Accept: application/json
+
+### Get Exercise History
+GET {{GymLogger_HostAddress}}/api/users/me/stats/history/bench-press
+Accept: application/json
+
+###
+### SYNC
+###
+
+### Sync Data (placeholder for offline sync)
+POST {{GymLogger_HostAddress}}/api/sync
+Content-Type: application/json
+
+{
+  "operations": [
+    {
+      "type": "create",
+      "entity": "set",
+      "id": "temp-id-1",
+      "data": {
+        "exerciseId": "bench-press",
+        "weight": 135,
+        "reps": 10
+      }
+    }
+  ]
+}
+
+###

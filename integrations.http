@@ -1,0 +1,71 @@
+@endpoint = {{$dotenv outbound_endpoint}}
+@apiKey = your-api-key-here
+
+### POST Workout Data (Outbound Integration)
+# Submit workout session data including sets with weight, reps, exercise info
+POST {{endpoint}}
+Content-Type: application/json
+
+[
+    {
+        "date": "2025-11-11",
+        "qty": 12,
+        "weight": 225,
+        "title": "Bench Press",
+        "description": "Chest - Barbell - Working set 1 of 3"
+    },
+    {
+        "date": "2025-11-11",
+        "qty": 10,
+        "weight": 225,
+        "title": "Bench Press",
+        "description": "Chest - Barbell - Working set 2 of 3"
+    },
+    {
+        "date": "2025-11-11",
+        "qty": 8,
+        "weight": 225,
+        "title": "Bench Press",
+        "description": "Chest - Barbell - Working set 3 of 3"
+    },
+    {
+        "date": "2025-11-11",
+        "qty": 15,
+        "weight": 135,
+        "title": "Incline Dumbbell Press",
+        "description": "Chest - Dumbbell - Working set 1 of 3"
+    }
+]
+
+###
+
+### POST Import Workout Data (Inbound Integration)
+# Import workout data from external source using API key
+POST https://localhost:5001/api/import?key={{apiKey}}
+Content-Type: application/json
+
+[
+    {
+        "date": "2025-11-12",
+        "qty": 10,
+        "weight": 185,
+        "title": "Squat",
+        "description": "Legs - Barbell - Heavy set"
+    },
+    {
+        "date": "2025-11-12",
+        "qty": 8,
+        "weight": 185,
+        "title": "Squat",
+        "description": "Legs - Barbell - Heavy set"
+    },
+    {
+        "date": "2025-11-12",
+        "qty": 15,
+        "weight": 95,
+        "title": "Leg Press",
+        "description": "Legs - Machine - Volume set"
+    }
+]
+
+###
