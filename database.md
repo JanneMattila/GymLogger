@@ -63,8 +63,9 @@ erDiagram
         uuid ProgramId FK
         uuid ExerciseId FK
         int OrderIndex
-        int TargetSets
-        int TargetReps
+        int Sets
+        int RepsMin
+        int RepsMax
         decimal TargetWeight
         int RestSeconds
         string Notes
@@ -95,8 +96,8 @@ erDiagram
         uuid ExerciseId FK
         uuid ProgramExerciseId FK "NULL if ad-hoc"
         int SetNumber
-        decimal Weight
-        int Reps
+        decimal Weight "Nullable"
+        int Reps "Nullable"
         boolean IsWarmup
         int RestSeconds
         string Notes
@@ -111,9 +112,17 @@ erDiagram
         string Theme "light, dark, auto"
         json WarmupPercentages "Array of percentages"
         json WarmupReps "Array of rep counts"
+        json WarmupSets "Array of set counts"
         string WarmupBehavior "ask, auto, never"
+        string WarmupPreset "standard, quick, custom"
         int DefaultRestSeconds
+        boolean SoundEnabled
+        int RestTimerDuration
         boolean EnableNotifications
+        boolean OutboundIntegrationEnabled
+        string OutboundIntegrationUrl
+        boolean InboundIntegrationEnabled
+        string InboundIntegrationKey
         datetime CreatedAt
         datetime UpdatedAt
     }
@@ -184,8 +193,9 @@ CREATE TABLE ProgramExercises (
     ProgramId TEXT NOT NULL,
     ExerciseId TEXT NOT NULL,
     OrderIndex INTEGER NOT NULL,
-    TargetSets INTEGER NOT NULL,
-    TargetReps INTEGER NOT NULL,
+    Sets INTEGER NOT NULL,
+    RepsMin INTEGER NOT NULL,
+    RepsMax INTEGER NOT NULL,
     TargetWeight REAL,
     RestSeconds INTEGER,
     Notes TEXT,
@@ -237,8 +247,8 @@ CREATE TABLE WorkoutSets (
     ExerciseId TEXT NOT NULL,
     ProgramExerciseId TEXT,                 -- NULL for ad-hoc sets
     SetNumber INTEGER NOT NULL,
-    Weight REAL NOT NULL,
-    Reps INTEGER NOT NULL,
+    Weight REAL,                            -- Nullable
+    Reps INTEGER,                           -- Nullable
     IsWarmup INTEGER NOT NULL DEFAULT 0,
     RestSeconds INTEGER,
     Notes TEXT,
@@ -263,9 +273,17 @@ CREATE TABLE UserPreferences (
     Theme TEXT NOT NULL DEFAULT 'auto',
     WarmupPercentages TEXT NOT NULL DEFAULT '[50,60,70,80,90]',  -- JSON array
     WarmupReps TEXT NOT NULL DEFAULT '[5,5,3,2,1]',               -- JSON array
+    WarmupSets TEXT NOT NULL DEFAULT '[2,1,1,1,1]',               -- JSON array
     WarmupBehavior TEXT NOT NULL DEFAULT 'ask',
+    WarmupPreset TEXT NOT NULL DEFAULT 'standard',
     DefaultRestSeconds INTEGER NOT NULL DEFAULT 90,
+    SoundEnabled INTEGER NOT NULL DEFAULT 1,
+    RestTimerDuration INTEGER NOT NULL DEFAULT 90,
     EnableNotifications INTEGER NOT NULL DEFAULT 1,
+    OutboundIntegrationEnabled INTEGER NOT NULL DEFAULT 0,
+    OutboundIntegrationUrl TEXT,
+    InboundIntegrationEnabled INTEGER NOT NULL DEFAULT 0,
+    InboundIntegrationKey TEXT,
     CreatedAt TEXT NOT NULL,
     UpdatedAt TEXT,
     FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE

@@ -1,8 +1,8 @@
-import { api } from '../utils/api-client.js?v=20251116171145';
-import { notification } from '../components/notification.js?v=20251116171145';
-import { CustomDropdown } from '../components/custom-dropdown.js?v=20251116171145';
-import { themeManager } from '../utils/theme-manager.js?v=20251116171145';
-import { authManager } from '../utils/auth-manager.js?v=20251116171145';
+import { api } from '../utils/api-client.js?v=00000000000000';
+import { notification } from '../components/notification.js?v=00000000000000';
+import { CustomDropdown } from '../components/custom-dropdown.js?v=00000000000000';
+import { themeManager } from '../utils/theme-manager.js?v=00000000000000';
+import { authManager } from '../utils/auth-manager.js?v=00000000000000';
 
 export class PreferencesView {
     constructor() {

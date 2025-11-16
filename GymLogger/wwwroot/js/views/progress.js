@@ -1,6 +1,6 @@
-import { api } from '../utils/api-client.js?v=20251116171145';
-import { notification } from '../components/notification.js?v=20251116171145';
-import { eventBus } from '../utils/event-bus.js?v=20251116171145';
+import { api } from '../utils/api-client.js?v=00000000000000';
+import { notification } from '../components/notification.js?v=00000000000000';
+import { eventBus } from '../utils/event-bus.js?v=00000000000000';
 
 export class ProgressView {
     constructor() {

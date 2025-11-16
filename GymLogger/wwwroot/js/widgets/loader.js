@@ -1,4 +1,4 @@
-import { eventBus } from '../utils/event-bus.js?v=20251116171145';
+import { eventBus } from '../utils/event-bus.js?v=00000000000000';
 
 const HIDE_DELAY_MS = 300;
 

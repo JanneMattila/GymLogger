@@ -1,4 +1,4 @@
-import { api } from '../utils/api-client.js?v=20251116171145';
+import { api } from '../utils/api-client.js?v=00000000000000';
 
 export class ExercisesView {
     constructor() {

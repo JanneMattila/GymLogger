@@ -1,20 +1,20 @@
-import { eventBus } from './utils/event-bus.js?v=20251116171145';
-import { themeManager } from './utils/theme-manager.js?v=20251116171145';
-import { authManager } from './utils/auth-manager.js?v=20251116171145';
-import { offlineManager } from './utils/offline-manager.js?v=20251116171145';
-import { HeaderWidget } from './widgets/header.js?v=20251116171145';
-import { LeftNavWidget } from './widgets/left-nav.js?v=20251116171145';
-import { FooterWidget } from './widgets/footer.js?v=20251116171145';
-import { LoaderWidget } from './widgets/loader.js?v=20251116171145';
-import { DashboardView } from './views/dashboard.js?v=20251116171145';
-import { ProgramsView } from './views/programs.js?v=20251116171145';
-import { ExercisesView } from './views/exercises.js?v=20251116171145';
-import { WorkoutLoggerView } from './views/workout-logger.js?v=20251116171145';
-import { HistoryView } from './views/history.js?v=20251116171145';
-import { PreferencesView } from './views/preferences.js?v=20251116171145';
-import { ProgressView } from './views/progress.js?v=20251116171145';
-import { StatsView } from './views/stats.js?v=20251116171145';
-import { UtilitiesView } from './views/utilities.js?v=20251116171145';
+import { eventBus } from './utils/event-bus.js?v=00000000000000';
+import { themeManager } from './utils/theme-manager.js?v=00000000000000';
+import { authManager } from './utils/auth-manager.js?v=00000000000000';
+import { offlineManager } from './utils/offline-manager.js?v=00000000000000';
+import { HeaderWidget } from './widgets/header.js?v=00000000000000';
+import { LeftNavWidget } from './widgets/left-nav.js?v=00000000000000';
+import { FooterWidget } from './widgets/footer.js?v=00000000000000';
+import { LoaderWidget } from './widgets/loader.js?v=00000000000000';
+import { DashboardView } from './views/dashboard.js?v=00000000000000';
+import { ProgramsView } from './views/programs.js?v=00000000000000';
+import { ExercisesView } from './views/exercises.js?v=00000000000000';
+import { WorkoutLoggerView } from './views/workout-logger.js?v=00000000000000';
+import { HistoryView } from './views/history.js?v=00000000000000';
+import { PreferencesView } from './views/preferences.js?v=00000000000000';
+import { ProgressView } from './views/progress.js?v=00000000000000';
+import { StatsView } from './views/stats.js?v=00000000000000';
+import { UtilitiesView } from './views/utilities.js?v=00000000000000';
 
 class App {
     constructor() {

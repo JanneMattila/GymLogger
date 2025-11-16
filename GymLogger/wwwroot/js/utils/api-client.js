@@ -1,8 +1,8 @@
 // API client for making HTTP requests
-import { eventBus } from './event-bus.js?v=20251116171145';
-import { userContext } from './user-context.js?v=20251116171145';
-import { offlineManager } from './offline-manager.js?v=20251116171145';
-import { offlineStorage } from './offline-storage.js?v=20251116171145';
+import { eventBus } from './event-bus.js?v=00000000000000';
+import { userContext } from './user-context.js?v=00000000000000';
+import { offlineManager } from './offline-manager.js?v=00000000000000';
+import { offlineStorage } from './offline-storage.js?v=00000000000000';
 
 const API_BASE = '/api';
 

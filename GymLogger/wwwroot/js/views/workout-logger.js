@@ -1,9 +1,9 @@
-import { api } from '../utils/api-client.js?v=20251116171145';
-import { eventBus } from '../utils/event-bus.js?v=20251116171145';
-import { formatDate } from '../utils/date-formatter.js?v=20251116171145';
-import { notification } from '../components/notification.js?v=20251116171145';
-import { offlineManager } from '../utils/offline-manager.js?v=20251116171145';
-import { offlineStorage } from '../utils/offline-storage.js?v=20251116171145';
+import { api } from '../utils/api-client.js?v=00000000000000';
+import { eventBus } from '../utils/event-bus.js?v=00000000000000';
+import { formatDate } from '../utils/date-formatter.js?v=00000000000000';
+import { notification } from '../components/notification.js?v=00000000000000';
+import { offlineManager } from '../utils/offline-manager.js?v=00000000000000';
+import { offlineStorage } from '../utils/offline-storage.js?v=00000000000000';
 
 export class WorkoutLoggerView {
     constructor() {

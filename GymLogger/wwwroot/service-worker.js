@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v20251116171145';
+const CACHE_VERSION = 'v00000000000000';
 const CACHE_NAME = `gymlogger-${CACHE_VERSION}`;
 const STATIC_CACHE = `gymlogger-static-${CACHE_VERSION}`;
 

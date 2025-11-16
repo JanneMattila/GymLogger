@@ -1,6 +1,6 @@
-import { offlineStorage } from './offline-storage.js?v=20251116171145';
-import { notification } from '../components/notification.js?v=20251116171145';
-import { eventBus } from './event-bus.js?v=20251116171145';
+import { offlineStorage } from './offline-storage.js?v=00000000000000';
+import { notification } from '../components/notification.js?v=00000000000000';
+import { eventBus } from './event-bus.js?v=00000000000000';
 
 class OfflineManager {
     constructor() {

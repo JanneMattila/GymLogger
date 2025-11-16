@@ -1,5 +1,5 @@
 import { WelcomeDialog } from '../components/welcome-dialog.js';
-import { userContext } from './user-context.js?v=20251116171145';
+import { userContext } from './user-context.js?v=00000000000000';
 
 class AuthManager {
     constructor() {
