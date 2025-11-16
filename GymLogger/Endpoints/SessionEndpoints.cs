@@ -57,6 +57,12 @@ public static class SessionEndpoints
             return result ? Results.Ok() : Results.NotFound();
         });
 
+        group.MapDelete("/{id}", async (ClaimsPrincipal user, string id, SessionRepository repo) =>
+        {
+            var result = await repo.DeleteSessionAsync(user.Id, id);
+            return result ? Results.Ok() : Results.NotFound();
+        });
+
         // Set endpoints (part of sessions)
         group.MapGet("/{sessionId}/sets", async (ClaimsPrincipal user, string sessionId, SessionRepository repo) =>
         {

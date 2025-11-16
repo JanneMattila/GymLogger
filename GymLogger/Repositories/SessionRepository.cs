@@ -157,6 +157,25 @@ public class SessionRepository
         return true;
     }
 
+    public async Task<bool> DeleteSessionAsync(string userId, string sessionId)
+    {
+        var entity = await _context.WorkoutSessions
+            .AsTracking()
+            .Include(s => s.WorkoutSets)
+            .FirstOrDefaultAsync(s => s.Id == sessionId && s.UserId == userId);
+        
+        if (entity == null) return false;
+
+        // Remove all sets first
+        _context.WorkoutSets.RemoveRange(entity.WorkoutSets);
+        
+        // Remove the session
+        _context.WorkoutSessions.Remove(entity);
+        
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<List<WorkoutSet>> GetSetsForSessionAsync(string userId, string sessionId)
     {
         // Verify session belongs to user

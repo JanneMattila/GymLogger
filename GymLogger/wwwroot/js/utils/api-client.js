@@ -604,6 +604,10 @@ class ApiClient {
         return response;
     }
 
+    async deleteSession(sessionId) {
+        return this.delete(`/users/me/sessions/${sessionId}`, { showLoader: true, queueOffline: true });
+    }
+
     async getPreferences(options = {}) {
         const response = await this.get(`/users/me/preferences`, {
             cacheKey: `preferences_me`,

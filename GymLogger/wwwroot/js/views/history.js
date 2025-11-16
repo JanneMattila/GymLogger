@@ -322,8 +322,8 @@ export class HistoryView {
 
             content += `
                 <div class="card session-card" data-session-id="${session.id}" style="margin-bottom: 0; cursor: pointer;">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
-                        <div style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 12px;">
+                        <div style="flex: 1;" class="session-card-content">
                             <h4 style="margin-bottom: 4px;">${programName}</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
                                 ${session.status === 'completed' ? '✓ Completed' : 'In Progress'}
@@ -334,9 +334,14 @@ export class HistoryView {
                                 <span><strong>${totalVolume.toFixed(1)}</strong> ${this.preferences?.defaultWeightUnit || 'KG'} total</span>
                             </div>
                         </div>
-                        <span style="font-size: 12px; color: var(--text-secondary);">
-                            ${new Date(session.startedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                            <span style="font-size: 12px; color: var(--text-secondary);">
+                                ${new Date(session.startedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                            <button class="btn btn-danger btn-sm delete-session-btn" data-session-id="${session.id}" style="padding: 4px 8px; font-size: 12px;" title="Delete workout">
+                                🗑️ Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -345,11 +350,106 @@ export class HistoryView {
         content += '</div></div>';
         document.getElementById('session-details').innerHTML = content;
 
-        // Add click listeners for session cards
-        document.querySelectorAll('.session-card').forEach(card => {
-            card.addEventListener('click', async () => {
-                const sessionId = card.dataset.sessionId;
+        // Add click listeners for session cards (click on content only, not delete button)
+        document.querySelectorAll('.session-card-content').forEach(content => {
+            content.addEventListener('click', async () => {
+                const sessionId = content.closest('.session-card').dataset.sessionId;
                 await this.showSessionDetails(sessionId);
+            });
+        });
+
+        // Add click listeners for delete buttons
+        document.querySelectorAll('.delete-session-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation(); // Prevent opening session details
+                const sessionId = btn.dataset.sessionId;
+                await this.confirmAndDeleteSession(sessionId, date);
+            });
+        });
+    }
+
+    async confirmAndDeleteSession(sessionId, date) {
+        const session = this.sessions.find(s => s.id === sessionId);
+        if (!session) return;
+
+        const program = this.programs.find(p => p.id === session.programId);
+        const programName = program?.name || session.programName || 'Unknown Program';
+
+        // Create confirmation dialog
+        const confirmed = await this.showConfirmDialog(
+            'Delete Workout?',
+            `Are you sure you want to delete "${programName}" from ${formatDate(date)}? This action cannot be undone.`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const response = await api.deleteSession(sessionId);
+            
+            if (response.success) {
+                // Remove from local sessions array
+                this.sessions = this.sessions.filter(s => s.id !== sessionId);
+                
+                // Refresh the view
+                await this.showSessionsForDate(date);
+                
+                // If no sessions left for this date, re-render calendar
+                const remainingSessions = this.sessions.filter(s => s.sessionDate === date);
+                if (remainingSessions.length === 0) {
+                    this.render();
+                }
+                
+                eventBus.emit('notification', {
+                    message: 'Workout deleted successfully',
+                    type: 'success'
+                });
+            } else {
+                throw new Error('Failed to delete workout');
+            }
+        } catch (error) {
+            console.error('Error deleting session:', error);
+            eventBus.emit('notification', {
+                message: 'Failed to delete workout. Please try again.',
+                type: 'error'
+            });
+        }
+    }
+
+    async showConfirmDialog(title, message) {
+        return new Promise((resolve) => {
+            const dialog = document.createElement('div');
+            dialog.id = 'confirm-dialog';
+            dialog.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            
+            dialog.innerHTML = `
+                <div style="background: var(--background); border-radius: 12px; max-width: 400px; width: 100%; padding: 24px; border: 1px solid var(--border);">
+                    <h3 style="margin: 0 0 16px 0; color: var(--danger-color);">${title}</h3>
+                    <p style="margin: 0 0 24px 0; color: var(--text);">${message}</p>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button class="btn btn-secondary" id="confirm-cancel">Cancel</button>
+                        <button class="btn btn-danger" id="confirm-delete">Delete</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+            
+            document.getElementById('confirm-cancel').addEventListener('click', () => {
+                dialog.remove();
+                resolve(false);
+            });
+            
+            document.getElementById('confirm-delete').addEventListener('click', () => {
+                dialog.remove();
+                resolve(true);
+            });
+            
+            // Close on backdrop click
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) {
+                    dialog.remove();
+                    resolve(false);
+                }
             });
         });
     }
