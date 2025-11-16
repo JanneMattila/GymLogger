@@ -195,8 +195,9 @@ if (-not $SkipBuild) {
     }
     Write-Success "No database files in deployment (production DB will be preserved)"
     
-    # Return to original directory
+    # Return to original directory and update path
     Pop-Location
+    $publishPath = "GymLogger/bin/publish"
 } else {
     Write-Step "Skipping build (using existing files)..."
     $publishPath = "GymLogger/bin/publish"
