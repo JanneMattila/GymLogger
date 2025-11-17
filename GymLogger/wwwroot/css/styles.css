@@ -194,8 +194,10 @@ header {
     justify-content: space-between;
     padding: 0 16px;
     box-shadow: 0 2px 4px var(--shadow);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
 }
 
@@ -224,11 +226,15 @@ header h1 {
     border-right: 1px solid var(--border);
     overflow-y: auto;
     transition: transform 0.3s;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    height: calc(100vh - var(--header-height));
+    z-index: 40;
 }
 
 .left-nav.collapsed {
     transform: translateX(-100%);
-    position: absolute;
     z-index: 50;
 }
 
@@ -271,6 +277,13 @@ header h1 {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
+    margin-top: var(--header-height);
+    margin-left: var(--nav-width);
+    transition: margin-left 0.3s;
+}
+
+.left-nav.collapsed ~ .main-content {
+    margin-left: 0;
 }
 
 /* Footer */
@@ -278,7 +291,7 @@ footer {
     height: var(--footer-height);
     background: var(--surface);
     border-top: 1px solid var(--border);
-    display: flex;
+    display: none; /* Hidden for now */
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
@@ -407,8 +420,10 @@ footer {
     }
 
     .left-nav {
-        position: absolute;
-        height: calc(100vh - var(--header-height) - var(--footer-height));
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        height: calc(100vh - var(--header-height));
         z-index: 50;
         box-shadow: 2px 0 8px var(--shadow);
     }
@@ -419,6 +434,7 @@ footer {
 
     .main-content {
         padding: 12px;
+        margin-left: 0;
     }
 
     .card {

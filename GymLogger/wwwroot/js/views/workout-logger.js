@@ -817,14 +817,14 @@ export class WorkoutLoggerView {
         }
         
         try {
-            // Clean up the session (deletes session and all sets)
-            await api.cleanupSession(this.session.id);
+            // Delete the session (removes the workout completely)
+            await api.deleteSession(this.session.id);
             
-            // Clear draft workout after successful cleanup
+            // Clear draft workout after successful deletion
             await offlineStorage.deleteDraftWorkout(this.session.id);
             
             this.stopRestTimer();
-            notification.info('Workout cancelled');
+            notification.info('Workout cancelled and deleted');
             eventBus.emit('navigate', 'dashboard');
         } catch (error) {
             console.error('Error canceling workout:', error);

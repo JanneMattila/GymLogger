@@ -170,10 +170,9 @@ export class PreferencesView {
                             <input 
                                 type="url" 
                                 id="outbound-integration-url" 
-                                class="input" 
+                                class="form-input" 
                                 value="${this.preferences.outboundIntegrationUrl || ''}" 
                                 placeholder="https://example.com/api/workouts"
-                                style="width: 100%;"
                                 ${!this.preferences.outboundIntegrationEnabled ? 'disabled' : ''}>
                             <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
                                 When enabled, workout data will be sent to this endpoint upon completion.
@@ -196,7 +195,7 @@ export class PreferencesView {
                                 <input 
                                     type="text" 
                                     id="inbound-integration-url" 
-                                    class="input" 
+                                    class="form-input" 
                                     value="${window.location.origin}/api/import?key=${this.preferences.inboundIntegrationKey || ''}" 
                                     readonly
                                     style="flex: 1;"
