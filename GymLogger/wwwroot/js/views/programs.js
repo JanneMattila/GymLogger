@@ -3,6 +3,10 @@ import { eventBus } from '../utils/event-bus.js?v=00000000000000';
 import { getDayName } from '../utils/date-formatter.js?v=00000000000000';
 import { notification } from '../components/notification.js?v=00000000000000';
 
+const DROPDOWN_MENU_STYLE = 'position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 25px var(--shadow); min-width: 180px; z-index: 20; padding: 4px 0; display: none;';
+const DROPDOWN_ITEM_STYLE = 'display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 10px 16px; font-size: 14px; cursor: pointer; color: var(--text-primary); transition: background 0.2s ease, color 0.2s ease;';
+const DROPDOWN_ITEM_DANGER_STYLE = `${DROPDOWN_ITEM_STYLE} color: var(--danger-color);`;
+
 export class ProgramsView {
     constructor() {
         this.container = document.getElementById('main');
@@ -11,6 +15,11 @@ export class ProgramsView {
         this.exercises = [];
         this.preferences = null;
         this.editingProgramId = null;
+        this.boundDropdownCloseHandler = (event) => {
+            if (!event.target.closest('.simple-dropdown')) {
+                this.closeAllDropdowns();
+            }
+        };
     }
 
     async render() {
@@ -55,9 +64,14 @@ export class ProgramsView {
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <div class="card-header" style="margin: 0;">My Programs</div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-secondary" id="import-programs-btn" ${isOffline ? 'disabled' : ''}>📥 Import</button>
-                        <button class="btn btn-secondary" id="export-programs-btn" ${isOffline || this.programs.length === 0 ? 'disabled' : ''}>📤 Export All</button>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div class="simple-dropdown" style="position: relative;">
+                            <button type="button" class="btn btn-secondary" id="programs-actions-btn" data-dropdown-toggle="programs-actions-menu" aria-label="Program actions" style="padding: 8px 12px; min-height: 36px;">...</button>
+                            <div class="simple-dropdown-menu" id="programs-actions-menu" data-open="false" style="${DROPDOWN_MENU_STYLE}">
+                                <button type="button" class="simple-dropdown-item" id="import-programs-btn" ${isOffline ? 'disabled' : ''} style="${DROPDOWN_ITEM_STYLE}">📥 Import</button>
+                                <button type="button" class="simple-dropdown-item" id="export-programs-btn" ${isOffline || this.programs.length === 0 ? 'disabled' : ''} style="${DROPDOWN_ITEM_STYLE}">📤 Export</button>
+                            </div>
+                        </div>
                         <button class="btn btn-primary" id="create-program-btn" ${isOffline ? 'disabled' : ''}>+ Create Program</button>
                     </div>
                 </div>
@@ -137,9 +151,15 @@ export class ProgramsView {
 
     renderProgramCard(program) {
         const isOffline = !navigator.onLine;
+        const createdAt = program.createdAt ? new Date(program.createdAt) : null;
+        const lastUsedDate = program.lastUsedDate ? new Date(program.lastUsedDate) : null;
+        const hasUsageHistory = lastUsedDate && (!createdAt || lastUsedDate.getTime() !== createdAt.getTime());
+        const lastUsedText = hasUsageHistory ? lastUsedDate.toLocaleDateString() : 'never';
+        const programActionsMenuId = `program-actions-${program.id}`;
+
         return `
             <div class="card" style="margin-bottom: 12px; cursor: pointer;" data-program-id="${program.id}" data-action="edit-card">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="display: flex; justify-content: space-between; align-items: start; gap: 16px;">
                     <div style="flex: 1;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                             <h3 style="margin: 0;">${program.name}</h3>
@@ -148,22 +168,21 @@ export class ProgramsView {
                         <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">
                             ${program.exercises.length} exercise${program.exercises.length !== 1 ? 's' : ''}
                         </p>
-                        ${program.lastUsedDate ? `
-                            <p style="color: var(--text-secondary); font-size: 12px;">
-                                Last used: ${new Date(program.lastUsedDate).toLocaleDateString()}
-                            </p>
-                        ` : ''}
+                        <p style="color: var(--text-secondary); font-size: 12px;">
+                            Last used: ${lastUsedText}
+                        </p>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-secondary" data-action="export-single" data-program-id="${program.id}" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''} title="Export this program">
-                            📤
-                        </button>
+                    <div style="display: flex; gap: 8px; align-items: flex-start;">
                         <button class="btn btn-secondary" data-action="edit" data-program-id="${program.id}" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''}>
                             ✏️ Edit
                         </button>
-                        <button class="btn btn-danger" data-action="delete" data-program-id="${program.id}" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''}>
-                            🗑️
-                        </button>
+                        <div class="simple-dropdown" style="position: relative;">
+                            <button type="button" class="btn btn-secondary" data-dropdown-toggle="${programActionsMenuId}" aria-label="Program options" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''}>...</button>
+                            <div class="simple-dropdown-menu" id="${programActionsMenuId}" data-open="false" style="${DROPDOWN_MENU_STYLE}">
+                                <button type="button" class="simple-dropdown-item" data-action="export-single" data-program-id="${program.id}" ${isOffline ? 'disabled' : ''} style="${DROPDOWN_ITEM_STYLE}">📤 Export</button>
+                                <button type="button" class="simple-dropdown-item" data-action="delete" data-program-id="${program.id}" ${isOffline ? 'disabled' : ''} style="${DROPDOWN_ITEM_DANGER_STYLE}">🗑️ Delete</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -171,6 +190,7 @@ export class ProgramsView {
     }
 
     attachListeners() {
+        this.closeAllDropdowns();
         document.getElementById('create-program-btn')?.addEventListener('click', () => {
             if (!navigator.onLine) {
                 notification.warning('You are offline. Creating programs requires an online connection.');
@@ -188,10 +208,12 @@ export class ProgramsView {
         });
 
         document.getElementById('export-programs-btn')?.addEventListener('click', async () => {
+            this.closeAllDropdowns();
             await this.exportAllPrograms();
         });
 
         document.getElementById('import-programs-btn')?.addEventListener('click', () => {
+            this.closeAllDropdowns();
             this.showImportDialog();
         });
 
@@ -199,6 +221,7 @@ export class ProgramsView {
         document.querySelectorAll('[data-action="export-single"]').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
+                this.closeAllDropdowns();
                 const programId = btn.dataset.programId;
                 await this.exportSingleProgram(programId);
             });
@@ -214,6 +237,7 @@ export class ProgramsView {
                     return;
                 }
                 const programId = card.dataset.programId;
+                this.closeAllDropdowns();
                 this.showProgramEditor(programId);
             });
         });
@@ -221,6 +245,7 @@ export class ProgramsView {
         document.querySelectorAll('[data-action="edit"]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                this.closeAllDropdowns();
                 if (!navigator.onLine) {
                     notification.warning('You are offline. Editing programs requires an online connection.');
                     return;
@@ -233,6 +258,7 @@ export class ProgramsView {
         document.querySelectorAll('[data-action="delete"]').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
+                this.closeAllDropdowns();
                 if (!navigator.onLine) {
                     notification.warning('You are offline. Deleting programs requires an online connection.');
                     return;
@@ -244,9 +270,49 @@ export class ProgramsView {
                 }
             });
         });
+
+        this.initializeDropdowns();
+    }
+
+    initializeDropdowns() {
+        const dropdownButtons = document.querySelectorAll('[data-dropdown-toggle]');
+        dropdownButtons.forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (btn.disabled) return;
+                this.toggleDropdown(btn.dataset.dropdownToggle);
+            });
+        });
+
+        if (this.boundDropdownCloseHandler) {
+            document.removeEventListener('click', this.boundDropdownCloseHandler);
+            document.addEventListener('click', this.boundDropdownCloseHandler);
+        }
+    }
+
+    toggleDropdown(menuId) {
+        if (!menuId) return;
+        const menu = document.getElementById(menuId);
+        if (!menu) return;
+        const isOpen = menu.getAttribute('data-open') === 'true';
+        this.closeAllDropdowns();
+        if (!isOpen) {
+            menu.style.display = 'block';
+            menu.setAttribute('data-open', 'true');
+        }
+    }
+
+    closeAllDropdowns() {
+        document.querySelectorAll('.simple-dropdown-menu').forEach(menu => {
+            if (menu.getAttribute('data-open') === 'true') {
+                menu.style.display = 'none';
+                menu.setAttribute('data-open', 'false');
+            }
+        });
     }
 
     showProgramEditor(programId = null) {
+        this.closeAllDropdowns();
         const program = programId ? this.programs.find(p => p.id === programId) : null;
         const isEdit = !!program;
 
@@ -814,6 +880,7 @@ export class ProgramsView {
     }
 
     showImportDialog() {
+        this.closeAllDropdowns();
         const content = `
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
