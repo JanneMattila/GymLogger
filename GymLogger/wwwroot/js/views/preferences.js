@@ -3,6 +3,7 @@ import { notification } from '../components/notification.js?v=00000000000000';
 import { CustomDropdown } from '../components/custom-dropdown.js?v=00000000000000';
 import { themeManager } from '../utils/theme-manager.js?v=00000000000000';
 import { authManager } from '../utils/auth-manager.js?v=00000000000000';
+import { offlineManager } from '../utils/offline-manager.js?v=00000000000000';
 
 export class PreferencesView {
     constructor() {
@@ -220,11 +221,15 @@ export class PreferencesView {
                 <!-- Account Section -->
                 <div style="margin-top: 32px; padding-top: 32px; border-top: 2px solid var(--border);">
                     <h3 style="margin-bottom: 16px; font-size: 18px;">Account</h3>
-                    <div style="display: flex; gap: 12px;">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                         <button type="button" class="btn btn-secondary" id="logout-btn">
                             ${localStorage.getItem('gymlogger_isGuest') === 'true' ? 'Clear Guest Session' : 'Sign Out'}
                         </button>
+                        <button type="button" class="btn btn-secondary" id="clear-cache-btn">Clear Cache</button>
                     </div>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 14px;">
+                        Removes offline workouts, sync queue items, local preferences, and cached assets from this browser.
+                    </p>
                 </div>
             </div>
         `;
@@ -386,6 +391,10 @@ export class PreferencesView {
                 await authManager.logout();
             }
         });
+
+        document.getElementById('clear-cache-btn')?.addEventListener('click', async (event) => {
+            await this.clearBrowserCache(event);
+        });
     }
 
     attachWarmupSetListeners() {
@@ -510,5 +519,30 @@ export class PreferencesView {
     applyTheme(theme) {
         // Use theme manager for consistency
         themeManager.setTheme(theme);
+    }
+
+    async clearBrowserCache(event) {
+        const button = event?.currentTarget;
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+        if (!confirm('Clear all offline workouts, cached API responses, and stored preferences from this browser?')) {
+            return;
+        }
+
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Clearing...';
+
+        try {
+            const result = await offlineManager.clearBrowserData();
+            const cacheInfo = result.cachesCleared ? ` Removed ${result.cachesCleared} cache bundle(s).` : '';
+            notification.success(`Browser cache cleared.${cacheInfo} Please reload the app.`);
+        } catch (error) {
+            notification.error('Failed to clear cache: ' + error.message);
+        } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
     }
 }

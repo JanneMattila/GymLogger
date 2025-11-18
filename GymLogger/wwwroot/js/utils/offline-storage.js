@@ -299,6 +299,22 @@ class OfflineStorage {
 
         return Promise.all(promises);
     }
+
+    async deleteDatabase() {
+        if (this.db) {
+            this.db.close();
+            this.db = null;
+        }
+
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.deleteDatabase(this.dbName);
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+            request.onblocked = () => {
+                reject(new Error('Database deletion blocked. Please close other Gym Logger tabs and try again.'));
+            };
+        });
+    }
 }
 
 export const offlineStorage = new OfflineStorage();

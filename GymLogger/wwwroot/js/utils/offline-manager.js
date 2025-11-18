@@ -243,6 +243,7 @@ class OfflineManager {
 
             let successCount = 0;
             let failCount = 0;
+            const failureDetails = [];
 
             for (const item of queue) {
                 try {
@@ -264,11 +265,15 @@ class OfflineManager {
                         successCount++;
                     } else {
                         failCount++;
-                        console.error('Sync failed for operation:', item, response.statusText);
+                        const detail = await this.buildFailureDetail(item, response);
+                        failureDetails.push(detail);
+                        console.error('Sync failed for operation:', detail);
                     }
                 } catch (error) {
                     failCount++;
-                    console.error('Error syncing operation:', item, error);
+                    const detail = this.buildFailureDetailFromError(item, error);
+                    failureDetails.push(detail);
+                    console.error('Error syncing operation:', detail);
                 }
             }
 
@@ -276,17 +281,119 @@ class OfflineManager {
                 notification.success(`Synced ${successCount} pending operation(s)`);
             }
             if (failCount > 0) {
-                notification.warning(`Failed to sync ${failCount} operation(s)`);
+                const detailMsg = this.formatFailureSummary(failureDetails[0]);
+                notification.warning(`Failed to sync ${failCount} operation(s).${detailMsg}`);
             }
 
             // Emit event to update UI
-            eventBus.emit('sync:completed', { successCount, failCount });
+            eventBus.emit('sync:completed', { successCount, failCount, failures: failureDetails });
 
         } catch (error) {
             console.error('Error during sync:', error);
         } finally {
             this.syncInProgress = false;
         }
+    }
+
+    buildFailureDetailFromError(operation, error) {
+        return {
+            method: operation.method,
+            url: operation.url,
+            errorMessage: error?.message || 'Unknown error'
+        };
+    }
+
+    async buildFailureDetail(operation, response) {
+        const bodySnippet = await this.extractResponseSnippet(response);
+        return {
+            method: operation.method,
+            url: operation.url,
+            status: response.status,
+            statusText: response.statusText,
+            bodySnippet
+        };
+    }
+
+    formatFailureSummary(detail) {
+        if (!detail) {
+            return '';
+        }
+
+        let path = detail.url;
+        try {
+            const parsed = new URL(detail.url, window.location.origin);
+            path = parsed.pathname;
+        } catch (error) {
+            // Ignore parsing errors and fall back to raw URL
+        }
+
+        const statusPart = detail.status ? `${detail.status} ${detail.statusText || ''}`.trim() : detail.errorMessage;
+        const snippet = detail.bodySnippet ? ` Details: ${detail.bodySnippet}` : '';
+        return ` Last error: ${detail.method} ${path}${statusPart ? ` → ${statusPart}` : ''}.${snippet}`;
+    }
+
+    async extractResponseSnippet(response) {
+        try {
+            const clone = response.clone();
+            const contentType = clone.headers.get('content-type') || '';
+
+            if (contentType.includes('application/json')) {
+                const data = await clone.json();
+                if (typeof data === 'string') {
+                    return this.truncateSnippet(data);
+                }
+                if (data && typeof data === 'object') {
+                    if (data.error && typeof data.error === 'string') {
+                        return this.truncateSnippet(data.error);
+                    }
+                    return this.truncateSnippet(JSON.stringify(data));
+                }
+            }
+
+            const text = await clone.text();
+            return this.truncateSnippet(text);
+        } catch (error) {
+            console.warn('Unable to extract sync error details:', error);
+            return '';
+        }
+    }
+
+    truncateSnippet(value) {
+        if (!value) return '';
+        const trimmed = value.replace(/\s+/g, ' ').trim();
+        return trimmed.length > 160 ? `${trimmed.slice(0, 157)}...` : trimmed;
+    }
+
+    async clearBrowserData() {
+        try {
+            await offlineStorage.clearAll();
+            await offlineStorage.deleteDatabase();
+        } catch (error) {
+            console.error('Failed to clear offline database:', error);
+            throw new Error(`Could not clear offline database: ${error.message}`);
+        }
+
+        try {
+            localStorage.clear();
+            sessionStorage.clear();
+        } catch (storageError) {
+            console.warn('Failed to clear web storage:', storageError);
+        }
+
+        let deletedCaches = 0;
+        if ('caches' in window) {
+            try {
+                const cacheKeys = await caches.keys();
+                await Promise.all(cacheKeys.map(key => caches.delete(key)));
+                deletedCaches = cacheKeys.length;
+            } catch (cacheError) {
+                console.warn('Failed to clear Cache Storage:', cacheError);
+            }
+        }
+
+        return {
+            cachesCleared: deletedCaches
+        };
     }
 
     async saveOfflineWorkout(workoutData) {
