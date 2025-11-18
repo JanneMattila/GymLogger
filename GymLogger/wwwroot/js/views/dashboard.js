@@ -92,7 +92,7 @@ export class DashboardView {
 
             // Today's programs
             if (todayPrograms.length > 0) {
-                content += '<h3 style="margin: 20px 0 12px;">Today\'s Programs (' + getDayName(today) + ')</h3>';
+                content += '<h3 style="margin: 20px 0 12px;">Today\'s Programs (' + getDayName(todayDayIndex) + ')</h3>';
                 content += '<div style="display: grid; gap: 12px;">';
                 todayPrograms.forEach(program => {
                     content += `
