@@ -8,12 +8,23 @@ export class DashboardView {
     }
 
     async render() {
-        this.container.innerHTML = '<div class="card"><p>Loading dashboard...</p></div>';
+        this.showSkeleton();
 
         try {
-            console.log(`[Dashboard] Fetching active session...`);
-            // Get active session (cache is updated when workout is completed/canceled)
-            const activeSessionRes = await api.getActiveSession();
+            console.log(`[Dashboard] Fetching dashboard data...`);
+            const today = new Date();
+            const todayDate = today.toISOString().split('T')[0];
+
+            const activeSessionPromise = api.getActiveSession();
+            const programsPromise = api.getPrograms();
+            const preferencesPromise = api.getPreferences();
+
+            const [activeSessionRes, programsRes, prefsRes] = await Promise.all([
+                activeSessionPromise,
+                programsPromise,
+                preferencesPromise
+            ]);
+
             let activeSession = activeSessionRes.data;
             console.log(`[Dashboard] Active session result:`, {
                 source: activeSessionRes.source,
@@ -22,42 +33,28 @@ export class DashboardView {
                 id: activeSession?.id
             });
             
-            const programsRes = await api.getPrograms();
-            const programs = programsRes.data;
+            const programs = programsRes.data || [];
             
-            const today = new Date().getDay();
-            const todayDate = new Date().toISOString().split('T')[0];
-            
-            // Fetch today's completed sessions
-            const todaySessionsRes = await api.getSessions(todayDate, todayDate);
-            const todaySessions = todaySessionsRes.data;
+            const todayDayIndex = today.getDay();
+            const prefsData = prefsRes.success && prefsRes.data ? prefsRes.data : null;
+            const weekStartDay = prefsData?.weekStartDay ?? 0;
+            let daysSinceWeekStart = todayDayIndex - weekStartDay;
+            if (daysSinceWeekStart < 0) daysSinceWeekStart += 7;
+
+            const weekStart = new Date(today);
+            weekStart.setDate(weekStart.getDate() - daysSinceWeekStart);
+            const weekStartDate = weekStart.toISOString().split('T')[0];
+
+            const weekSessionsRes = await api.getSessions(weekStartDate, todayDate);
+            const weekSessions = weekSessionsRes.data || [];
+            const todaySessions = weekSessions.filter(s => s.sessionDate === todayDate);
             const completedProgramIds = todaySessions
                 .filter(s => s.status === 'completed')
                 .map(s => s.programId);
-            
-            // Calculate this week's workout count
-            let thisWeekCount = 0;
-            const prefsRes = await api.getPreferences();
-            if (prefsRes.success && prefsRes.data) {
-                const weekStartDay = prefsRes.data.weekStartDay || 0; // 0 = Sunday
-                const now = new Date();
-                const currentDay = now.getDay();
-                
-                // Calculate days since week start
-                let daysSinceWeekStart = currentDay - weekStartDay;
-                if (daysSinceWeekStart < 0) daysSinceWeekStart += 7;
-                
-                // Get start of week date
-                const weekStart = new Date(now);
-                weekStart.setDate(weekStart.getDate() - daysSinceWeekStart);
-                const weekStartDate = weekStart.toISOString().split('T')[0];
-                
-                const weekSessionsRes = await api.getSessions(weekStartDate, todayDate);
-                thisWeekCount = weekSessionsRes.data.filter(s => s.status === 'completed').length;
-            }
+            const thisWeekCount = weekSessions.filter(s => s.status === 'completed').length;
             
             // Get all today's programs
-            const allTodayPrograms = programs.filter(p => p.dayOfWeek === today);
+            const allTodayPrograms = programs.filter(p => p.dayOfWeek === todayDayIndex);
             
             // Filter programs: today's programs that haven't been completed today
             const todayPrograms = allTodayPrograms.filter(p => !completedProgramIds.includes(p.id));
@@ -176,6 +173,26 @@ export class DashboardView {
                 </div>
             `;
         }
+    }
+
+    showSkeleton() {
+        this.container.innerHTML = `
+            <div class="card">
+                <div class="skeleton-line skeleton-line-lg" style="margin-bottom: 16px;"></div>
+                <div class="skeleton-block" style="height: 80px; margin-bottom: 24px;"></div>
+                <div class="skeleton-line" style="width: 60%; margin-bottom: 12px;"></div>
+                <div class="skeleton-grid">
+                    <div class="skeleton-block"></div>
+                    <div class="skeleton-block"></div>
+                    <div class="skeleton-block"></div>
+                </div>
+                <div class="skeleton-line" style="width: 40%; margin: 24px 0 12px;"></div>
+                <div class="skeleton-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));">
+                    <div class="skeleton-block" style="height: 70px;"></div>
+                    <div class="skeleton-block" style="height: 70px;"></div>
+                </div>
+            </div>
+        `;
     }
 
     attachListeners(activeSession) {
