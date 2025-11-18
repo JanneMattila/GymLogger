@@ -338,7 +338,7 @@ public class SessionRepository
             ProgramExerciseId = entity.ProgramExerciseId,
             SetNumber = entity.SetNumber,
             Weight = entity.Weight,
-            WeightUnit = "kg", // Default, could be stored in preferences
+            WeightUnit = "KG", // Default, could be stored in preferences
             Reps = entity.Reps,
             IsWarmup = entity.IsWarmup,
             RestSeconds = entity.RestSeconds,

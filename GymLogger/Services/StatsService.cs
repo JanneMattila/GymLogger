@@ -41,8 +41,8 @@ public class StatsService
                 
                 if (!set.Weight.HasValue || string.IsNullOrEmpty(set.WeightUnit))
                     continue;
-                    
-                var weightInKg = set.WeightUnit == "KG" ? set.Weight.Value : set.Weight.Value / 2.20462m;
+                
+                var weightInKg = ConvertToKilograms(set.Weight.Value, set.WeightUnit);
 
                 // Max Weight
                 if (!stat.MaxWeight.HasValue || weightInKg > stat.MaxWeight.Value)
@@ -80,11 +80,11 @@ public class StatsService
                 .Select(g => new
                 {
                     ExerciseId = g.Key,
-                    Volume = g.Sum(s =>
-                    {
-                        var weight = s.WeightUnit == "KG" ? s.Weight!.Value : s.Weight!.Value / 2.20462m;
-                        return weight * s.Reps!.Value;
-                    })
+                        Volume = g.Sum(s =>
+                        {
+                            var weight = ConvertToKilograms(s.Weight!.Value, s.WeightUnit);
+                            return weight * s.Reps!.Value;
+                        })
                 });
 
             foreach (var vol in volumeByExercise)
@@ -152,20 +152,41 @@ public class StatsService
                 {
                     Date = session.SessionDate,
                     Sets = exerciseSets.Select(s =>
-                    {
-                        var weightInKg = s.WeightUnit == "KG" ? s.Weight!.Value : s.Weight!.Value / 2.20462m;
-                        return new SetData
                         {
-                            Weight = weightInKg,
-                            Reps = s.Reps!.Value,
-                            Volume = weightInKg * s.Reps.Value
-                        };
-                    }).ToList()
+                            var weightInKg = ConvertToKilograms(s.Weight!.Value, s.WeightUnit);
+                            return new SetData
+                            {
+                                Weight = weightInKg,
+                                Reps = s.Reps!.Value,
+                                Volume = weightInKg * s.Reps.Value
+                            };
+                        }).ToList()
                 };
                 history.Add(dataPoint);
             }
         }
 
         return history;
+    }
+
+    private static decimal ConvertToKilograms(decimal weight, string? weightUnit)
+    {
+        if (string.IsNullOrWhiteSpace(weightUnit))
+        {
+            return weight;
+        }
+
+        if (weightUnit.Equals("KG", StringComparison.OrdinalIgnoreCase) ||
+            weightUnit.Equals("KGS", StringComparison.OrdinalIgnoreCase))
+        {
+            return weight;
+        }
+
+        if (weightUnit.StartsWith("LB", StringComparison.OrdinalIgnoreCase))
+        {
+            return weight / 2.20462m;
+        }
+
+        return weight;
     }
 }
