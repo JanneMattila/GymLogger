@@ -15,14 +15,11 @@ export class DashboardView {
             const today = new Date();
             const todayDate = today.toISOString().split('T')[0];
 
-            const activeSessionPromise = api.getActiveSession();
-            const programsPromise = api.getPrograms();
-            const preferencesPromise = api.getPreferences();
-
+            const options = { showLoader: false };
             const [activeSessionRes, programsRes, prefsRes] = await Promise.all([
-                activeSessionPromise,
-                programsPromise,
-                preferencesPromise
+                api.getActiveSession(options),
+                api.getPrograms(null, options),
+                api.getPreferences(options)
             ]);
 
             let activeSession = activeSessionRes.data;
@@ -45,7 +42,7 @@ export class DashboardView {
             weekStart.setDate(weekStart.getDate() - daysSinceWeekStart);
             const weekStartDate = weekStart.toISOString().split('T')[0];
 
-            const weekSessionsRes = await api.getSessions(weekStartDate, todayDate);
+            const weekSessionsRes = await api.getSessions(weekStartDate, todayDate, options);
             const weekSessions = weekSessionsRes.data || [];
             const todaySessions = weekSessions.filter(s => s.sessionDate === todayDate);
             const completedProgramIds = todaySessions

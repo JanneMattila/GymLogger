@@ -25,11 +25,12 @@ export class ProgramsView {
     async render() {
         this.container.innerHTML = '<div class="card"><p>Loading programs...</p></div>';
 
+        const options = { showLoader: false };
         const [programsRes, templatesRes, exercisesRes, prefsRes] = await Promise.all([
-            api.getPrograms(),
-            api.getTemplates(),
-            api.getExercises(),
-            api.getPreferences()
+            api.getPrograms(null, options),
+            api.getTemplates(options),
+            api.getExercises(options),
+            api.getPreferences(options)
         ]);
 
         this.programs = programsRes.data;

@@ -630,10 +630,11 @@ class ApiClient {
         return this.put(`/users/me/preferences`, preferences, { queueOffline: true });
     }
 
-    async getTemplates() {
+    async getTemplates(options = {}) {
         const response = await this.get('/templates', {
             cacheKey: 'templates',
-            cacheTTL: 2592000000 // 30 days
+            cacheTTL: 2592000000, // 30 days
+            showLoader: options.showLoader
         });
         // Collection endpoint - guarantee empty array
         return {
