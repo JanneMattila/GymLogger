@@ -16,6 +16,8 @@
     --footer-height: 40px;
     --nav-width: 250px;
     --nav-collapsed-width: 0;
+    --skeleton-base: #e4e7eb;
+    --skeleton-highlight: rgba(255, 255, 255, 0.6);
 }
 
 /* Dark Mode */
@@ -28,6 +30,8 @@ body.theme-dark {
     --surface: #292a2d;
     --border: #3c4043;
     --shadow: rgba(0, 0, 0, 0.3);
+    --skeleton-base: #3a3b3f;
+    --skeleton-highlight: rgba(255, 255, 255, 0.16);
 }
 
 body.theme-dark .card,
@@ -331,7 +335,7 @@ footer {
 .skeleton-block {
     position: relative;
     overflow: hidden;
-    background: #e4e7eb;
+    background: var(--skeleton-base);
 }
 
 .skeleton-line {
@@ -356,7 +360,7 @@ footer {
     left: -150px;
     height: 100%;
     width: 150px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    background: linear-gradient(90deg, transparent, var(--skeleton-highlight), transparent);
     animation: skeleton-shimmer 1.6s infinite;
 }
 
