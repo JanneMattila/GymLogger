@@ -4,6 +4,10 @@ import { formatDate } from '../utils/date-formatter.js?v=00000000000000';
 import { notification } from '../components/notification.js?v=00000000000000';
 import { offlineManager } from '../utils/offline-manager.js?v=00000000000000';
 import { offlineStorage } from '../utils/offline-storage.js?v=00000000000000';
+import { wakeLockManager } from '../utils/wake-lock-manager.js?v=00000000000000';
+
+window.addEventListener('pagehide', () => wakeLockManager.disable());
+window.addEventListener('beforeunload', () => wakeLockManager.disable());
 
 export class WorkoutLoggerView {
     constructor() {
@@ -19,6 +23,8 @@ export class WorkoutLoggerView {
         this.restTimerInterval = null;
         this.restTimerStartTime = null;
         this.defaultWeightForNewSet = '';
+        this.screenAwakeEnabled = false;
+        this.wakeLockWarningShown = false;
     }
 
     async render(programId = null) {
@@ -67,6 +73,8 @@ export class WorkoutLoggerView {
     }
 
     async showProgramSelector() {
+        await this.updateScreenAwakeState(false);
+
         const programsRes = await api.getPrograms(null, { showLoader: false });
         const programs = programsRes.data;
         
@@ -228,12 +236,15 @@ export class WorkoutLoggerView {
     async renderWorkout() {
         // Validate currentExerciseIndex is within bounds
         if (!this.program.exercises || this.program.exercises.length === 0) {
+            await this.updateScreenAwakeState(false);
             this.container.innerHTML = '<div class="card"><p>No exercises in this program</p></div>';
             return;
         }
         
         // Ensure index is within valid range
         this.currentExerciseIndex = Math.max(0, Math.min(this.currentExerciseIndex, this.program.exercises.length - 1));
+
+        await this.updateScreenAwakeState(true);
         
         const currentProgramExercise = this.program.exercises[this.currentExerciseIndex];
         const exerciseData = this.exercises.find(e => e.id === currentProgramExercise.exerciseId);
@@ -733,6 +744,30 @@ export class WorkoutLoggerView {
             notification.error('Failed to delete set: ' + error.message);
         }
     }
+
+    async updateScreenAwakeState(isWorkoutActive) {
+        const shouldEnable = Boolean(this.preferences?.keepScreenAwake && isWorkoutActive);
+
+        if (shouldEnable) {
+            if (this.screenAwakeEnabled) {
+                return;
+            }
+
+            const success = await wakeLockManager.enable();
+            this.screenAwakeEnabled = success;
+
+            if (!success && !this.wakeLockWarningShown) {
+                notification.info('Keeping the screen awake is not supported on this device.');
+                this.wakeLockWarningShown = true;
+            }
+        } else {
+            if (this.screenAwakeEnabled) {
+                await wakeLockManager.disable();
+            }
+            this.screenAwakeEnabled = false;
+        }
+    }
+
     async saveDraftWorkout() {
         if (!this.session || !this.session.id) return;
         
@@ -771,6 +806,7 @@ export class WorkoutLoggerView {
                     // Integration failed - don't complete workout
                     notification.error('Failed to submit workout data: ' + (integrationResponse.error || 'Unknown error'));
                     return;
+
                 }
                 
                 notification.success('Workout data submitted to integration!');
@@ -788,6 +824,7 @@ export class WorkoutLoggerView {
             if (response.success) {
                 // Clear draft workout since we're completing
                 await offlineStorage.deleteDraftWorkout(this.session.id);
+                await this.updateScreenAwakeState(false);
                 
                 notification.success('Workout completed! Great job! 💪');
                 
@@ -822,6 +859,7 @@ export class WorkoutLoggerView {
             
             // Clear draft workout after successful deletion
             await offlineStorage.deleteDraftWorkout(this.session.id);
+            await this.updateScreenAwakeState(false);
             
             this.stopRestTimer();
             notification.info('Workout cancelled and deleted');

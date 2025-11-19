@@ -33,6 +33,9 @@ export class PreferencesView {
         }
         
         this.preferences = response.data;
+        if (this.preferences && typeof this.preferences.keepScreenAwake === 'undefined') {
+            this.preferences.keepScreenAwake = false;
+        }
         
         // Sync theme with local storage if different
         if (this.preferences) {
@@ -131,6 +134,16 @@ export class PreferencesView {
                                     <span>🔄 Auto</span>
                                 </label>
                             </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" id="keep-screen-awake" ${this.preferences.keepScreenAwake ? 'checked' : ''} style="margin-right: 8px;">
+                                <span style="font-weight: 600;">Keep screen awake during workouts</span>
+                            </label>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                                Prevents the display from dimming or locking while logging sets (supported browsers only).
+                            </small>
                         </div>
                     </div>
 
@@ -463,6 +476,7 @@ export class PreferencesView {
                 weekStartDay: parseInt(this.dropdowns.weekStartDay.getValue()),
                 theme: document.querySelector('input[name="theme"]:checked').value,
                 soundEnabled: document.getElementById('sound-enabled').checked,
+                keepScreenAwake: document.getElementById('keep-screen-awake').checked,
                 restTimerDuration: parseInt(this.dropdowns.restTimerDuration.getValue()),
                 outboundIntegrationEnabled: document.getElementById('outbound-integration-enabled').checked,
                 outboundIntegrationUrl: document.getElementById('outbound-integration-url').value.trim() || null,
@@ -474,6 +488,7 @@ export class PreferencesView {
             
             // Apply and persist theme immediately
             themeManager.setTheme(formData.theme);
+            this.preferences.keepScreenAwake = formData.keepScreenAwake;
         } catch (error) {
             console.error('Error saving preferences:', error);
             notification.error('Error saving preferences: ' + error.message);
@@ -492,6 +507,7 @@ export class PreferencesView {
                 weekStartDay: 0,
                 theme: 'light',
                 soundEnabled: true,
+                keepScreenAwake: false,
                 restTimerDuration: 90,
                 outboundIntegrationEnabled: false,
                 outboundIntegrationUrl: null,

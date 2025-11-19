@@ -53,6 +53,8 @@ public class UserPreferencesEntity
     [Required]
     public int RestTimerDuration { get; set; } = 90;
 
+    public bool KeepScreenAwake { get; set; } = false;
+
     public bool EnableNotifications { get; set; } = true;
 
     public bool OutboundIntegrationEnabled { get; set; } = false;

@@ -37,6 +37,7 @@ public class UserRepository
                 WarmupPreset = "standard",
                 DefaultRestSeconds = 90,
                 SoundEnabled = true,
+                KeepScreenAwake = false,
                 RestTimerDuration = 90,
                 EnableNotifications = true,
                 InboundIntegrationKey = Guid.NewGuid().ToString("N"), // Generate unique API key
@@ -64,6 +65,7 @@ public class UserRepository
                 Id = Guid.NewGuid().ToString(),
                 UserId = userId,
                 InboundIntegrationKey = Guid.NewGuid().ToString("N"), // Generate unique API key
+                KeepScreenAwake = false,
                 CreatedAt = DateTime.UtcNow
             };
             _context.UserPreferences.Add(entity);
@@ -80,6 +82,7 @@ public class UserRepository
         entity.WarmupPreset = preferences.WarmupPreset;
         entity.DefaultRestSeconds = preferences.DefaultRestSeconds;
         entity.SoundEnabled = preferences.SoundEnabled;
+        entity.KeepScreenAwake = preferences.KeepScreenAwake;
         entity.RestTimerDuration = preferences.RestTimerDuration;
         entity.EnableNotifications = preferences.EnableNotifications;
         entity.OutboundIntegrationEnabled = preferences.OutboundIntegrationEnabled;
@@ -200,6 +203,7 @@ public class UserRepository
             WarmupPreset = entity.WarmupPreset,
             DefaultRestSeconds = entity.DefaultRestSeconds,
             SoundEnabled = entity.SoundEnabled,
+            KeepScreenAwake = entity.KeepScreenAwake,
             RestTimerDuration = entity.RestTimerDuration,
             EnableNotifications = entity.EnableNotifications,
             OutboundIntegrationEnabled = entity.OutboundIntegrationEnabled,

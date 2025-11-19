@@ -34,6 +34,9 @@ public class UserPreferences
     [JsonPropertyName("soundEnabled")]
     public bool SoundEnabled { get; set; } = true;
     
+    [JsonPropertyName("keepScreenAwake")]
+    public bool KeepScreenAwake { get; set; } = false;
+
     [JsonPropertyName("restTimerDuration")]
     public int RestTimerDuration { get; set; } = 90;
     
