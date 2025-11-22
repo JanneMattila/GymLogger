@@ -630,54 +630,90 @@ export class WorkoutLoggerView {
 
         const currentProgramExercise = this.program.exercises[this.currentExerciseIndex];
         
-        const newSet = {
+        const previousWeight = weight;
+        const tempId = `local-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const setNumber = this.sets.filter(s => s.exerciseId === currentProgramExercise.exerciseId).length + 1;
+
+        const localSet = {
+            id: tempId,
+            sessionId: this.session.id,
             exerciseId: currentProgramExercise.exerciseId,
-            setNumber: this.sets.filter(s => s.exerciseId === currentProgramExercise.exerciseId).length + 1,
-            weight: weight,
-            reps: reps,
-            isWarmup: isWarmup,
-            timestamp: new Date().toISOString()
+            setNumber,
+            weight,
+            reps,
+            isWarmup,
+            weightUnit: this.preferences?.defaultWeightUnit || 'KG',
+            loggedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            source: 'local'
+        };
+
+        // Optimistically update UI
+        this.sets.push(localSet);
+
+        // Clear reps input
+        repsInput.value = '';
+
+        // Re-render immediately for snappy UX
+        this.renderWorkout();
+
+        // Start rest timer after adding a set
+        this.startRestTimer();
+
+        // After render, set the weight and focus reps (double RAF for reliability)
+        const focusNextInputs = (weightVal) => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const newWeightInput = document.querySelector('.new-set-weight');
+                    const newRepsInput = document.querySelector('.new-set-reps');
+                    if (newWeightInput) newWeightInput.value = weightVal;
+                    if (newRepsInput) {
+                        newRepsInput.focus();
+                        newRepsInput.select();
+                    }
+                });
+            });
+        };
+        focusNextInputs(previousWeight);
+
+        // Persist draft locally (fire-and-forget)
+        this.saveDraftWorkout().catch(err => console.warn('Save draft failed', err));
+
+        // Sync in background
+        const payload = {
+            exerciseId: localSet.exerciseId,
+            setNumber: localSet.setNumber,
+            weight: localSet.weight,
+            reps: localSet.reps,
+            isWarmup: localSet.isWarmup,
+            timestamp: localSet.loggedAt
         };
 
         try {
-            const response = await api.addSet(this.session.id, newSet);
-            if (response.success) {
-                this.sets.push(response.data);
-            }
-            
-            // Auto-save draft workout
-            await this.saveDraftWorkout();
-            
-            // Notify user if set was queued offline
-            if (response.source === 'queued') {
-                notification.info('Set saved offline. Will sync when connection is restored.');
-            }
-            
-            // Save the weight for next set
-            const previousWeight = weight;
-            
-            // Clear reps input
-            repsInput.value = '';
-            
-            // Re-render to show the new set
-            this.renderWorkout();
-            
-            // Start rest timer after adding a set
-            this.startRestTimer();
-            
-            // After render, set the weight and focus reps
-            setTimeout(() => {
-                const newWeightInput = document.querySelector('.new-set-weight');
-                const newRepsInput = document.querySelector('.new-set-reps');
-                
-                if (newWeightInput && newRepsInput) {
-                    newWeightInput.value = previousWeight;
-                    newRepsInput.focus();
+            const response = await api.addSet(this.session.id, payload);
+            if (response.success && response.data) {
+                // Replace temp set with server set
+                const idx = this.sets.findIndex(s => s.id === tempId);
+                if (idx !== -1) {
+                    this.sets[idx] = response.data;
+                    this.saveDraftWorkout().catch(() => {});
+                    this.renderWorkout();
                 }
-            }, 50);
+            } else if (response.source === 'queued') {
+                notification.info('Set saved offline. Will sync when connection is restored.');
+            } else {
+                throw new Error(response.error || 'Unknown error');
+            }
         } catch (error) {
-            console.error('Error adding set:', error);
-            notification.error('Failed to add set: ' + error.message);
+            console.error('Error syncing set:', error);
+            // Mark temp set as failed to sync
+            const idx = this.sets.findIndex(s => s.id === tempId);
+            if (idx !== -1) {
+                this.sets[idx].syncError = true;
+                this.saveDraftWorkout().catch(() => {});
+                this.renderWorkout();
+            }
+            notification.error('Failed to sync set: ' + error.message);
         }
     }
 
@@ -687,6 +723,9 @@ export class WorkoutLoggerView {
 
         const set = this.sets.find(s => s.id === setId);
         if (!set) return;
+
+        // Don't attempt to sync local-only sets yet
+        const isLocal = setId.startsWith('local-');
 
         const weight = parseFloat(weightInput.value);
         const reps = parseInt(repsInput.value);
@@ -711,6 +750,11 @@ export class WorkoutLoggerView {
         set.weight = weight;
         set.reps = reps;
 
+        if (isLocal) {
+            await this.saveDraftWorkout();
+            return;
+        }
+
         try {
             const response = await api.updateSet(this.session.id, setId, set);
             
@@ -727,6 +771,14 @@ export class WorkoutLoggerView {
     }
 
     async deleteSetById(setId) {
+        const isLocal = setId.startsWith('local-');
+        if (isLocal) {
+            this.sets = this.sets.filter(s => s.id !== setId);
+            await this.saveDraftWorkout();
+            this.renderWorkout();
+            return;
+        }
+
         try {
             const response = await api.deleteSet(this.session.id, setId);
             this.sets = this.sets.filter(s => s.id !== setId);
