@@ -692,12 +692,18 @@ export class WorkoutLoggerView {
         try {
             const response = await api.addSet(this.session.id, payload);
             if (response.success && response.data) {
-                // Replace temp set with server set
+                // Replace temp set with server set (no re-render to preserve focus)
                 const idx = this.sets.findIndex(s => s.id === tempId);
                 if (idx !== -1) {
                     this.sets[idx] = response.data;
                     this.saveDraftWorkout().catch(() => {});
-                    this.renderWorkout();
+
+                    const rowEl = document.querySelector(`.set-weight[data-set-id="${tempId}"]`)?.closest('.set-row');
+                    if (rowEl) {
+                        rowEl.querySelectorAll('[data-set-id]').forEach(el => {
+                            el.dataset.setId = response.data.id;
+                        });
+                    }
                 }
             } else if (response.source === 'queued') {
                 notification.info('Set saved offline. Will sync when connection is restored.');
@@ -706,12 +712,21 @@ export class WorkoutLoggerView {
             }
         } catch (error) {
             console.error('Error syncing set:', error);
-            // Mark temp set as failed to sync
+            // Mark temp set as failed to sync (no re-render)
             const idx = this.sets.findIndex(s => s.id === tempId);
             if (idx !== -1) {
                 this.sets[idx].syncError = true;
                 this.saveDraftWorkout().catch(() => {});
-                this.renderWorkout();
+                const badgeHost = document.querySelector(`.set-weight[data-set-id="${tempId}"]`)?.closest('.set-row');
+                if (badgeHost && !badgeHost.querySelector('.sync-error-badge')) {
+                    const badge = document.createElement('span');
+                    badge.className = 'sync-error-badge';
+                    badge.textContent = '⚠️';
+                    badge.title = 'Sync failed. Will retry later.';
+                    badge.style.marginLeft = '4px';
+                    const actions = badgeHost.querySelector('div[style*="justify-content: flex-end"]');
+                    actions?.prepend(badge);
+                }
             }
             notification.error('Failed to sync set: ' + error.message);
         }
