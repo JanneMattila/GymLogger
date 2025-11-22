@@ -928,6 +928,7 @@ export class WorkoutLoggerView {
         try {
             // Delete the session (removes the workout completely)
             await api.deleteSession(this.session.id);
+            await api.invalidateActiveSessionCache();
             
             // Clear draft workout after successful deletion
             await offlineStorage.deleteDraftWorkout(this.session.id);
