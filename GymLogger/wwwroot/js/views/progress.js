@@ -9,6 +9,7 @@ export class ProgressView {
         this.stats = [];
         this.exercises = [];
         this.programs = [];
+        this.workoutCount = 0;
     }
 
     async render() {
@@ -33,14 +34,21 @@ export class ProgressView {
             }
             
             // Load all necessary data
-            const [statsResp, exercisesResp, programsResp] = await Promise.all([
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() - 1);
+            const startDateStr = startDate.toISOString().split('T')[0];
+            const endDateStr = endDate.toISOString().split('T')[0];
+
+            const [statsResp, exercisesResp, programsResp, sessionsResp] = await Promise.all([
                 api.getStatsByExercise(),
                 api.getExercises(),
-                api.getPrograms()
+                api.getPrograms(),
+                api.getSessions(startDateStr, endDateStr)
             ]);
 
             // Check if any data failed to load
-            if (!statsResp.success || !exercisesResp.success || !programsResp.success) {
+            if (!statsResp.success || !exercisesResp.success || !programsResp.success || !sessionsResp.success) {
                 console.error('Failed to load data for progress');
                 this.container.innerHTML = `
                     <div class="card">
@@ -62,6 +70,7 @@ export class ProgressView {
             this.stats = statsResp.data;
             this.exercises = exercisesResp.data;
             this.programs = programsResp.data;
+            this.workoutCount = sessionsResp.data.filter(session => session.status === 'completed').length;
 
             this.container.innerHTML = `
                 <div class="view-header">
@@ -128,8 +137,6 @@ export class ProgressView {
     renderOverview(content) {
         const totalExercises = this.stats.length;
         const exercisesWithPRs = this.stats.filter(s => s.maxWeight).length;
-        const totalMaxWeight = this.stats.reduce((sum, s) => sum + (s.maxWeight || 0), 0);
-        const totalVolume = this.stats.reduce((sum, s) => sum + (s.maxVolume || 0), 0);
 
         // Get recent PRs (last 30 days)
         const thirtyDaysAgo = new Date();
@@ -143,20 +150,16 @@ export class ProgressView {
         content.innerHTML = `
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
                 <div class="stat-card">
+                    <div class="stat-value">${this.workoutCount}</div>
+                    <div class="stat-label">Workouts Logged</div>
+                </div>
+                <div class="stat-card">
                     <div class="stat-value">${totalExercises}</div>
                     <div class="stat-label">Exercises Tracked</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${exercisesWithPRs}</div>
                     <div class="stat-label">Personal Records</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${totalMaxWeight.toFixed(1)} kg</div>
-                    <div class="stat-label">Total Max Weight</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${totalVolume.toFixed(0)} kg</div>
-                    <div class="stat-label">Max Session Volume</div>
                 </div>
             </div>
 

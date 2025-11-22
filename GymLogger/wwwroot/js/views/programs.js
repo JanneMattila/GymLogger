@@ -174,9 +174,6 @@ export class ProgramsView {
                         </p>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: flex-start;">
-                        <button class="btn btn-secondary" data-action="edit" data-program-id="${program.id}" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''}>
-                            ✏️ Edit
-                        </button>
                         <div class="simple-dropdown" style="position: relative;">
                             <button type="button" class="btn btn-secondary" data-dropdown-toggle="${programActionsMenuId}" aria-label="Program options" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''}>...</button>
                             <div class="simple-dropdown-menu" id="${programActionsMenuId}" data-open="false" style="${DROPDOWN_MENU_STYLE}">
@@ -184,6 +181,9 @@ export class ProgramsView {
                                 <button type="button" class="simple-dropdown-item" data-action="delete" data-program-id="${program.id}" ${isOffline ? 'disabled' : ''} style="${DROPDOWN_ITEM_DANGER_STYLE}">🗑️ Delete</button>
                             </div>
                         </div>
+                        <button class="btn btn-secondary" data-action="edit" data-program-id="${program.id}" style="padding: 8px 12px; min-height: 36px;" ${isOffline ? 'disabled' : ''}>
+                            ✏️ Edit
+                        </button>
                     </div>
                 </div>
             </div>
@@ -368,7 +368,6 @@ export class ProgramsView {
                     <div style="border-top: 1px solid var(--border); margin: 24px 0; padding-top: 24px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                             <h3 style="margin: 0;">Exercises</h3>
-                            <button type="button" class="btn btn-primary" id="add-exercise-btn">+ Add Exercise</button>
                         </div>
 
                         <div id="exercises-list">
@@ -376,6 +375,10 @@ export class ProgramsView {
                                 program.exercises.map((ex, idx) => this.renderExerciseRow(ex, idx)).join('') :
                                 '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No exercises added yet</p>'
                             }
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+                            <button type="button" class="btn btn-primary" id="add-exercise-btn">+ Add Exercise</button>
                         </div>
                     </div>
 

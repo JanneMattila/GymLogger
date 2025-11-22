@@ -172,7 +172,6 @@ export class StatsView {
                     <select id="sort-select" style="padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-primary);">
                         <option value="name">Sort by Name</option>
                         <option value="maxWeight">Sort by Max Weight</option>
-                        <option value="volume">Sort by Volume</option>
                         <option value="1rm">Sort by 1RM</option>
                     </select>
                 </div>
@@ -232,15 +231,6 @@ export class StatsView {
                         </div>
                     ` : ''}
                     
-                    ${stat.maxVolume ? `
-                        <div class="stat-mini-card" data-sort-value="${stat.maxVolume}">
-                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Max Volume</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #ff9800;">${stat.maxVolume.toFixed(0)} kg</div>
-                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">
-                                ${new Date(stat.maxVolumeDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </div>
-                        </div>
-                    ` : ''}
                 </div>
             </div>
         `;
@@ -286,7 +276,6 @@ export class StatsView {
                     case 'name':
                         return a.dataset.exerciseName.localeCompare(b.dataset.exerciseName);
                     case 'maxWeight':
-                    case 'volume':
                     case '1rm':
                         // Get the first stat-mini-card value for sorting
                         const aValue = parseFloat(a.querySelector('.stat-mini-card')?.dataset.sortValue || 0);
@@ -385,16 +374,6 @@ export class StatsView {
 
             // Calculate program-level statistics
             const totalWorkouts = programSessions.length;
-            const totalVolume = programSessions.reduce((sum, session) => {
-                const sessionVolume = session.sets?.reduce((setSum, set) => {
-                    if (!set.isWarmup && set.weight && set.reps) {
-                        const weight = set.weightUnit === 'KG' ? set.weight : set.weight / 2.20462;
-                        return setSum + (weight * set.reps);
-                    }
-                    return setSum;
-                }, 0) || 0;
-                return sum + sessionVolume;
-            }, 0);
 
             const totalSets = programSessions.reduce((sum, session) => 
                 sum + (session.sets?.filter(s => !s.isWarmup).length || 0), 0);
@@ -435,10 +414,6 @@ export class StatsView {
                         <div class="stat-card">
                             <div class="stat-value">${totalSets}</div>
                             <div class="stat-label">Total Sets</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${totalVolume.toFixed(0)}</div>
-                            <div class="stat-label">Total Volume (kg)</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-value">${avgDuration.toFixed(0)}</div>
@@ -567,20 +542,6 @@ export class StatsView {
                 return sum + muscleSets.length;
             }, 0);
 
-            const totalVolume = muscleGroupSessions.reduce((sum, session) => {
-                const muscleSets = session.sets?.filter(set => 
-                    !set.isWarmup && exerciseIds.has(set.exerciseId)
-                ) || [];
-                const sessionVolume = muscleSets.reduce((setSum, set) => {
-                    if (set.weight && set.reps) {
-                        const weight = set.weightUnit === 'KG' ? set.weight : set.weight / 2.20462;
-                        return setSum + (weight * set.reps);
-                    }
-                    return setSum;
-                }, 0);
-                return sum + sessionVolume;
-            }, 0);
-
             // Count workouts in last 30 days
             const last30Days = muscleGroupSessions.filter(s => {
                 const sessionDate = new Date(s.sessionDate);
@@ -613,10 +574,6 @@ export class StatsView {
                         <div class="stat-card">
                             <div class="stat-value">${totalSets}</div>
                             <div class="stat-label">Total Sets</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${totalVolume.toFixed(0)}</div>
-                            <div class="stat-label">Total Volume (kg)</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-value">${totalMaxWeight.toFixed(1)}</div>

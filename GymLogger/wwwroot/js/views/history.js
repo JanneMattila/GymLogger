@@ -318,7 +318,6 @@ export class HistoryView {
             const sets = setsResp.success ? setsResp.data : [];
             const totalSets = sets.length;
             const totalReps = sets.reduce((sum, s) => sum + (s.reps || 0), 0);
-            const totalVolume = sets.reduce((sum, s) => sum + ((s.weight || 0) * (s.reps || 0)), 0);
 
             content += `
                 <div class="card session-card" data-session-id="${session.id}" style="margin-bottom: 0; cursor: pointer;">
@@ -331,7 +330,6 @@ export class HistoryView {
                             <div style="display: flex; gap: 16px; font-size: 14px;">
                                 <span><strong>${totalSets}</strong> sets</span>
                                 <span><strong>${totalReps}</strong> reps</span>
-                                <span><strong>${totalVolume.toFixed(1)}</strong> ${this.preferences?.defaultWeightUnit || 'KG'} total</span>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
@@ -502,7 +500,6 @@ export class HistoryView {
                                 <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Set</th>
                                 <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Weight</th>
                                 <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Reps</th>
-                                <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Volume</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -511,7 +508,6 @@ export class HistoryView {
                                     <td style="padding: 8px;">${idx + 1}</td>
                                     <td style="padding: 8px;">${set.weight} ${weightUnit}</td>
                                     <td style="padding: 8px;">${set.reps}</td>
-                                    <td style="padding: 8px;">${(set.weight * set.reps).toFixed(1)} ${weightUnit}</td>
                                 </tr>
                             `).join('')}
                         </tbody>

@@ -20,7 +20,7 @@ export class HeaderWidget {
                     🔄 <span id="sync-count">0</span> pending
                 </span>
                 <span id="timer-indicator" class="hidden" style="width: 8px; height: 8px; background: #fbbc04; border-radius: 50%; animation: pulse 1s infinite;"></span>
-                <button class="btn btn-primary" id="start-workout-btn">Start Workout</button>
+                <button class="btn btn-primary hidden" id="start-workout-btn">Start Workout</button>
             </div>
         `;
 
