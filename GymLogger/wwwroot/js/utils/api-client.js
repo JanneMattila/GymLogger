@@ -392,7 +392,8 @@ class ApiClient {
         const response = await this.get('/exercises', { 
             cacheKey: 'exercises', 
             cacheTTL: 2592000000, // 30 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
         // Collection endpoint - guarantee empty array
         return {
@@ -410,7 +411,8 @@ class ApiClient {
         const response = await this.get(`/users/me/programs${query}`, {
             cacheKey: `programs_me`,
             cacheTTL: 2592000000, // 30 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
         // Collection endpoint - guarantee empty array
         return {
@@ -423,7 +425,8 @@ class ApiClient {
         return this.get(`/users/me/programs/${programId}`, {
             cacheKey: `program_${programId}`,
             cacheTTL: 2592000000, // 30 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
     }
 
@@ -459,7 +462,8 @@ class ApiClient {
             cacheKey: `active_session_me`,
             cacheTTL: 604800000, // 7 days
             showLoader: options.showLoader,
-            skipCache: options.skipCache
+            skipCache: options.skipCache,
+            preferCache: options.preferCache
         });
     }
 
@@ -468,10 +472,13 @@ class ApiClient {
         await offlineStorage.deleteCacheEntry(cacheKey);
     }
 
-    async getLastSessionForProgram(programId) {
+    async getLastSessionForProgram(programId, options = {}) {
         return this.get(`/users/me/sessions/last-for-program/${programId}`, {
             cacheKey: `last_session_program_me_${programId}`,
-            cacheTTL: 604800000 // 7 days
+            cacheTTL: 604800000, // 7 days
+            showLoader: options.showLoader,
+            skipCache: options.skipCache,
+            preferCache: options.preferCache
         });
     }
 
@@ -567,7 +574,8 @@ class ApiClient {
         const response = await this.get(`/users/me/sessions/${sessionId}/sets`, {
             cacheKey: `sets_${sessionId}`,
             cacheTTL: 604800000, // 7 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
         // Collection endpoint - guarantee empty array
         return {
@@ -653,7 +661,8 @@ class ApiClient {
         const response = await this.get(`/users/me/preferences`, {
             cacheKey: `preferences_me`,
             cacheTTL: 2592000000, // 30 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
         
         // Backend returns { userId, preferences }, extract preferences
@@ -675,7 +684,8 @@ class ApiClient {
         const response = await this.get('/templates', {
             cacheKey: 'templates',
             cacheTTL: 2592000000, // 30 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
         // Collection endpoint - guarantee empty array
         return {
@@ -731,7 +741,8 @@ class ApiClient {
         const response = await this.get(`/users/me/sessions?startDate=${startDate}&endDate=${endDate}`, {
             cacheKey: `sessions_me_${startDate}_${endDate}`,
             cacheTTL: 604800000, // 7 days
-            showLoader: options.showLoader
+            showLoader: options.showLoader,
+            preferCache: options.preferCache
         });
         // Collection endpoint - guarantee empty array
         return {
