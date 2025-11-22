@@ -11,14 +11,38 @@ class ApiClient {
     // Frontend uses /api/users/me/... endpoints instead of passing user IDs
 
 
-    async get(url, options = { cacheKey: null, cacheTTL: 3600000, showLoader: true, skipCache: false }) {
+    async get(url, options = { cacheKey: null, cacheTTL: 3600000, showLoader: true, skipCache: false, preferCache: false }) {
         const showLoader = options.showLoader !== false;
         const skipCache = options.skipCache === true;
+        const preferCache = options.preferCache === true;
         const online = navigator.onLine;
         
         if (showLoader) eventBus.emit('api:start');
         
         try {
+            // Cache-first (stale-while-revalidate)
+            if (preferCache && options.cacheKey && !skipCache) {
+                const cached = await offlineManager.getCachedData(options.cacheKey);
+                if (cached !== undefined) {
+                    if (showLoader) eventBus.emit('api:offline');
+                    if (showLoader) eventBus.emit('api:end');
+
+                    // Revalidate in background if online
+                    if (online) {
+                        this._revalidateGet(url, options.cacheKey, options.cacheTTL).catch(err => {
+                            console.warn('[API] Revalidate failed:', err);
+                        });
+                    }
+
+                    return {
+                        source: 'cache',
+                        online,
+                        success: true,
+                        data: cached
+                    };
+                }
+            }
+
             // Network-first strategy when online
             if (online) {
                 const response = await fetch(`${API_BASE}${url}`, {
@@ -116,6 +140,23 @@ class ApiClient {
                 error: error.message
             };
         }
+    }
+
+    // Background revalidation for preferCache (stale-while-revalidate)
+    async _revalidateGet(url, cacheKey, cacheTTL) {
+        const response = await fetch(`${API_BASE}${url}`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (cacheKey) {
+            await offlineManager.cacheData(cacheKey, data, cacheTTL);
+        }
+        return data;
     }
 
     async post(url, data, options = { showLoader: true, queueOffline: false }) {

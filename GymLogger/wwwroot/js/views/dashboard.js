@@ -15,7 +15,7 @@ export class DashboardView {
             const today = new Date();
             const todayDate = today.toISOString().split('T')[0];
 
-            const options = { showLoader: false };
+            const options = { showLoader: false, preferCache: true };
             const [activeSessionRes, programsRes, prefsRes] = await Promise.all([
                 api.getActiveSession(options),
                 api.getPrograms(null, options),

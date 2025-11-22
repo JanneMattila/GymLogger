@@ -25,7 +25,7 @@ export class ProgramsView {
     async render() {
         this.container.innerHTML = '<div class="card"><p>Loading programs...</p></div>';
 
-        const options = { showLoader: false };
+        const options = { showLoader: false, preferCache: true };
         const [programsRes, templatesRes, exercisesRes, prefsRes] = await Promise.all([
             api.getPrograms(null, options),
             api.getTemplates(options),

@@ -55,7 +55,8 @@ export class ExercisesView {
     }
 
     async loadExercises() {
-        const response = await api.getExercises();
+        const options = { preferCache: true };
+        const response = await api.getExercises(options);
         this.exercises = response.data;
         this.filteredExercises = [...this.exercises];
         
