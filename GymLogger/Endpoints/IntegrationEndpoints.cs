@@ -40,10 +40,16 @@ public static class IntegrationEndpoints
             
             var sets = await sessionRepo.GetSetsForSessionAsync(user.Id, sessionId);
             
-            // Get exercise details for mapping
-            var exercises = await exerciseRepo.GetAllExercisesAsync(user.Id);
+            // Get exercise details for mapping (only fetch the ones used in this session)
+            var exerciseIds = sets
+                .Select(s => s.ExerciseId)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct()
+                .ToList();
+
+            var exercises = await exerciseRepo.GetExercisesByIdsAsync(user.Id, exerciseIds);
             var exerciseLookup = exercises.ToDictionary(e => e.Id, e => e);
-            
+
             // Send data to integration endpoint
             (bool success, string? error) = await integrationService.SendWorkoutDataAsync(
                 integrationUrl,

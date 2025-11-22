@@ -34,14 +34,13 @@ public class OutboundIntegrationService
             // Transform workout data to match the integration schema
             var integrationData = sets
                 .Where(s => !s.IsWarmup) // Only send working sets
-                .Select((set, index) =>
+                .Select(set =>
                 {
                     var exercise = exerciseLookup.GetValueOrDefault(set.ExerciseId);
                     var exerciseName = exercise?.Name ?? "Unknown Exercise";
                     var muscleGroup = exercise?.MuscleGroup ?? "N/A";
                     var equipmentType = exercise?.EquipmentType ?? "N/A";
-                    
-                    // Calculate set number for this exercise
+
                     var exerciseSets = sets
                         .Where(s => s.ExerciseId == set.ExerciseId && !s.IsWarmup)
                         .OrderBy(s => s.SetNumber)
@@ -59,7 +58,6 @@ public class OutboundIntegrationService
                     };
                 })
                 .ToList();
-
             if (integrationData.Count == 0)
             {
                 return (false, "No working sets to send");

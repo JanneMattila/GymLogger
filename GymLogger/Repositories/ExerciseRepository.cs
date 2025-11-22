@@ -47,6 +47,28 @@ public class ExerciseRepository
         return entities.Select(MapToExercise).ToList();
     }
 
+    public async Task<List<Exercise>> GetExercisesByIdsAsync(string userId, IEnumerable<string> exerciseIds)
+    {
+        if (exerciseIds == null)
+        {
+            return new List<Exercise>();
+        }
+
+        var idSet = new HashSet<string>(exerciseIds.Where(id => !string.IsNullOrWhiteSpace(id)), StringComparer.OrdinalIgnoreCase);
+
+        if (idSet.Count == 0)
+        {
+            return new List<Exercise>();
+        }
+
+        var entities = await _context.Exercises
+            .AsNoTracking()
+            .Where(e => idSet.Contains(e.Id) && (e.UserId == null || e.UserId == userId))
+            .ToListAsync();
+
+        return entities.Select(MapToExercise).ToList();
+    }
+
     public async Task<Exercise?> GetExerciseByIdAsync(string userId, string exerciseId)
     {
         var entity = await _context.Exercises
