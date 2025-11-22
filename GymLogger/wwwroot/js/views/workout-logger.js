@@ -30,15 +30,17 @@ export class WorkoutLoggerView {
     async render(programId = null) {
         this.programId = programId;
         this.container.innerHTML = '<div class="card"><p>Loading workout...</p></div>';
+        
+        const options = { showLoader: false, preferCache: true };
 
         // Load user preferences
-        const prefsRes = await api.getPreferences({ showLoader: false });
+        const prefsRes = await api.getPreferences(options);
         this.preferences = prefsRes.data;
         const weightUnit = this.preferences?.defaultWeightUnit || 'KG';
         
         // If a specific program is requested, clean up any active session first
         if (programId) {
-            const activeSessionRes = await api.getActiveSession({ showLoader: false });
+            const activeSessionRes = await api.getActiveSession(options);
             if (activeSessionRes.success && activeSessionRes.data) {
                 await api.cleanupSession(activeSessionRes.data.id);
             }
@@ -46,7 +48,7 @@ export class WorkoutLoggerView {
             await this.startNewSession(programId);
         } else {
             // Check for active session
-            const activeSessionRes = await api.getActiveSession({ showLoader: false });
+            const activeSessionRes = await api.getActiveSession(options);
             
             if (activeSessionRes.success && activeSessionRes.data) {
                 // Try to resume existing session
@@ -75,7 +77,8 @@ export class WorkoutLoggerView {
     async showProgramSelector() {
         await this.updateScreenAwakeState(false);
 
-        const programsRes = await api.getPrograms(null, { showLoader: false });
+        const options = { showLoader: false, preferCache: true };
+        const programsRes = await api.getPrograms(null, options);
         const programs = programsRes.data;
         
         // Sort programs by day according to user preferences
@@ -157,7 +160,8 @@ export class WorkoutLoggerView {
             return false; // Signal failure to caller
         }
         
-        const programRes = await api.getProgram(session.programId, { showLoader: false });
+        const options = { showLoader: false, preferCache: true };
+        const programRes = await api.getProgram(session.programId, options);
         if (!programRes.success || !programRes.data) {
             console.error('Failed to load program:', programRes.error);
             return false; // Signal failure to caller
@@ -170,7 +174,7 @@ export class WorkoutLoggerView {
             this.sets = draftWorkout.sets;
             notification.info('Restored unsaved workout data');
         } else {
-            const setsRes = await api.getSetsForSession(session.id, { showLoader: false });
+            const setsRes = await api.getSetsForSession(session.id, options);
             this.sets = setsRes.data;
         }
         
@@ -183,17 +187,18 @@ export class WorkoutLoggerView {
             this.currentExerciseIndex = this.determineCurrentExercise();
         }
         
-        const exercisesRes = await api.getExercises({ showLoader: false });
+        const exercisesRes = await api.getExercises(options);
         this.exercises = exercisesRes.data;
         
         return true; // Successfully loaded
     }
 
     async startNewSession(programId) {
-        const programRes = await api.getProgram(programId, { showLoader: false });
+        const options = { showLoader: false, preferCache: true };
+        const programRes = await api.getProgram(programId, options);
         this.program = programRes.data;
         
-        const exercisesRes = await api.getExercises({ showLoader: false });
+        const exercisesRes = await api.getExercises(options);
         this.exercises = exercisesRes.data;
         
         // Create new session matching backend WorkoutSession model

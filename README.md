@@ -35,6 +35,34 @@ A comprehensive workout tracking application built with ASP.NET Core and vanilla
    dotnet ef database update
    ```
 
+#### Using SQL Server LocalDB (Windows, Development)
+
+1. **Install LocalDB:**
+   - Included with Visual Studio (data workload) or SQL Server Express
+   - Verify: `sqllocaldb info`
+
+2. **Ensure default instance exists:**
+   ```powershell
+   sqllocaldb create MSSQLLocalDB  # only if missing
+   sqllocaldb start MSSQLLocalDB
+   ```
+
+3. **Connection string (already set in `appsettings.Development.json`):**
+   ```json
+   {
+      "DatabaseProvider": "SqlServer",
+      "ConnectionStrings": {
+         "SqlServer": "Server=(localdb)\\MSSQLLocalDB;Database=GymLogger;Trusted_Connection=True;MultipleActiveResultSets=true"
+      }
+   }
+   ```
+
+4. **Run migrations:**
+   ```powershell
+   cd GymLogger
+   dotnet ef database update
+   ```
+
 #### Using Local SQL Server
 
 1. **Install SQL Server:**
@@ -139,9 +167,9 @@ Server=localhost,1433;Database=GymLogger;User Id=sa;Password=YourStrong@Passw0rd
 Server=localhost;Database=GymLogger;Integrated Security=true;TrustServerCertificate=True
 ```
 
-**SQLite:**
+**SQL Server LocalDB (default for development):**
 ```
-Data Source=data/gymlogger.db;Cache=Shared
+Server=(localdb)\MSSQLLocalDB;Database=GymLogger;Trusted_Connection=True;MultipleActiveResultSets=true
 ```
 
 ## Integrations
