@@ -35,13 +35,17 @@ export class UtilitiesView {
                     <button class="tab-btn ${this.activeTab === 'warmup-calculator' ? 'active' : ''}" data-tab="warmup-calculator">
                         Warm-up Calculator
                     </button>
+                    <button class="tab-btn ${this.activeTab === 'terminology' ? 'active' : ''}" data-tab="terminology">
+                        Terminology
+                    </button>
                 </div>
 
                 <!-- Tab Content -->
                 <div id="utilities-content">
                     ${this.activeTab === 'plate-calculator' ? this.renderPlateCalculator() : 
-                      this.activeTab === 'unit-converter' ? this.renderUnitConverter() : 
-                      this.renderWarmupCalculator()}
+                      this.activeTab === 'unit-converter' ? this.renderUnitConverter() :
+                      this.activeTab === 'warmup-calculator' ? this.renderWarmupCalculator() :
+                      this.renderTerminology()}
                 </div>
             </div>
         `;
@@ -225,6 +229,64 @@ export class UtilitiesView {
         } else if (this.activeTab === 'warmup-calculator') {
             this.attachWarmupCalculatorListeners();
         }
+    }
+
+    renderTerminology() {
+        const terms = [
+            {
+                term: 'RIR (Reps In Reserve)',
+                definition: 'A gauge of effort describing how many additional reps you could have performed before reaching failure. Lower RIR indicates higher effort.'
+            },
+            {
+                term: '1RM (One-Rep Max)',
+                definition: 'The maximum load you can lift for a single repetition with proper technique. Used to prescribe training intensities.'
+            },
+            {
+                term: 'Training Volume',
+                definition: 'The total amount of work performed, often calculated as sets × reps × load. Useful for tracking progressive overload.'
+            },
+            {
+                term: 'Intensity',
+                definition: 'How heavy a set is relative to your max capacity. Expressed as a percentage of 1RM or via RPE/RIR scales.'
+            },
+            {
+                term: 'RPE (Rate of Perceived Exertion)',
+                definition: 'Subjective 1–10 scale describing perceived effort: 10 is maximal, 7 means about 3 reps left in reserve, etc.'
+            },
+            {
+                term: 'SFR (Stimulus-to-Fatigue Ratio)',
+                definition: 'A measure of how much productive stimulus an exercise provides compared to the fatigue it generates. Higher is generally better for long-term progress.'
+            },
+            {
+                term: 'Deload',
+                definition: 'A planned period of reduced volume or intensity to dissipate fatigue and promote recovery.'
+            },
+            {
+                term: 'Hypertrophy Range',
+                definition: 'Repetition range (typically 6–20 reps) where muscle growth can be efficiently stimulated when sets are taken close to failure.'
+            },
+            {
+                term: 'Microcycle',
+                definition: 'Usually a single training week that repeats similar sessions while managing volume and intensity.'
+            }
+        ];
+
+        return `
+            <div class="utility-section">
+                <h3 style="margin-bottom: 16px;">Gym Terminology</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                    Reference guide for common training terms used throughout GymLogger, training programs, and the strength community.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                    ${terms.map(term => `
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="font-weight: 700; font-size: 16px; color: var(--text-primary);">${term.term}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">${term.definition}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
     }
 
     attachPlateCalculatorListeners() {
