@@ -134,6 +134,33 @@ class OfflineStorage {
         });
     }
 
+    async deleteCacheEntriesByPrefix(prefix) {
+        console.log(`[OfflineStorage] deleteCacheEntriesByPrefix(${prefix})`);
+        if (!this.db) await this.init();
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['cache'], 'readwrite');
+            const store = transaction.objectStore('cache');
+            const request = store.openCursor();
+            let deletedCount = 0;
+
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.key.startsWith(prefix)) {
+                        cursor.delete();
+                        deletedCount++;
+                    }
+                    cursor.continue();
+                } else {
+                    console.log(`[OfflineStorage] Deleted ${deletedCount} cache entries with prefix: ${prefix}`);
+                    resolve(deletedCount);
+                }
+            };
+            request.onerror = () => reject(request.error);
+        });
+    }
+
     isCacheExpired(cacheEntry) {
         return Date.now() - cacheEntry.timestamp > cacheEntry.ttl;
     }
@@ -258,6 +285,14 @@ class OfflineStorage {
 
     async deleteDraftWorkout(sessionId) {
         if (!this.db) await this.init();
+
+        // Invalidate caches so dashboard shows correct status
+        // - active_session_me: needed for cancel (deleteSession doesn't clear it)
+        // - programs_me: needed for program updates
+        // - sessions_me_*: needed for complete (to show workout as done today)
+        await this.deleteCacheEntry('active_session_me');
+        await this.deleteCacheEntry('programs_me');
+        await this.deleteCacheEntriesByPrefix('sessions_me_');
 
         return new Promise((resolve, reject) => {
             const transaction = this.db.transaction(['draftWorkouts'], 'readwrite');

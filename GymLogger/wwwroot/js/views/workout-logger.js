@@ -350,6 +350,62 @@ export class WorkoutLoggerView {
                     <div style="display: grid; gap: 8px;">
                         ${this.program.exercises.map((ex, idx) => this.renderExerciseNavItem(ex, idx)).join('')}
                     </div>
+                    
+                    <!-- Add New Exercise Section -->
+                    <div id="add-exercise-section" style="margin-top: 16px;">
+                        <div id="add-exercise-form" style="display: none;">
+                            <div class="card" style="margin-bottom: 0; padding: 16px; background: var(--surface);">
+                                <div style="display: flex; gap: 12px; align-items: start; flex-wrap: wrap;">
+                                    <div style="flex: 2; min-width: 200px; position: relative;">
+                                        <label style="font-size: 12px; color: var(--text-secondary);">Exercise</label>
+                                        <div class="exercise-dropdown-wrapper" style="position: relative;">
+                                            <input 
+                                                type="text" 
+                                                class="form-input" 
+                                                id="new-exercise-search"
+                                                placeholder="Type to search exercises..."
+                                                style="margin-top: 4px;"
+                                                data-exercise-id=""
+                                                autocomplete="off">
+                                            <div id="new-exercise-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px var(--shadow); z-index: 100;">
+                                                ${this.exercises
+                                                    .slice()
+                                                    .sort((a, b) => a.name.localeCompare(b.name))
+                                                    .map(ex => `
+                                                    <div class="new-exercise-option" data-exercise-name="${ex.name}" data-exercise-id="${ex.id}" style="padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border);">
+                                                        <div style="font-weight: 500;">${ex.name}</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">${ex.muscleGroup || ''}</div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 70px;">
+                                        <label style="font-size: 12px; color: var(--text-secondary);">Sets</label>
+                                        <input type="number" class="form-input" id="new-exercise-sets" 
+                                               value="3" min="1" max="10" style="margin-top: 4px;">
+                                    </div>
+                                    <div style="width: 80px;">
+                                        <label style="font-size: 12px; color: var(--text-secondary);">Reps</label>
+                                        <input type="text" class="form-input" id="new-exercise-reps" 
+                                               value="8-12" placeholder="8-12" style="margin-top: 4px;">
+                                    </div>
+                                    <div style="width: 90px;">
+                                        <label style="font-size: 12px; color: var(--text-secondary);">Weight</label>
+                                        <input type="number" class="form-input" id="new-exercise-weight" 
+                                               min="0" step="any" placeholder="Optional" style="margin-top: 4px;">
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end;">
+                                    <button type="button" class="btn btn-secondary" id="cancel-add-exercise-btn">Cancel</button>
+                                    <button type="button" class="btn btn-success" id="confirm-add-exercise-btn">✓ Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="show-add-exercise-btn" style="width: 100%; margin-top: 8px;">
+                            + Add Exercise
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -491,6 +547,48 @@ export class WorkoutLoggerView {
                 const setId = e.target.dataset.setId;
                 await this.updateSetValue(setId);
             });
+            
+            // Handle Enter key to move to next field/set
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    
+                    const isWeightField = input.classList.contains('set-weight');
+                    const setId = input.dataset.setId;
+                    
+                    if (isWeightField) {
+                        // Move to reps field in same row
+                        const repsInput = document.querySelector(`.set-reps[data-set-id="${setId}"]`);
+                        if (repsInput) {
+                            repsInput.focus();
+                            repsInput.select();
+                        }
+                    } else {
+                        // We're in reps field - move to next set's weight field or new set
+                        const allSetRows = document.querySelectorAll('.set-row');
+                        const currentRow = input.closest('.set-row');
+                        const rowsArray = Array.from(allSetRows);
+                        const currentIndex = rowsArray.indexOf(currentRow);
+                        
+                        if (currentIndex < rowsArray.length - 1) {
+                            // Move to next set's weight field
+                            const nextRow = rowsArray[currentIndex + 1];
+                            const nextWeightInput = nextRow.querySelector('.set-weight');
+                            if (nextWeightInput) {
+                                nextWeightInput.focus();
+                                nextWeightInput.select();
+                            }
+                        } else {
+                            // We're at the last set - focus on new set weight input
+                            const newWeightInput = document.querySelector('.new-set-weight');
+                            if (newWeightInput) {
+                                newWeightInput.focus();
+                                newWeightInput.select();
+                            }
+                        }
+                    }
+                }
+            });
         });
 
         // Delete set buttons
@@ -540,6 +638,171 @@ export class WorkoutLoggerView {
                 await this.renderWorkout();
             });
         });
+
+        // Add exercise functionality
+        this.attachAddExerciseListeners();
+    }
+
+    attachAddExerciseListeners() {
+        const showAddExerciseBtn = document.getElementById('show-add-exercise-btn');
+        const addExerciseForm = document.getElementById('add-exercise-form');
+        const cancelAddExerciseBtn = document.getElementById('cancel-add-exercise-btn');
+        const confirmAddExerciseBtn = document.getElementById('confirm-add-exercise-btn');
+        const newExerciseSearch = document.getElementById('new-exercise-search');
+        const newExerciseDropdown = document.getElementById('new-exercise-dropdown');
+
+        // Show add exercise form
+        showAddExerciseBtn?.addEventListener('click', () => {
+            addExerciseForm.style.display = 'block';
+            showAddExerciseBtn.style.display = 'none';
+            newExerciseSearch?.focus();
+        });
+
+        // Cancel adding exercise
+        cancelAddExerciseBtn?.addEventListener('click', () => {
+            addExerciseForm.style.display = 'none';
+            showAddExerciseBtn.style.display = 'block';
+            this.resetAddExerciseForm();
+        });
+
+        // Confirm adding exercise
+        confirmAddExerciseBtn?.addEventListener('click', async () => {
+            await this.addNewExerciseToWorkout();
+        });
+
+        // Exercise search dropdown functionality
+        if (newExerciseSearch && newExerciseDropdown) {
+            // Show dropdown on focus
+            newExerciseSearch.addEventListener('focus', () => {
+                newExerciseDropdown.style.display = 'block';
+                this.filterNewExerciseDropdown();
+            });
+
+            // Filter on input
+            newExerciseSearch.addEventListener('input', () => {
+                newExerciseDropdown.style.display = 'block';
+                this.filterNewExerciseDropdown();
+            });
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!newExerciseSearch.contains(e.target) && !newExerciseDropdown.contains(e.target)) {
+                    newExerciseDropdown.style.display = 'none';
+                }
+            });
+
+            // Select exercise on click
+            newExerciseDropdown.querySelectorAll('.new-exercise-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    newExerciseSearch.value = option.dataset.exerciseName;
+                    newExerciseSearch.dataset.exerciseId = option.dataset.exerciseId;
+                    newExerciseDropdown.style.display = 'none';
+                });
+
+                // Hover effect
+                option.addEventListener('mouseenter', () => {
+                    option.style.background = 'var(--primary-hover)';
+                });
+                option.addEventListener('mouseleave', () => {
+                    option.style.background = 'transparent';
+                });
+            });
+        }
+    }
+
+    filterNewExerciseDropdown() {
+        const searchInput = document.getElementById('new-exercise-search');
+        const dropdown = document.getElementById('new-exercise-dropdown');
+        
+        if (!searchInput || !dropdown) return;
+        
+        const searchTerm = searchInput.value.toLowerCase();
+        const options = dropdown.querySelectorAll('.new-exercise-option');
+        
+        options.forEach(option => {
+            const exerciseName = option.dataset.exerciseName.toLowerCase();
+            if (exerciseName.includes(searchTerm)) {
+                option.style.display = 'block';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    }
+
+    resetAddExerciseForm() {
+        const newExerciseSearch = document.getElementById('new-exercise-search');
+        const newExerciseSets = document.getElementById('new-exercise-sets');
+        const newExerciseReps = document.getElementById('new-exercise-reps');
+        const newExerciseWeight = document.getElementById('new-exercise-weight');
+        
+        if (newExerciseSearch) {
+            newExerciseSearch.value = '';
+            newExerciseSearch.dataset.exerciseId = '';
+        }
+        if (newExerciseSets) newExerciseSets.value = '3';
+        if (newExerciseReps) newExerciseReps.value = '8-12';
+        if (newExerciseWeight) newExerciseWeight.value = '';
+    }
+
+    async addNewExerciseToWorkout() {
+        const newExerciseSearch = document.getElementById('new-exercise-search');
+        const newExerciseSets = document.getElementById('new-exercise-sets');
+        const newExerciseReps = document.getElementById('new-exercise-reps');
+        const newExerciseWeight = document.getElementById('new-exercise-weight');
+        
+        const exerciseId = newExerciseSearch?.dataset.exerciseId;
+        const sets = parseInt(newExerciseSets?.value) || 3;
+        const repsValue = newExerciseReps?.value || '8-12';
+        const targetWeight = parseFloat(newExerciseWeight?.value) || null;
+        
+        // Validate exercise selection
+        if (!exerciseId) {
+            notification.warning('Please select an exercise from the list');
+            newExerciseSearch?.focus();
+            return;
+        }
+        
+        // Check if exercise already exists in program
+        const existingExercise = this.program.exercises.find(ex => ex.exerciseId === exerciseId);
+        if (existingExercise) {
+            notification.warning('This exercise is already in your workout. Navigate to it using the exercise list above.');
+            return;
+        }
+        
+        // Parse reps range
+        let repsMin, repsMax;
+        if (repsValue.includes('-')) {
+            const parts = repsValue.split('-');
+            repsMin = parseInt(parts[0]) || 8;
+            repsMax = parseInt(parts[1]) || 12;
+        } else {
+            repsMin = repsMax = parseInt(repsValue) || 10;
+        }
+        
+        // Create new program exercise
+        const newProgramExercise = {
+            exerciseId: exerciseId,
+            order: this.program.exercises.length,
+            sets: sets,
+            repsMin: repsMin,
+            repsMax: repsMax,
+            targetWeight: targetWeight
+        };
+        
+        // Add to program exercises locally
+        this.program.exercises.push(newProgramExercise);
+        
+        // Save draft workout
+        await this.saveDraftWorkout();
+        
+        // Navigate to the new exercise
+        this.currentExerciseIndex = this.program.exercises.length - 1;
+        
+        // Reset form and re-render
+        this.resetAddExerciseForm();
+        notification.success('Exercise added to workout!');
+        
+        await this.renderWorkout();
     }
 
     shouldShowWarmupButton(exerciseSets, currentProgramExercise) {
@@ -888,7 +1151,6 @@ export class WorkoutLoggerView {
             this.session.status = 'completed';
             this.session.completedAt = new Date().toISOString();
             
-            // Stop rest timer
             this.stopRestTimer();
             
             const response = await api.updateSession(this.session.id, this.session);
@@ -926,15 +1188,15 @@ export class WorkoutLoggerView {
         }
         
         try {
+            this.stopRestTimer();
+
             // Delete the session (removes the workout completely)
             await api.deleteSession(this.session.id);
-            await api.invalidateActiveSessionCache();
             
             // Clear draft workout after successful deletion
             await offlineStorage.deleteDraftWorkout(this.session.id);
             await this.updateScreenAwakeState(false);
             
-            this.stopRestTimer();
             notification.info('Workout cancelled and deleted');
             eventBus.emit('navigate', 'dashboard');
         } catch (error) {

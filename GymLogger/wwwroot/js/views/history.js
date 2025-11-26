@@ -1,6 +1,7 @@
 import { api } from '../utils/api-client.js?v=00000000000000';
 import { formatDate } from '../utils/date-formatter.js?v=00000000000000';
 import { eventBus } from '../utils/event-bus.js?v=00000000000000';
+import { notification } from '../components/notification.js?v=00000000000000';
 
 export class HistoryView {
     constructor() {
@@ -462,6 +463,11 @@ export class HistoryView {
         const setsResp = await api.getSetsForSession(sessionId);
         const sets = setsResp.success ? setsResp.data : [];
         const weightUnit = this.preferences?.defaultWeightUnit || 'KG';
+        
+        // Check if integration is enabled
+        const integrationEnabled = this.preferences?.outboundIntegrationEnabled;
+        const integrationUrl = this.preferences?.outboundIntegrationUrl;
+        const canSubmitIntegration = integrationEnabled && integrationUrl && session.status === 'completed';
 
         // Group sets by exercise
         const setsByExercise = {};
@@ -484,7 +490,7 @@ export class HistoryView {
                         ${formatDate(session.sessionDate)} at ${new Date(session.startedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                     </p>
 
-                    <div style="display: grid; gap: 16px;">
+                    <div style="display: grid; gap: 16px;" id="session-exercises">
         `;
 
         Object.keys(setsByExercise).forEach(exerciseId => {
@@ -498,16 +504,29 @@ export class HistoryView {
                         <thead>
                             <tr style="border-bottom: 1px solid var(--border);">
                                 <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Set</th>
-                                <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Weight</th>
+                                <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Weight (${weightUnit})</th>
                                 <th style="padding: 8px; text-align: left; font-size: 12px; color: var(--text-secondary);">Reps</th>
+                                <th style="padding: 8px; text-align: center; font-size: 12px; color: var(--text-secondary);">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${exerciseSets.map((set, idx) => `
-                                <tr>
-                                    <td style="padding: 8px;">${idx + 1}</td>
-                                    <td style="padding: 8px;">${set.weight} ${weightUnit}</td>
-                                    <td style="padding: 8px;">${set.reps}</td>
+                                <tr data-set-id="${set.id}">
+                                    <td style="padding: 8px;">${set.isWarmup ? `<span style="background: #ff9800; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px;">W</span>` : ''}${idx + 1}</td>
+                                    <td style="padding: 8px;">
+                                        <input type="number" class="form-input edit-weight" data-set-id="${set.id}" 
+                                               value="${set.weight}" min="0.1" step="any" 
+                                               style="width: 80px; padding: 4px 8px; font-size: 14px;">
+                                    </td>
+                                    <td style="padding: 8px;">
+                                        <input type="number" class="form-input edit-reps" data-set-id="${set.id}" 
+                                               value="${set.reps}" min="1" step="1" 
+                                               style="width: 60px; padding: 4px 8px; font-size: 14px;">
+                                    </td>
+                                    <td style="padding: 8px; text-align: center;">
+                                        <button class="btn btn-danger btn-sm delete-set-btn" data-set-id="${set.id}" 
+                                                style="padding: 4px 8px; font-size: 11px;" title="Delete set">🗑️</button>
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -518,13 +537,33 @@ export class HistoryView {
 
         content += `
                     </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); flex-wrap: wrap;">
+                        ${canSubmitIntegration ? `
+                            <button class="btn btn-primary" id="submit-integration-btn" style="flex: 1; min-width: 150px;">
+                                📤 Submit to Integration
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-secondary" id="close-modal-bottom-btn" style="flex: 1; min-width: 100px;">
+                            Close
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
 
         document.body.insertAdjacentHTML('beforeend', content);
+        
+        // Store session ID for use in handlers
+        this.currentEditingSessionId = sessionId;
 
+        // Close button handlers
         document.getElementById('close-modal-btn')?.addEventListener('click', () => {
+            document.getElementById('session-modal')?.remove();
+        });
+        
+        document.getElementById('close-modal-bottom-btn')?.addEventListener('click', () => {
             document.getElementById('session-modal')?.remove();
         });
 
@@ -533,6 +572,123 @@ export class HistoryView {
                 document.getElementById('session-modal')?.remove();
             }
         });
+        
+        // Edit weight/reps handlers
+        document.querySelectorAll('.edit-weight, .edit-reps').forEach(input => {
+            input.addEventListener('blur', async (e) => {
+                await this.updateSetFromHistory(e.target.dataset.setId, sessionId);
+            });
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.target.blur();
+                }
+            });
+        });
+        
+        // Delete set handlers
+        document.querySelectorAll('.delete-set-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const setId = btn.dataset.setId;
+                if (confirm('Delete this set?')) {
+                    await this.deleteSetFromHistory(setId, sessionId);
+                }
+            });
+        });
+        
+        // Submit to integration handler
+        document.getElementById('submit-integration-btn')?.addEventListener('click', async () => {
+            await this.submitSessionToIntegration(sessionId);
+        });
+    }
+    
+    async updateSetFromHistory(setId, sessionId) {
+        const weightInput = document.querySelector(`.edit-weight[data-set-id="${setId}"]`);
+        const repsInput = document.querySelector(`.edit-reps[data-set-id="${setId}"]`);
+        
+        if (!weightInput || !repsInput) return;
+        
+        const weight = parseFloat(weightInput.value);
+        const reps = parseInt(repsInput.value);
+        
+        // Validate
+        if (!weight || weight <= 0) {
+            notification.warning('Weight must be greater than 0');
+            return;
+        }
+        
+        if (!reps || reps < 1) {
+            notification.warning('Reps must be at least 1');
+            return;
+        }
+        
+        try {
+            const response = await api.updateSet(sessionId, setId, { weight, reps });
+            
+            if (response.success) {
+                notification.success('Set updated');
+            } else {
+                notification.error('Failed to update set: ' + (response.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error updating set:', error);
+            notification.error('Failed to update set: ' + error.message);
+        }
+    }
+    
+    async deleteSetFromHistory(setId, sessionId) {
+        try {
+            const response = await api.deleteSet(sessionId, setId);
+            
+            if (response.success) {
+                // Remove the row from the table
+                const row = document.querySelector(`tr[data-set-id="${setId}"]`);
+                row?.remove();
+                
+                notification.success('Set deleted');
+            } else {
+                notification.error('Failed to delete set: ' + (response.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error deleting set:', error);
+            notification.error('Failed to delete set: ' + error.message);
+        }
+    }
+    
+    async submitSessionToIntegration(sessionId) {
+        const btn = document.getElementById('submit-integration-btn');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = '📤 Submitting...';
+        }
+        
+        try {
+            notification.info('Submitting workout data to integration...');
+            const response = await api.submitWorkoutIntegration(sessionId);
+            
+            if (response.success) {
+                notification.success('Workout data submitted to integration!');
+                
+                // Close the modal after successful submission
+                setTimeout(() => {
+                    document.getElementById('session-modal')?.remove();
+                }, 1000);
+            } else {
+                notification.error('Failed to submit: ' + (response.error || 'Unknown error'));
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '📤 Submit to Integration';
+                }
+            }
+        } catch (error) {
+            console.error('Error submitting to integration:', error);
+            notification.error('Failed to submit: ' + error.message);
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = '📤 Submit to Integration';
+            }
+        }
     }
 
     renderYearView() {

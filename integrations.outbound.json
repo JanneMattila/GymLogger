@@ -10,7 +10,7 @@
                 "type": "integer"
             },
             "weight": {
-                "type": "integer"
+                "type": "number"
             },
             "title": {
                 "type": "string"

@@ -467,11 +467,6 @@ class ApiClient {
         });
     }
 
-    async invalidateActiveSessionCache() {
-        const cacheKey = 'active_session_me';
-        await offlineStorage.deleteCacheEntry(cacheKey);
-    }
-
     async getLastSessionForProgram(programId, options = {}) {
         return this.get(`/users/me/sessions/last-for-program/${programId}`, {
             cacheKey: `last_session_program_me_${programId}`,
