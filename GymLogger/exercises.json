@@ -608,5 +608,25 @@
     "isCustom": false,
     "createdAt": "2025-11-16T00:00:00Z",
     "updatedAt": "2025-11-16T00:00:00Z"
+  },
+  {
+    "id": "ex-62",
+    "name": "Calf Press on Leg Press",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Sit in leg press machine with back against pad. Place balls of feet on lower edge of platform, heels hanging off. Legs extended but not locked. Technique: Lower heels below platform edge for full calf stretch. Press through balls of feet, extending ankles as high as possible. Squeeze calves at top. Hold peak contraction 1-2 seconds. Lower with control. Hints: Keep legs nearly straight throughout—this is an ankle movement, not a leg press. Use lighter weight than regular leg press. Full range of motion crucial. Vary toe angles (in, out, straight) to target different calf areas. Warnings: Don't lock knees completely. Avoid bouncing at bottom (Achilles strain risk). Keep safety catches engaged. Never use excessive weight that compromises control.",
+    "isCustom": false,
+    "createdAt": "2025-12-05T00:00:00Z",
+    "updatedAt": "2025-12-05T00:00:00Z"
+  },
+  {
+    "id": "ex-63",
+    "name": "Cable Crunch",
+    "muscleGroup": "Core",
+    "equipmentType": "Cable",
+    "description": "Setup: Attach rope handle to high cable pulley. Kneel facing cable machine, grip rope handles beside head or behind neck. Technique: Keeping hips stationary, crunch down by flexing spine, bringing elbows toward thighs. Focus on contracting abs to pull weight down, not arms. Squeeze abs at bottom. Return with control to starting position. Hints: Think of curling ribcage toward pelvis. Keep arms in fixed position—movement comes from spine flexion only. Don't sit back on heels during crunch. Exhale on contraction, inhale on return. Warnings: Don't use hip flexion to pull weight down. Avoid jerky movements. Keep neck neutral—don't tuck chin excessively. If lower back hurts, check form or reduce weight.",
+    "isCustom": false,
+    "createdAt": "2025-12-05T00:00:00Z",
+    "updatedAt": "2025-12-05T00:00:00Z"
   }
 ]
