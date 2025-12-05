@@ -10,10 +10,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
     <link rel="stylesheet" href="/css/styles.css?v=00000000000000">
     <link rel="manifest" href="/manifest.json">
+    <script>
+        // Apply theme immediately before page renders to prevent flash
+        (function() {
+            var theme = localStorage.getItem('gym-logger-theme');
+            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('theme-dark');
+            }
+        })();
+    </script>
 </head>
 <body>
-    <div id="app">
-        <div id="loader" class="loader-overlay hidden">
+    <div id="app" class="app-loading">
+        <div id="loader" class="loader-overlay">
             <div class="spinning-earth"></div>
         </div>
         

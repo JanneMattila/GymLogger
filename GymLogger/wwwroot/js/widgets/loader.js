@@ -18,7 +18,7 @@ export class LoaderWidget {
             this.activeRequests--;
             if (this.activeRequests <= 0) {
                 this.activeRequests = 0;
-                this.hide();
+                this.hideWithDelay();
             }
         });
     }
@@ -28,6 +28,10 @@ export class LoaderWidget {
     }
 
     hide() {
+        this.container.classList.add('hidden');
+    }
+
+    hideWithDelay() {
         setTimeout(() => {
             if (this.activeRequests === 0) {
                 this.container.classList.add('hidden');

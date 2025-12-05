@@ -45,6 +45,12 @@ class App {
 
         const loader = new LoaderWidget();
         loader.init();
+        
+        // App is now ready - remove loading state and show content
+        const appElement = document.getElementById('app');
+        appElement.classList.remove('app-loading');
+        loader.hide();
+        
         // Register views
         this.views = {
             'dashboard': DashboardView,
