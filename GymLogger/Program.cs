@@ -111,7 +111,14 @@ builder.Services.AddDbContext<GymLoggerDbContext>(options =>
 {
     if (databaseProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
     {
-        options.UseSqlServer(connectionString);
+        options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            // Enable retry on transient failures (connection resets, timeouts, etc.)
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+        });
     }
     else
     {
