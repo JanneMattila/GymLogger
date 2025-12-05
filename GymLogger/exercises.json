@@ -628,5 +628,15 @@
     "isCustom": false,
     "createdAt": "2025-12-05T00:00:00Z",
     "updatedAt": "2025-12-05T00:00:00Z"
+  },
+  {
+    "id": "ex-64",
+    "name": "Single Arm Rear Delt Fly",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Cable",
+    "description": "Setup: Set cable pulley to shoulder height. Stand sideways to machine, grasp handle with far hand across body. Slight bend in working elbow. Free hand can hold machine for stability. Technique: Pull handle in arc motion away from body, leading with elbow. Focus on rear delt contraction—squeeze at end position. Return with control, maintaining tension. Keep torso stable throughout. Hints: Think of pulling elbow back and out, not just moving the hand. Unilateral training helps identify and correct strength imbalances. Keep shoulder blade stable—don't over-retract. Use lighter weight for strict form. Warnings: Don't rotate torso to assist the movement. Avoid using momentum or swinging. Keep wrist neutral. Don't shrug shoulder during the lift.",
+    "isCustom": false,
+    "createdAt": "2025-12-05T00:00:00Z",
+    "updatedAt": "2025-12-05T00:00:00Z"
   }
 ]
