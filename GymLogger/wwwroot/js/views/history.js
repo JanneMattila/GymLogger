@@ -188,16 +188,16 @@ export class HistoryView {
                 </div>
                 
                 <!-- Month Navigation -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <button class="btn btn-secondary" id="prev-month-btn">← Previous</button>
-                    <h2 id="month-header" style="margin: 0; font-size: 20px; cursor: pointer; user-select: none;" title="Click to view year">${monthName}</h2>
-                    <button class="btn btn-secondary" id="next-month-btn">Next →</button>
+                <div class="calendar-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 8px;">
+                    <button class="btn btn-secondary calendar-nav-btn" id="prev-month-btn">← Prev</button>
+                    <h2 id="month-header" style="margin: 0; font-size: 18px; cursor: pointer; user-select: none; text-align: center; flex: 1;" title="Click to view year">${monthName}</h2>
+                    <button class="btn btn-secondary calendar-nav-btn" id="next-month-btn">Next →</button>
                 </div>
 
                 <!-- Calendar Grid -->
-                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 24px;">
+                <div class="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 24px;">
                     ${dayNames.map(day => 
-                        `<div style="text-align: center; font-weight: 600; padding: 8px; color: var(--text-secondary);">${day}</div>`
+                        `<div class="calendar-day-header" style="text-align: center; font-weight: 600; padding: 4px 2px; color: var(--text-secondary); font-size: 12px;">${day}</div>`
                     ).join('')}
                     
                     ${Array(firstDay).fill(null).map(() => '<div></div>').join('')}
@@ -215,16 +215,17 @@ export class HistoryView {
                                  style="
                                      aspect-ratio: 1;
                                      border: 2px solid ${isToday ? 'var(--primary-color)' : hasWorkouts ? 'var(--success-color)' : 'var(--border)'};
-                                     border-radius: 8px;
-                                     padding: 8px;
+                                     border-radius: 6px;
+                                     padding: 4px;
                                      cursor: pointer;
                                      background: ${hasWorkouts ? '#e8f5e9' : 'white'};
                                      position: relative;
                                      transition: all 0.2s;
+                                     min-width: 0;
                                  ">
-                                <div style="font-weight: ${hasWorkouts ? '700' : '600'}; font-size: 14px; color: ${hasWorkouts ? 'var(--success-color)' : 'inherit'};">${day}</div>
+                                <div class="calendar-day-number" style="font-weight: ${hasWorkouts ? '700' : '600'}; font-size: 12px; color: ${hasWorkouts ? 'var(--success-color)' : 'inherit'};">${day}</div>
                                 ${hasWorkouts ? `
-                                    <div style="position: absolute; bottom: 4px; right: 4px; background: var(--success-color); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">
+                                    <div class="calendar-workout-badge" style="position: absolute; bottom: 2px; right: 2px; background: var(--success-color); color: white; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold;">
                                         ${daySessions.length}
                                     </div>
                                 ` : ''}
@@ -256,6 +257,60 @@ export class HistoryView {
             .calendar-day:hover {
                 transform: scale(1.05);
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            /* Mobile responsive styles for calendar */
+            @media (max-width: 480px) {
+                .calendar-grid {
+                    gap: 2px !important;
+                }
+                .calendar-day {
+                    border-radius: 4px !important;
+                    padding: 2px !important;
+                    border-width: 1px !important;
+                }
+                .calendar-day-header {
+                    font-size: 10px !important;
+                    padding: 2px 1px !important;
+                }
+                .calendar-day-number {
+                    font-size: 11px !important;
+                }
+                .calendar-workout-badge {
+                    width: 14px !important;
+                    height: 14px !important;
+                    font-size: 8px !important;
+                    bottom: 1px !important;
+                    right: 1px !important;
+                }
+                .calendar-nav-btn {
+                    padding: 6px 10px !important;
+                    font-size: 12px !important;
+                }
+                #month-header {
+                    font-size: 16px !important;
+                }
+            }
+            
+            @media (max-width: 360px) {
+                .calendar-grid {
+                    gap: 1px !important;
+                }
+                .calendar-day-header {
+                    font-size: 9px !important;
+                }
+                .calendar-day-number {
+                    font-size: 10px !important;
+                }
+                .calendar-workout-badge {
+                    width: 12px !important;
+                    height: 12px !important;
+                    font-size: 7px !important;
+                }
+                .calendar-nav-btn {
+                    padding: 4px 8px !important;
+                    font-size: 11px !important;
+                }
             }
         `;
         if (!document.getElementById('calendar-styles')) {

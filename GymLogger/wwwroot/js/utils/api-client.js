@@ -23,7 +23,7 @@ class ApiClient {
             // Cache-first (stale-while-revalidate)
             if (preferCache && options.cacheKey && !skipCache) {
                 const cached = await offlineManager.getCachedData(options.cacheKey);
-                if (cached !== undefined) {
+                if (cached != null) {
                     if (showLoader) eventBus.emit('api:offline');
                     if (showLoader) eventBus.emit('api:end');
 
@@ -53,7 +53,7 @@ class ApiClient {
                     // Network error - try cache fallback (unless skipCache is true)
                     if (options.cacheKey && !skipCache) {
                         const cached = await offlineManager.getCachedData(options.cacheKey);
-                        if (cached !== undefined) {
+                        if (cached != null) {
                             if (showLoader) eventBus.emit('api:offline');
                             if (showLoader) eventBus.emit('api:end');
                             return {
@@ -88,7 +88,7 @@ class ApiClient {
             // Offline - try cache (unless skipCache is true)
             if (options.cacheKey && !skipCache) {
                 const cached = await offlineManager.getCachedData(options.cacheKey);
-                if (cached !== undefined) {
+                if (cached != null) {
                     if (showLoader) eventBus.emit('api:offline');
                     if (showLoader) eventBus.emit('api:end');
                     return {
@@ -563,6 +563,82 @@ class ApiClient {
             return await response.json();
         }
         return true;
+    }
+
+    /**
+     * Sync a local session with all its sets to the server in a single batch operation.
+     * This is called when completing a workout that was created locally.
+     * @param {Object} session - The local session to sync
+     * @param {Array} sets - The sets to sync with the session
+     * @returns {Object} Response with server-assigned IDs for session and sets
+     */
+    async syncLocalSession(session, sets) {
+        if (!navigator.onLine) {
+            return {
+                success: false,
+                error: 'Cannot sync session while offline.'
+            };
+        }
+
+        eventBus.emit('api:start');
+        
+        try {
+            // Prepare the batch payload
+            const payload = {
+                session: {
+                    programId: session.programId,
+                    programName: session.programName,
+                    sessionDate: session.sessionDate,
+                    status: session.status,
+                    startedAt: session.startedAt
+                },
+                sets: sets.map(set => ({
+                    exerciseId: set.exerciseId,
+                    programExerciseId: set.programExerciseId,
+                    setNumber: set.setNumber,
+                    weight: set.weight,
+                    reps: set.reps,
+                    isWarmup: set.isWarmup || false,
+                    restSeconds: set.restSeconds,
+                    notes: set.notes,
+                    timestamp: set.loggedAt || set.createdAt
+                }))
+            };
+
+            const response = await fetch(`${API_BASE}/users/me/sessions/sync`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            // Update active session cache with the new server session
+            await offlineStorage.saveToCache('active_session_me', result.session, 604800000);
+
+            eventBus.emit('api:success');
+            eventBus.emit('api:end');
+            
+            return {
+                success: true,
+                source: 'network',
+                data: result
+            };
+        } catch (error) {
+            console.error('[API] Error syncing local session:', error);
+            eventBus.emit('api:error', error);
+            eventBus.emit('api:end');
+            
+            return {
+                success: false,
+                error: error.message
+            };
+        }
     }
 
     async getSetsForSession(sessionId, options = {}) {

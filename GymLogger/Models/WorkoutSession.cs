@@ -20,7 +20,7 @@ public class WorkoutSession
     public string SessionDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-dd");
     
     [JsonPropertyName("startedAt")]
-    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? StartedAt { get; set; } = DateTime.UtcNow;
     
     [JsonPropertyName("completedAt")]
     public DateTime? CompletedAt { get; set; }
@@ -36,4 +36,16 @@ public class WorkoutSession
     
     [JsonPropertyName("updatedAt")]
     public DateTime? UpdatedAt { get; set; }
+}
+
+/// <summary>
+/// Result of syncing a local session with its sets to the server.
+/// </summary>
+public class SessionSyncResult
+{
+    [JsonPropertyName("session")]
+    public WorkoutSession Session { get; set; } = new();
+    
+    [JsonPropertyName("sets")]
+    public List<WorkoutSet> Sets { get; set; } = new();
 }

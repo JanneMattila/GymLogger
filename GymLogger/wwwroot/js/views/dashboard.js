@@ -1,6 +1,10 @@
 import { api } from '../utils/api-client.js?v=00000000000000';
 import { formatDate, getDayName } from '../utils/date-formatter.js?v=00000000000000';
 import { eventBus } from '../utils/event-bus.js?v=00000000000000';
+import { offlineStorage } from '../utils/offline-storage.js?v=00000000000000';
+
+// Fixed key for the active local workout session (must match workout-logger.js)
+const LOCAL_SESSION_ID = 'active_local_workout';
 
 export class DashboardView {
     constructor() {
@@ -16,19 +20,17 @@ export class DashboardView {
             const todayDate = today.toISOString().split('T')[0];
 
             const options = { showLoader: false, preferCache: true };
-            const [activeSessionRes, programsRes, prefsRes] = await Promise.all([
-                api.getActiveSession(options),
+            
+            // Check for local workout (instant lookup with fixed key)
+            const [localWorkout, programsRes, prefsRes] = await Promise.all([
+                offlineStorage.getDraftWorkout(LOCAL_SESSION_ID),
                 api.getPrograms(null, options),
                 api.getPreferences(options)
             ]);
 
-            let activeSession = activeSessionRes.data;
-            console.log(`[Dashboard] Active session result:`, {
-                source: activeSessionRes.source,
-                hasData: !!activeSession,
-                status: activeSession?.status,
-                id: activeSession?.id
-            });
+            // Active session is only from local storage
+            let activeSession = localWorkout?.session || null;
+            console.log(`[Dashboard] Active session:`, activeSession ? `ID: ${activeSession.id}, Status: ${activeSession.status}` : 'none');
             
             const programs = programsRes.data || [];
             
@@ -198,8 +200,8 @@ export class DashboardView {
         });
 
         document.getElementById('start-new-workout-btn')?.addEventListener('click', async () => {
-            if (activeSession && confirm('This will close your previous workout. Continue?')) {
-                await api.cleanupSession(activeSession.id);
+            if (activeSession && confirm('This will cancel your previous workout. Continue?')) {
+                await offlineStorage.deleteDraftWorkout(LOCAL_SESSION_ID);
                 eventBus.emit('navigate', 'workout-logger');
             }
         });
@@ -211,7 +213,8 @@ export class DashboardView {
         document.querySelectorAll('.program-card').forEach(card => {
             card.addEventListener('click', () => {
                 const programId = card.dataset.programId;
-                eventBus.emit('start-workout-with-program', programId);
+                // Navigate directly using URL with programId parameter
+                window.location.hash = `workout-logger?${programId}`;
             });
         });
 

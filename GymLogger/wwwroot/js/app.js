@@ -64,39 +64,63 @@ class App {
             window.location.hash = view || 'dashboard';
         });
 
-        eventBus.on('start-workout-with-program', (programId) => {
-            this.startWorkoutWithProgram(programId);
-        });
-
         // Handle hash changes
         window.addEventListener('hashchange', () => {
-            const viewName = window.location.hash.slice(1) || 'dashboard';
-            this.navigate(viewName);
+            this.handleHashChange();
         });
 
         // Navigate to initial view from hash or default to dashboard
-        const initialView = window.location.hash.slice(1) || 'dashboard';
-        this.navigate(initialView);
+        this.handleHashChange();
     }
 
-    async navigate(viewName) {
+    /**
+     * Parse hash and query params from URL.
+     * Supports formats: #workout-logger?programId=123 or #workout-logger?123
+     */
+    parseHash() {
+        const hash = window.location.hash.slice(1) || 'dashboard';
+        const [viewName, queryString] = hash.split('?');
+        
+        const params = {};
+        if (queryString) {
+            // Check if it's just a value (e.g., ?123) or key=value pairs
+            if (queryString.includes('=')) {
+                const searchParams = new URLSearchParams(queryString);
+                for (const [key, value] of searchParams) {
+                    params[key] = value;
+                }
+            } else {
+                // Treat as programId for workout-logger
+                params.programId = queryString;
+            }
+        }
+        
+        return { viewName, params };
+    }
+
+    handleHashChange() {
+        const { viewName, params } = this.parseHash();
+        this.navigate(viewName, params);
+    }
+
+    async navigate(viewName, params = {}) {
         const ViewClass = this.views[viewName];
         if (!ViewClass) {
             console.error('View not found:', viewName);
             return;
         }
 
-        // Update hash if not already set
-        if (window.location.hash.slice(1) !== viewName) {
-            window.location.hash = viewName;
-            return; // hashchange event will trigger navigate again
-        }
-
         try {
             if (ViewClass.prototype && ViewClass.prototype.render) {
                 // It's a class with a render method
                 this.currentView = new ViewClass();
-                await this.currentView.render();
+                
+                // Pass programId to workout-logger if present in params
+                if (viewName === 'workout-logger' && params.programId) {
+                    await this.currentView.render(params.programId);
+                } else {
+                    await this.currentView.render();
+                }
             } else if (ViewClass.render) {
                 // It's an object with a render method
                 await ViewClass.render();
@@ -104,15 +128,6 @@ class App {
         } catch (error) {
             console.error('Error rendering view:', error);
             this.renderError(error);
-        }
-    }
-
-    async startWorkoutWithProgram(programId) {
-        window.location.hash = 'workout-logger';
-        // Wait for hash change to complete
-        await new Promise(resolve => setTimeout(resolve, 100));
-        if (this.currentView && this.currentView.render) {
-            await this.currentView.render(programId);
         }
     }
 

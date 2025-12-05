@@ -6,6 +6,9 @@ import { offlineManager } from '../utils/offline-manager.js?v=00000000000000';
 import { offlineStorage } from '../utils/offline-storage.js?v=00000000000000';
 import { wakeLockManager } from '../utils/wake-lock-manager.js?v=00000000000000';
 
+// Fixed key for the active local workout session
+const LOCAL_SESSION_ID = 'active_local_workout';
+
 window.addEventListener('pagehide', () => wakeLockManager.disable());
 window.addEventListener('beforeunload', () => wakeLockManager.disable());
 
@@ -25,6 +28,7 @@ export class WorkoutLoggerView {
         this.defaultWeightForNewSet = '';
         this.screenAwakeEnabled = false;
         this.wakeLockWarningShown = false;
+        this.cachedLastWeights = {}; // Cache of last workout weights per exercise
     }
 
     async render(programId = null) {
@@ -36,27 +40,38 @@ export class WorkoutLoggerView {
         // Load user preferences
         const prefsRes = await api.getPreferences(options);
         this.preferences = prefsRes.data;
-        const weightUnit = this.preferences?.defaultWeightUnit || 'KG';
         
-        // If a specific program is requested, clean up any active session first
+        // Check for existing local workout first (fixed key - instant lookup)
+        const existingWorkout = await offlineStorage.getDraftWorkout(LOCAL_SESSION_ID);
+        
         if (programId) {
-            const activeSessionRes = await api.getActiveSession(options);
-            if (activeSessionRes.success && activeSessionRes.data) {
-                await api.cleanupSession(activeSessionRes.data.id);
+            // User wants to start a specific program
+            if (existingWorkout) {
+                // There's already an active workout
+                if (existingWorkout.session?.programId === programId) {
+                    // Same program - resume it
+                    const loadSuccess = await this.loadLocalSession(existingWorkout);
+                    if (loadSuccess) {
+                        this.renderWorkout();
+                        return;
+                    }
+                } else {
+                    // Different program - block with error
+                    notification.error('You have an active workout in progress. Please complete or cancel it before starting a new one.');
+                    eventBus.emit('navigate', 'dashboard');
+                    return;
+                }
             }
-            // Start new session with specific program
+            // No existing workout - start new session
             await this.startNewSession(programId);
         } else {
-            // Check for active session
-            const activeSessionRes = await api.getActiveSession(options);
-            
-            if (activeSessionRes.success && activeSessionRes.data) {
-                // Try to resume existing session
-                const loadSuccess = await this.loadSession(activeSessionRes.data);
+            // No program specified - check for existing workout to resume
+            if (existingWorkout) {
+                const loadSuccess = await this.loadLocalSession(existingWorkout);
                 if (!loadSuccess) {
                     // Session program is missing, clean up and show selector
                     if (confirm('Your previous workout program is no longer available. Start a new workout?')) {
-                        await api.cleanupSession(activeSessionRes.data.id);
+                        await offlineStorage.deleteDraftWorkout(LOCAL_SESSION_ID);
                         await this.showProgramSelector();
                         return;
                     } else {
@@ -65,7 +80,7 @@ export class WorkoutLoggerView {
                     }
                 }
             } else {
-                // No active session and no program specified - show program selector
+                // No active session - show program selector
                 await this.showProgramSelector();
                 return;
             }
@@ -152,70 +167,81 @@ export class WorkoutLoggerView {
         });
     }
 
-    async loadSession(session) {
-        this.session = session;
-        
-        if (!session.programId) {
-            console.error('Session missing programId:', session);
-            return false; // Signal failure to caller
+    /**
+     * Load a local workout session from stored draft data.
+     */
+    async loadLocalSession(draftWorkout) {
+        if (!draftWorkout?.session?.programId) {
+            console.error('Draft workout missing session or programId:', draftWorkout);
+            return false;
         }
+        
+        this.session = draftWorkout.session;
         
         const options = { showLoader: false, preferCache: true };
-        const programRes = await api.getProgram(session.programId, options);
+        
+        // Load program, exercises, and cached weights in parallel
+        const [programRes, exercisesRes, lastWeights] = await Promise.all([
+            api.getProgram(this.session.programId, options),
+            api.getExercises(options),
+            offlineStorage.getLastWorkoutWeights(this.session.programId)
+        ]);
+        
         if (!programRes.success || !programRes.data) {
             console.error('Failed to load program:', programRes.error);
-            return false; // Signal failure to caller
+            return false;
         }
+        
         this.program = programRes.data;
+        this.exercises = exercisesRes.data;
+        this.cachedLastWeights = lastWeights || {};
+        this.sets = draftWorkout.sets || [];
         
-        // Check for draft workout data first
-        const draftWorkout = await offlineStorage.getDraftWorkout(session.id);
-        if (draftWorkout && draftWorkout.sets) {
-            this.sets = draftWorkout.sets;
-            notification.info('Restored unsaved workout data');
-        } else {
-            const setsRes = await api.getSetsForSession(session.id, options);
-            this.sets = setsRes.data;
-        }
-        
-        // Always recalculate current exercise based on completed sets
-        // Use saved index from draft if it exists and seems reasonable, otherwise auto-determine
-        const savedIndex = draftWorkout?.currentExerciseIndex;
+        // Use saved index if valid, otherwise auto-determine
+        const savedIndex = draftWorkout.currentExerciseIndex;
         if (savedIndex !== undefined && savedIndex >= 0 && savedIndex < this.program.exercises.length) {
             this.currentExerciseIndex = savedIndex;
         } else {
             this.currentExerciseIndex = this.determineCurrentExercise();
         }
         
-        const exercisesRes = await api.getExercises(options);
-        this.exercises = exercisesRes.data;
-        
-        return true; // Successfully loaded
+        console.log(`[WorkoutLogger] Resumed local session for program ${this.session.programId} with ${this.sets.length} sets`);
+        return true;
     }
 
     async startNewSession(programId) {
         const options = { showLoader: false, preferCache: true };
-        const programRes = await api.getProgram(programId, options);
-        this.program = programRes.data;
         
-        const exercisesRes = await api.getExercises(options);
+        // Load program and exercises from cache (instant)
+        const [programRes, exercisesRes, lastWeights] = await Promise.all([
+            api.getProgram(programId, options),
+            api.getExercises(options),
+            offlineStorage.getLastWorkoutWeights(programId)
+        ]);
+        
+        this.program = programRes.data;
         this.exercises = exercisesRes.data;
         
-        // Create new session matching backend WorkoutSession model
-        const newSession = {
+        // Store cached weights for quick access during workout
+        this.cachedLastWeights = lastWeights || {};
+        
+        // Create session locally with fixed ID (instant, no server call)
+        this.session = {
+            id: LOCAL_SESSION_ID,
             programId: programId,
             programName: this.program.name,
             sessionDate: new Date().toISOString().split('T')[0],
+            startedAt: new Date().toISOString(),
             status: 'in-progress'
         };
-
-        const sessionRes = await api.createSession(newSession);
-        this.session = sessionRes.data;
+        
         this.sets = [];
         this.currentExerciseIndex = 0;
         
-        // Save initial draft workout so it persists if browser refreshes
+        // Save as draft workout so it persists if browser refreshes
         await this.saveDraftWorkout();
+        
+        console.log(`[WorkoutLogger] Created local session for program ${programId}`);
     }
 
     determineCurrentExercise() {
@@ -947,7 +973,13 @@ export class WorkoutLoggerView {
         // Persist draft locally (fire-and-forget)
         this.saveDraftWorkout().catch(err => console.warn('Save draft failed', err));
 
-        // Sync in background
+        // For local sessions (fixed ID), don't sync to server - will batch sync on complete
+        if (this.session.id === LOCAL_SESSION_ID) {
+            console.log('[WorkoutLogger] Local session - set saved locally, will sync on complete');
+            return;
+        }
+
+        // Sync in background for server-created sessions
         const payload = {
             exerciseId: localSet.exerciseId,
             setNumber: localSet.setNumber,
@@ -1007,8 +1039,8 @@ export class WorkoutLoggerView {
         const set = this.sets.find(s => s.id === setId);
         if (!set) return;
 
-        // Don't attempt to sync local-only sets yet
-        const isLocal = setId.startsWith('local-');
+        // Don't attempt to sync local-only sets or sets in local sessions
+        const isLocal = setId.startsWith('local-') || this.session.id === LOCAL_SESSION_ID;
 
         const weight = parseFloat(weightInput.value);
         const reps = parseInt(repsInput.value);
@@ -1054,7 +1086,7 @@ export class WorkoutLoggerView {
     }
 
     async deleteSetById(setId) {
-        const isLocal = setId.startsWith('local-');
+        const isLocal = setId.startsWith('local-') || this.session.id === LOCAL_SESSION_ID;
         if (isLocal) {
             this.sets = this.sets.filter(s => s.id !== setId);
             await this.saveDraftWorkout();
@@ -1128,12 +1160,36 @@ export class WorkoutLoggerView {
         }
         
         try {
-            // First, check if integration is configured and enabled
+            this.stopRestTimer();
+            
+            // If this is a local session, sync it to the server first
+            if (this.session.id === LOCAL_SESSION_ID) {
+                notification.info('Syncing workout to server...');
+                
+                const syncResult = await api.syncLocalSession(this.session, this.sets);
+                
+                if (!syncResult.success) {
+                    notification.error('Failed to sync workout: ' + (syncResult.error || 'Unknown error'));
+                    return;
+                }
+                
+                // Update session with server-assigned ID
+                const oldLocalId = this.session.id;
+                this.session = syncResult.data.session;
+                this.sets = syncResult.data.sets;
+                
+                // Delete the old local draft and save with new server ID
+                await offlineStorage.deleteDraftWorkout(oldLocalId);
+                
+                console.log(`[WorkoutLogger] Synced local session ${oldLocalId} to server session ${this.session.id}`);
+            }
+            
+            // Check if integration is configured and enabled
             const integrationEnabled = this.preferences?.outboundIntegrationEnabled;
             const integrationUrl = this.preferences?.outboundIntegrationUrl;
             
             if (integrationEnabled && integrationUrl) {
-                // Submit to integration endpoint first
+                // Submit to integration endpoint
                 notification.info('Submitting workout data to integration...');
                 const integrationResponse = await api.submitWorkoutIntegration(this.session.id);
                 
@@ -1141,7 +1197,6 @@ export class WorkoutLoggerView {
                     // Integration failed - don't complete workout
                     notification.error('Failed to submit workout data: ' + (integrationResponse.error || 'Unknown error'));
                     return;
-
                 }
                 
                 notification.success('Workout data submitted to integration!');
@@ -1151,11 +1206,12 @@ export class WorkoutLoggerView {
             this.session.status = 'completed';
             this.session.completedAt = new Date().toISOString();
             
-            this.stopRestTimer();
-            
             const response = await api.updateSession(this.session.id, this.session);
             
             if (response.success) {
+                // Save last workout weights for this program (for future sessions)
+                await this.saveLastWorkoutWeights();
+                
                 // Clear draft workout since we're completing
                 await offlineStorage.deleteDraftWorkout(this.session.id);
                 await this.updateScreenAwakeState(false);
@@ -1179,18 +1235,63 @@ export class WorkoutLoggerView {
             notification.error('Failed to complete workout. Please check your connection and try again.');
         }
     }
+    
+    /**
+     * Save the weights used in this workout for quick pre-fill in future sessions.
+     */
+    async saveLastWorkoutWeights() {
+        if (!this.program || !this.sets) return;
+        
+        try {
+            const weightsMap = {};
+            
+            // For each exercise in the program, find the last working set weight
+            for (const programExercise of this.program.exercises) {
+                const exerciseSets = this.sets
+                    .filter(s => s.exerciseId === programExercise.exerciseId && !s.isWarmup)
+                    .sort((a, b) => (b.setNumber || 0) - (a.setNumber || 0));
+                
+                if (exerciseSets.length > 0) {
+                    const lastSet = exerciseSets[0];
+                    weightsMap[programExercise.exerciseId] = {
+                        weight: lastSet.weight,
+                        reps: lastSet.reps,
+                        timestamp: Date.now()
+                    };
+                }
+            }
+            
+            if (Object.keys(weightsMap).length > 0) {
+                await offlineStorage.saveLastWorkoutWeights(this.program.id, weightsMap);
+                console.log(`[WorkoutLogger] Saved last workout weights for ${Object.keys(weightsMap).length} exercises`);
+            }
+        } catch (error) {
+            console.warn('Failed to save last workout weights:', error);
+        }
+    }
 
     async cancelWorkout() {
-        // Check if online first - canceling workout requires internet connection
-        if (!navigator.onLine) {
-            notification.warning('Cannot cancel workout while offline. Your workout data is saved locally. Please connect to the internet to cancel.');
-            return;
-        }
-        
         try {
             this.stopRestTimer();
 
-            // Delete the session (removes the workout completely)
+            // If this is a local session, we can cancel it without server connection
+            if (this.session.id === LOCAL_SESSION_ID) {
+                // Just delete the local draft
+                await offlineStorage.deleteDraftWorkout(LOCAL_SESSION_ID);
+                await this.updateScreenAwakeState(false);
+                
+                notification.info('Workout cancelled');
+                eventBus.emit('navigate', 'dashboard');
+                return;
+            }
+            
+            // For server sessions, check if online first
+            if (!navigator.onLine) {
+                notification.warning('Cannot cancel workout while offline. Your workout data is saved locally. Please connect to the internet to cancel.');
+                return;
+            }
+
+            // Delete the session from server (removes the workout completely)
             await api.deleteSession(this.session.id);
             
             // Clear draft workout after successful deletion
@@ -1510,15 +1611,18 @@ export class WorkoutLoggerView {
         // Filter out warmup sets for determining default weight
         const workingSets = exerciseSets.filter(s => !s.isWarmup);
         
-        // Determine default weight: last working set, program target, or last session
+        // Determine default weight: last working set, program target, cached last session, or API fallback
         if (workingSets.length > 0) {
             // Use the last working set's weight from current session
             this.defaultWeightForNewSet = workingSets[workingSets.length - 1].weight;
         } else if (currentProgramExercise.targetWeight) {
             // Use program's target weight
             this.defaultWeightForNewSet = currentProgramExercise.targetWeight;
+        } else if (this.cachedLastWeights && this.cachedLastWeights[currentProgramExercise.exerciseId]) {
+            // Use cached weight from last session for this program (instant, no API call)
+            this.defaultWeightForNewSet = this.cachedLastWeights[currentProgramExercise.exerciseId].weight;
         } else {
-            // If no program weight, try to get from last session
+            // Fallback: try to get from last session via API (only if cache miss)
             this.defaultWeightForNewSet = await this.getLastSessionWeight(currentProgramExercise.exerciseId);
         }
     }

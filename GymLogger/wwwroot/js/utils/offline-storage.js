@@ -2,7 +2,7 @@
 class OfflineStorage {
     constructor() {
         this.dbName = 'GymLoggerDB';
-        this.version = 2;
+        this.version = 3;
         this.db = null;
     }
 
@@ -40,6 +40,12 @@ class OfflineStorage {
                 if (!db.objectStoreNames.contains('draftWorkouts')) {
                     const draftStore = db.createObjectStore('draftWorkouts', { keyPath: 'sessionId' });
                     draftStore.createIndex('timestamp', 'timestamp', { unique: false });
+                }
+
+                // Store for last workout weights per program (for instant weight pre-fill)
+                if (!db.objectStoreNames.contains('lastWorkoutWeights')) {
+                    const weightsStore = db.createObjectStore('lastWorkoutWeights', { keyPath: 'programId' });
+                    weightsStore.createIndex('timestamp', 'timestamp', { unique: false });
                 }
             };
         });
@@ -320,7 +326,7 @@ class OfflineStorage {
     async clearAll() {
         if (!this.db) await this.init();
 
-        const stores = ['cache', 'syncQueue', 'offlineWorkouts', 'draftWorkouts'];
+        const stores = ['cache', 'syncQueue', 'offlineWorkouts', 'draftWorkouts', 'lastWorkoutWeights'];
         const promises = stores.map(storeName => {
             return new Promise((resolve, reject) => {
                 const transaction = this.db.transaction([storeName], 'readwrite');
@@ -333,6 +339,59 @@ class OfflineStorage {
         });
 
         return Promise.all(promises);
+    }
+
+    /**
+     * Save the last workout weights for a program.
+     * @param {string} programId - The program ID
+     * @param {Object} weightsMap - Map of exerciseId -> { weight, reps, timestamp }
+     */
+    async saveLastWorkoutWeights(programId, weightsMap) {
+        if (!this.db) await this.init();
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['lastWorkoutWeights'], 'readwrite');
+            const store = transaction.objectStore('lastWorkoutWeights');
+            const entry = {
+                programId,
+                weights: weightsMap,
+                timestamp: Date.now()
+            };
+
+            const request = store.put(entry);
+            request.onsuccess = () => {
+                console.log(`[OfflineStorage] Saved last workout weights for program ${programId}`);
+                resolve(entry);
+            };
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    /**
+     * Get the last workout weights for a program.
+     * @param {string} programId - The program ID
+     * @returns {Object|null} Map of exerciseId -> { weight, reps, timestamp } or null if not found
+     */
+    async getLastWorkoutWeights(programId) {
+        if (!this.db) await this.init();
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['lastWorkoutWeights'], 'readonly');
+            const store = transaction.objectStore('lastWorkoutWeights');
+            const request = store.get(programId);
+
+            request.onsuccess = () => {
+                const result = request.result;
+                if (result) {
+                    console.log(`[OfflineStorage] Found last workout weights for program ${programId}`);
+                    resolve(result.weights);
+                } else {
+                    console.log(`[OfflineStorage] No last workout weights found for program ${programId}`);
+                    resolve(null);
+                }
+            };
+            request.onerror = () => reject(request.error);
+        });
     }
 
     async deleteDatabase() {

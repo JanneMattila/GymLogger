@@ -45,6 +45,13 @@ public static class SessionEndpoints
             return await repo.CreateSessionAsync(user.Id, session);
         });
 
+        // Batch sync endpoint - creates session with all sets in one transaction
+        group.MapPost("/sync", async (ClaimsPrincipal user, SessionSyncRequest request, SessionRepository repo) =>
+        {
+            var result = await repo.SyncSessionWithSetsAsync(user.Id, request.Session, request.Sets);
+            return Results.Ok(result);
+        });
+
         group.MapPut("/{id}", async (ClaimsPrincipal user, string id, WorkoutSession session, SessionRepository repo) =>
         {
             var updated = await repo.UpdateSessionAsync(user.Id, id, session);
@@ -86,4 +93,13 @@ public static class SessionEndpoints
             return Results.Ok();
         });
     }
+}
+
+/// <summary>
+/// Request model for syncing a local session with its sets to the server.
+/// </summary>
+public class SessionSyncRequest
+{
+    public WorkoutSession Session { get; set; } = new();
+    public List<WorkoutSet> Sets { get; set; } = new();
 }

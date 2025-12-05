@@ -107,6 +107,80 @@ public class SessionRepository
         return await MapToWorkoutSessionAsync(entity);
     }
 
+    /// <summary>
+    /// Sync a local session with all its sets in a single transaction.
+    /// This is used for local-first workout creation where the session and sets
+    /// are created on the client and synced to the server when completing the workout.
+    /// </summary>
+    public async Task<SessionSyncResult> SyncSessionWithSetsAsync(string userId, WorkoutSession session, List<WorkoutSet> sets)
+    {
+        // Create the session
+        var sessionEntity = new WorkoutSessionEntity
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = userId,
+            ProgramId = session.ProgramId ?? string.Empty,
+            ProgramName = session.ProgramName ?? string.Empty,
+            SessionDate = DateTime.Parse(session.SessionDate),
+            StartedAt = session.StartedAt ?? DateTime.UtcNow,
+            Status = session.Status ?? "in-progress",
+            TotalSets = 0,
+            TotalReps = 0,
+            TotalVolume = 0,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.WorkoutSessions.Add(sessionEntity);
+
+        // Create all sets with the new session ID
+        var setEntities = new List<WorkoutSetEntity>();
+        foreach (var set in sets)
+        {
+            var setEntity = new WorkoutSetEntity
+            {
+                Id = Guid.NewGuid().ToString(),
+                SessionId = sessionEntity.Id,
+                ExerciseId = set.ExerciseId,
+                ProgramExerciseId = set.ProgramExerciseId,
+                SetNumber = set.SetNumber,
+                Weight = set.Weight ?? 0,
+                Reps = set.Reps ?? 0,
+                IsWarmup = set.IsWarmup,
+                RestSeconds = set.RestSeconds,
+                Notes = set.Notes,
+                CreatedAt = DateTime.UtcNow
+            };
+            setEntities.Add(setEntity);
+            _context.WorkoutSets.Add(setEntity);
+        }
+
+        // Calculate session statistics
+        sessionEntity.TotalSets = setEntities.Count(s => s.Reps.HasValue);
+        sessionEntity.TotalReps = setEntities.Sum(s => s.Reps ?? 0);
+        sessionEntity.TotalVolume = setEntities.Sum(s => (s.Weight ?? 0) * (s.Reps ?? 0));
+
+        await _context.SaveChangesAsync();
+
+        // Reload entities with related data for response
+        var createdSession = await MapToWorkoutSessionAsync(sessionEntity);
+        var createdSets = new List<WorkoutSet>();
+        foreach (var setEntity in setEntities)
+        {
+            // Reload with exercise data
+            var reloaded = await _context.WorkoutSets
+                .Include(ws => ws.Exercise)
+                .FirstAsync(ws => ws.Id == setEntity.Id);
+            createdSets.Add(MapToWorkoutSet(reloaded));
+        }
+
+        return new SessionSyncResult
+        {
+            Session = createdSession,
+            Sets = createdSets
+        };
+    }
+
     public async Task<WorkoutSession?> UpdateSessionAsync(string userId, string sessionId, WorkoutSession updatedSession)
     {
         var entity = await _context.WorkoutSessions
