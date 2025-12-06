@@ -67,6 +67,14 @@ public class UserPreferencesEntity
     [MaxLength(100)]
     public string? InboundIntegrationKey { get; set; }
 
+    // Body metrics for progress analysis (optional)
+    public decimal? BodyWeight { get; set; }
+
+    [MaxLength(10)]
+    public string? Gender { get; set; } // Male, Female, Other
+
+    public int? Age { get; set; }
+
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

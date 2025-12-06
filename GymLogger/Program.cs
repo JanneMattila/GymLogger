@@ -145,6 +145,7 @@ builder.Services.AddScoped<SessionRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<TemplateService>();
 builder.Services.AddScoped<StatsService>();
+builder.Services.AddScoped<BodyMapService>();
 builder.Services.AddScoped<OutboundIntegrationService>();
 
 var app = builder.Build();

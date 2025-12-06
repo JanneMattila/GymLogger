@@ -58,6 +58,16 @@ public class UserPreferences
     [JsonPropertyName("inboundIntegrationKey")]
     public string? InboundIntegrationKey { get; set; }
     
+    // Body metrics for progress analysis (optional)
+    [JsonPropertyName("bodyWeight")]
+    public decimal? BodyWeight { get; set; }
+    
+    [JsonPropertyName("gender")]
+    public string? Gender { get; set; } // Male, Female, Other
+    
+    [JsonPropertyName("age")]
+    public int? Age { get; set; }
+    
     [JsonPropertyName("createdAt")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     

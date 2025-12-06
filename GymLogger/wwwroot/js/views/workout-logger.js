@@ -1322,8 +1322,8 @@ export class WorkoutLoggerView {
         this.stopRestTimer();
         
         const restDuration = this.preferences?.restTimerDuration || 90; // seconds
+        this.restTimer = restDuration; // Store the rest duration for adjustments
         this.restTimerStartTime = Date.now();
-        const endTime = this.restTimerStartTime + (restDuration * 1000);
         
         // Create or update timer display
         this.showRestTimer(restDuration);
@@ -1331,7 +1331,8 @@ export class WorkoutLoggerView {
         // Update timer every second
         this.restTimerInterval = setInterval(() => {
             const now = Date.now();
-            const remaining = Math.max(0, Math.ceil((endTime - now) / 1000));
+            const elapsed = Math.floor((now - this.restTimerStartTime) / 1000);
+            const remaining = Math.max(0, this.restTimer - elapsed);
             
             this.updateRestTimerDisplay(remaining);
             
@@ -1352,6 +1353,27 @@ export class WorkoutLoggerView {
             this.restTimerInterval = null;
         }
         this.hideRestTimer();
+    }
+
+    adjustRestTimer(seconds) {
+        if (!this.restTimerStartTime || !this.restTimer) return;
+        
+        // Adjust the total rest timer duration
+        // Adding seconds increases total time, subtracting decreases it
+        this.restTimer += seconds;
+        
+        // Calculate remaining time
+        const elapsed = Math.floor((Date.now() - this.restTimerStartTime) / 1000);
+        const remaining = Math.max(0, this.restTimer - elapsed);
+        
+        // Update the display
+        this.updateRestTimerDisplay(remaining);
+        
+        // If timer would go negative, stop it
+        if (remaining <= 0) {
+            this.stopRestTimer();
+            this.playRestCompleteSound();
+        }
     }
 
     showRestTimer(duration) {
@@ -1393,23 +1415,83 @@ export class WorkoutLoggerView {
         timerEl.innerHTML = `
             <div style="font-size: 14px; font-weight: 500; opacity: 0.9;">Rest Timer</div>
             <div id="rest-timer-display" style="font-size: 48px; font-weight: 700; line-height: 1;">${this.formatTime(duration)}</div>
-            <button id="skip-rest-btn" style="
-                background: rgba(255, 255, 255, 0.2);
-                border: none;
-                color: white;
-                padding: 8px 16px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                margin-top: 4px;
-                transition: background 0.2s;
-            " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">Skip</button>
+            <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                <button id="rest-timer-minus-btn" style="
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: background 0.2s;
+                    -webkit-tap-highlight-color: transparent;
+                    touch-action: manipulation;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">-1</button>
+                <button id="skip-rest-btn" style="
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: background 0.2s;
+                    -webkit-tap-highlight-color: transparent;
+                    touch-action: manipulation;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">Skip</button>
+                <button id="rest-timer-plus-btn" style="
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: background 0.2s;
+                    -webkit-tap-highlight-color: transparent;
+                    touch-action: manipulation;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">+1</button>
+            </div>
         `;
         
         // Attach skip button listener
-        document.getElementById('skip-rest-btn')?.addEventListener('click', () => {
+        const skipBtn = document.getElementById('skip-rest-btn');
+        skipBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
             this.stopRestTimer();
+        });
+        skipBtn?.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.stopRestTimer();
+        });
+        
+        // Attach minus button listener (-1 minute)
+        const minusBtn = document.getElementById('rest-timer-minus-btn');
+        minusBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.adjustRestTimer(-60);
+        });
+        minusBtn?.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.adjustRestTimer(-60);
+        });
+        
+        // Attach plus button listener (+1 minute)
+        const plusBtn = document.getElementById('rest-timer-plus-btn');
+        plusBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.adjustRestTimer(60);
+        });
+        plusBtn?.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.adjustRestTimer(60);
         });
     }
 
@@ -1426,8 +1508,8 @@ export class WorkoutLoggerView {
         let yOffset = rect.top;
 
         const onMouseDown = (e) => {
-            // Don't drag when clicking the skip button
-            if (e.target.id === 'skip-rest-btn') return;
+            // Don't drag when clicking any button
+            if (e.target.closest('button')) return;
             
             // Get current position from the element
             const rect = element.getBoundingClientRect();
@@ -1474,7 +1556,8 @@ export class WorkoutLoggerView {
 
         // Touch support for mobile
         const onTouchStart = (e) => {
-            if (e.target.id === 'skip-rest-btn') return;
+            // Don't drag when touching any button
+            if (e.target.closest('button')) return;
             
             // Get current position from the element
             const rect = element.getBoundingClientRect();

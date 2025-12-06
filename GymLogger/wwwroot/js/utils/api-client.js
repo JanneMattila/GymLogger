@@ -808,6 +808,20 @@ class ApiClient {
         };
     }
 
+    async getBodyMap() {
+        return this.get(`/users/me/stats/body-map`, {
+            cacheKey: `bodymap_me`,
+            cacheTTL: 3600000 // 1 hour
+        });
+    }
+
+    async getStrengthStandards() {
+        return this.get(`/users/me/stats/strength-standards`, {
+            cacheKey: `strength_standards`,
+            cacheTTL: 86400000 // 24 hours - these rarely change
+        });
+    }
+
     async getSessions(startDate, endDate, options = {}) {
         const response = await this.get(`/users/me/sessions?startDate=${startDate}&endDate=${endDate}`, {
             cacheKey: `sessions_me_${startDate}_${endDate}`,

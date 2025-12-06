@@ -104,6 +104,58 @@ export class PreferencesView {
                         </div>
                     </div>
 
+                    <!-- Body Metrics Settings (for Progress Analysis) -->
+                    <div style="margin-bottom: 32px;">
+                        <h3 style="margin-bottom: 16px; font-size: 18px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">Body Metrics</h3>
+                        
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: start; gap: 10px;">
+                                <span style="font-size: 18px;">ℹ️</span>
+                                <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">
+                                    These fields are optional. If provided, they will only be used to calculate your advancement levels in the 
+                                    <strong>Body Map</strong> view, helping you understand your progress relative to established strength standards.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Body Weight (kg)</label>
+                                <input 
+                                    type="number" 
+                                    id="body-weight" 
+                                    class="form-input" 
+                                    value="${this.preferences.bodyWeight || ''}" 
+                                    placeholder="e.g., 75"
+                                    min="30"
+                                    max="300"
+                                    step="0.1">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Gender</label>
+                                <select id="gender" class="form-input" style="width: 100%;">
+                                    <option value="" ${!this.preferences.gender ? 'selected' : ''}>Not specified</option>
+                                    <option value="Male" ${this.preferences.gender === 'Male' ? 'selected' : ''}>Male</option>
+                                    <option value="Female" ${this.preferences.gender === 'Female' ? 'selected' : ''}>Female</option>
+                                    <option value="Other" ${this.preferences.gender === 'Other' ? 'selected' : ''}>Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Age</label>
+                                <input 
+                                    type="number" 
+                                    id="age" 
+                                    class="form-input" 
+                                    value="${this.preferences.age || ''}" 
+                                    placeholder="e.g., 30"
+                                    min="13"
+                                    max="120">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Calendar Settings -->
                     <div style="margin-bottom: 32px;">
                         <h3 style="margin-bottom: 16px; font-size: 18px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">Calendar Settings</h3>
@@ -480,7 +532,10 @@ export class PreferencesView {
                 restTimerDuration: parseInt(this.dropdowns.restTimerDuration.getValue()),
                 outboundIntegrationEnabled: document.getElementById('outbound-integration-enabled').checked,
                 outboundIntegrationUrl: document.getElementById('outbound-integration-url').value.trim() || null,
-                inboundIntegrationEnabled: document.getElementById('inbound-integration-enabled').checked
+                inboundIntegrationEnabled: document.getElementById('inbound-integration-enabled').checked,
+                bodyWeight: document.getElementById('body-weight').value ? parseFloat(document.getElementById('body-weight').value) : null,
+                gender: document.getElementById('gender').value || null,
+                age: document.getElementById('age').value ? parseInt(document.getElementById('age').value) : null
             };
 
             await api.updatePreferences(formData);
@@ -511,7 +566,10 @@ export class PreferencesView {
                 restTimerDuration: 90,
                 outboundIntegrationEnabled: false,
                 outboundIntegrationUrl: null,
-                inboundIntegrationEnabled: false
+                inboundIntegrationEnabled: false,
+                bodyWeight: null,
+                gender: null,
+                age: null
             };
 
             await api.updatePreferences(defaults);

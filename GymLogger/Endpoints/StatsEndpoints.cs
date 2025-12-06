@@ -34,5 +34,17 @@ public static class StatsEndpoints
         {
             return await service.GetExerciseHistoryAsync(user.Id, exerciseId);
         });
+
+        // Body map endpoint for muscle advancement visualization
+        group.MapGet("/body-map", async (ClaimsPrincipal user, BodyMapService service) =>
+        {
+            return await service.GetBodyMapDataAsync(user.Id);
+        });
+
+        // Strength standards endpoint - returns the standards data for client-side display
+        group.MapGet("/strength-standards", (BodyMapService service) =>
+        {
+            return service.GetStrengthStandards();
+        });
     }
 }

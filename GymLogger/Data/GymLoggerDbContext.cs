@@ -152,6 +152,10 @@ public class GymLoggerDbContext : DbContext
         modelBuilder.Entity<UserPreferencesEntity>(entity =>
         {
             entity.HasIndex(e => e.UserId).IsUnique();
+
+            // Configure decimal precision for SQL Server
+            entity.Property(e => e.BodyWeight)
+                .HasPrecision(18, 2);
         });
     }
 }

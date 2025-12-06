@@ -89,6 +89,9 @@ public class UserRepository
         entity.OutboundIntegrationUrl = preferences.OutboundIntegrationUrl;
         entity.InboundIntegrationEnabled = preferences.InboundIntegrationEnabled;
         // Don't allow updating the API key from preferences - it's system-generated
+        entity.BodyWeight = preferences.BodyWeight;
+        entity.Gender = preferences.Gender;
+        entity.Age = preferences.Age;
         entity.UpdatedAt = DateTime.UtcNow;
         
         await _context.SaveChangesAsync();
@@ -210,6 +213,9 @@ public class UserRepository
             OutboundIntegrationUrl = entity.OutboundIntegrationUrl,
             InboundIntegrationEnabled = entity.InboundIntegrationEnabled,
             InboundIntegrationKey = entity.InboundIntegrationKey,
+            BodyWeight = entity.BodyWeight,
+            Gender = entity.Gender,
+            Age = entity.Age,
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt
         };
