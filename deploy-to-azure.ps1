@@ -284,11 +284,6 @@ try {
     Write-Info "Unable to get deployment status (deployment may still be in progress)"
 }
 
-# Restart the app service
-Write-Step "Restarting App Service..."
-az webapp restart --resource-group $ResourceGroup --name $AppName --output none
-Write-Success "App Service restarted"
-
 # Clean up deployment package
 if (Test-Path $zipFullPath) {
     Remove-Item -Path $zipFullPath -Force
