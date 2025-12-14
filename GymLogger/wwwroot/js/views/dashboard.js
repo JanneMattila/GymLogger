@@ -18,10 +18,11 @@ export class DashboardView {
             console.log(`[Dashboard] Fetching dashboard data...`);
             const today = new Date();
             const todayDate = today.toISOString().split('T')[0];
+            const todayDayIndex = today.getDay();
 
             const options = { showLoader: false, preferCache: true };
             
-            // Check for local workout (instant lookup with fixed key)
+            // Phase 1: Load from local storage/cache only (instant)
             const [localWorkout, programsRes, prefsRes] = await Promise.all([
                 offlineStorage.getDraftWorkout(LOCAL_SESSION_ID),
                 api.getPrograms(null, options),
@@ -33,13 +34,39 @@ export class DashboardView {
             console.log(`[Dashboard] Active session:`, activeSession ? `ID: ${activeSession.id}, Status: ${activeSession.status}` : 'none');
             
             const programs = programsRes.data || [];
-            
-            const todayDayIndex = today.getDay();
             const prefsData = prefsRes.success && prefsRes.data ? prefsRes.data : null;
+            
+            // Get all today's programs (show all initially, will update after sessions load)
+            const allTodayPrograms = programs.filter(p => p.dayOfWeek === todayDayIndex);
+            
+            // Phase 1: Render immediately with placeholder for "This Week"
+            // Show all today's programs as available initially
+            const todayPrograms = allTodayPrograms;
+            const completedTodayPrograms = [];
+
+            // Render the dashboard immediately
+            this.renderContent(activeSession, programs, allTodayPrograms, todayPrograms, completedTodayPrograms, todayDayIndex, '-');
+            this.attachListeners(activeSession);
+
+            // Phase 2: Load sessions in background and update UI
+            this.loadSessionsAndUpdate(prefsData, todayDayIndex, todayDate, allTodayPrograms, programs, activeSession, options);
+
+        } catch (error) {
+            this.container.innerHTML = `
+                <div class="card">
+                    <p style="color: var(--danger-color);">Error loading dashboard: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    async loadSessionsAndUpdate(prefsData, todayDayIndex, todayDate, allTodayPrograms, programs, activeSession, options) {
+        try {
             const weekStartDay = prefsData?.weekStartDay ?? 0;
             let daysSinceWeekStart = todayDayIndex - weekStartDay;
             if (daysSinceWeekStart < 0) daysSinceWeekStart += 7;
 
+            const today = new Date();
             const weekStart = new Date(today);
             weekStart.setDate(weekStart.getDate() - daysSinceWeekStart);
             const weekStartDate = weekStart.toISOString().split('T')[0];
@@ -51,127 +78,131 @@ export class DashboardView {
                 .filter(s => s.status === 'completed')
                 .map(s => s.programId);
             const thisWeekCount = weekSessions.filter(s => s.status === 'completed').length;
-            
-            // Get all today's programs
-            const allTodayPrograms = programs.filter(p => p.dayOfWeek === todayDayIndex);
-            
-            // Filter programs: today's programs that haven't been completed today
-            const todayPrograms = allTodayPrograms.filter(p => !completedProgramIds.includes(p.id));
-            
-            // Get completed today's programs
-            const completedTodayPrograms = allTodayPrograms.filter(p => completedProgramIds.includes(p.id));
 
-            let content = '<div class="card">';
-            content += '<div class="card-header">Welcome to Gym Logger</div>';
-
-            // Active session notice
-            if (activeSession) {
-                // Don't show completed sessions as "active"
-                if (activeSession.status === 'completed') {
-                    console.log(`[Dashboard] Filtering out completed session: ${activeSession.id}`);
-                    activeSession = null;
-                }
-            }
-            
-            console.log(`[Dashboard] Final activeSession:`, activeSession ? `ID: ${activeSession.id}, Status: ${activeSession.status}` : 'null');
-            
-            if (activeSession) {
-                const sessionDate = formatDate(activeSession.sessionDate);
-                content += `
-                    <div style="background: #e8f5e9; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 8px; color: #2e7d32;">Active Workout</h3>
-                        <p style="margin-bottom: 12px;">You have an active workout from ${sessionDate}</p>
-                        <button class="btn btn-success" id="resume-workout-btn">Resume Workout</button>
-                        ${activeSession.sessionDate !== new Date().toISOString().split('T')[0] ? `
-                            <button class="btn btn-secondary" id="start-new-workout-btn" style="margin-left: 8px;">Start New Workout</button>
-                        ` : ''}
-                    </div>
-                `;
+            // Update "This Week" counter
+            const thisWeekCountEl = document.getElementById('this-week-count');
+            if (thisWeekCountEl) {
+                thisWeekCountEl.textContent = thisWeekCount;
             }
 
-            // Today's programs
-            if (todayPrograms.length > 0) {
-                content += '<h3 style="margin: 20px 0 12px;">Today\'s Programs (' + getDayName(todayDayIndex) + ')</h3>';
-                content += '<div style="display: grid; gap: 12px;">';
-                todayPrograms.forEach(program => {
-                    content += `
-                        <div style="border: 1px solid var(--border); padding: 16px; border-radius: 8px; cursor: pointer;" class="program-card" data-program-id="${program.id}">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <h4 style="margin-bottom: 4px;">${program.name}</h4>
-                                    <p style="font-size: 14px; color: var(--text-secondary);">${program.exercises.length} exercises</p>
-                                </div>
-                                ${program.isDefault ? '<span style="background: var(--primary-color); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Default</span>' : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-                content += '</div>';
-            } else if (allTodayPrograms.length > 0) {
-                // Programs exist for today but all are completed
-                content += `
-                    <div style="text-align: center; padding: 40px 20px; background: #e8f5e9; border-radius: 8px; margin-bottom: 20px;">
-                        <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
-                        <h3 style="color: #2e7d32; margin-bottom: 8px;">Well done!</h3>
-                        <p style="color: var(--text-secondary);">You've completed all programs scheduled for today</p>
-                    </div>
-                `;
-            } else {
-                content += `
-                    <div style="text-align: center; padding: 40px 20px;">
-                        <p style="color: var(--text-secondary); margin-bottom: 16px;">No programs scheduled for today</p>
-                        <button class="btn btn-primary" id="create-program-btn">Create a Program</button>
-                    </div>
-                `;
+            // Update programs list if any were completed today
+            if (completedProgramIds.length > 0) {
+                const todayPrograms = allTodayPrograms.filter(p => !completedProgramIds.includes(p.id));
+                const completedTodayPrograms = allTodayPrograms.filter(p => completedProgramIds.includes(p.id));
+                
+                // Re-render only if there are changes
+                this.renderContent(activeSession, programs, allTodayPrograms, todayPrograms, completedTodayPrograms, todayDayIndex, thisWeekCount);
+                this.attachListeners(activeSession);
             }
-            
-            // Show completed programs for today if any
-            if (completedTodayPrograms.length > 0) {
-                content += '<h3 style="margin: 20px 0 12px; color: var(--text-secondary);">Completed Today</h3>';
-                content += '<div style="display: grid; gap: 12px;">';
-                completedTodayPrograms.forEach(program => {
-                    content += `
-                        <div style="border: 1px solid var(--success-color); background: rgba(76, 175, 80, 0.05); padding: 16px; border-radius: 8px; opacity: 0.7;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <h4 style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
-                                        <span>✓</span>
-                                        <span>${program.name}</span>
-                                    </h4>
-                                    <p style="font-size: 14px; color: var(--text-secondary);">${program.exercises.length} exercises completed</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                content += '</div>';
-            }
-
-            // Quick stats
-            content += `
-                <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
-                    <div id="programs-stat-box" style="background: var(--surface); padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-hover)'" onmouseout="this.style.background='var(--surface)'">
-                        <div style="font-size: 24px; font-weight: 600; color: var(--primary-color);">${programs.length}</div>
-                        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">Programs</div>
-                    </div>
-                    <div id="this-week-stat-box" style="background: var(--surface); padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-hover)'" onmouseout="this.style.background='var(--surface)'">
-                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color);">${thisWeekCount}</div>
-                        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">This Week</div>
-                    </div>
-                </div>
-            `;
-
-            content += '</div>';
-            this.container.innerHTML = content;
-
-            this.attachListeners(activeSession);
         } catch (error) {
-            this.container.innerHTML = `
-                <div class="card">
-                    <p style="color: var(--danger-color);">Error loading dashboard: ${error.message}</p>
+            console.warn('[Dashboard] Failed to load sessions:', error);
+            // Keep the placeholder, don't break the UI
+        }
+    }
+
+    renderContent(activeSession, programs, allTodayPrograms, todayPrograms, completedTodayPrograms, todayDayIndex, thisWeekCount) {
+        let content = '<div class="card">';
+        content += '<div class="card-header">Welcome to Gym Logger</div>';
+
+        // Active session notice
+        if (activeSession) {
+            // Don't show completed sessions as "active"
+            if (activeSession.status === 'completed') {
+                console.log(`[Dashboard] Filtering out completed session: ${activeSession.id}`);
+                activeSession = null;
+            }
+        }
+        
+        console.log(`[Dashboard] Final activeSession:`, activeSession ? `ID: ${activeSession.id}, Status: ${activeSession.status}` : 'null');
+        
+        if (activeSession) {
+            const sessionDate = formatDate(activeSession.sessionDate);
+            content += `
+                <div style="background: #e8f5e9; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 8px; color: #2e7d32;">Active Workout</h3>
+                    <p style="margin-bottom: 12px;">You have an active workout from ${sessionDate}</p>
+                    <button class="btn btn-success" id="resume-workout-btn">Resume Workout</button>
+                    ${activeSession.sessionDate !== new Date().toISOString().split('T')[0] ? `
+                        <button class="btn btn-secondary" id="start-new-workout-btn" style="margin-left: 8px;">Start New Workout</button>
+                    ` : ''}
                 </div>
             `;
         }
+
+        // Today's programs
+        if (todayPrograms.length > 0) {
+            content += '<h3 style="margin: 20px 0 12px;">Today\'s Programs (' + getDayName(todayDayIndex) + ')</h3>';
+            content += '<div style="display: grid; gap: 12px;">';
+            todayPrograms.forEach(program => {
+                content += `
+                    <div style="border: 1px solid var(--border); padding: 16px; border-radius: 8px; cursor: pointer;" class="program-card" data-program-id="${program.id}">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin-bottom: 4px;">${program.name}</h4>
+                                <p style="font-size: 14px; color: var(--text-secondary);">${program.exercises.length} exercises</p>
+                            </div>
+                            ${program.isDefault ? '<span style="background: var(--primary-color); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Default</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            content += '</div>';
+        } else if (allTodayPrograms.length > 0) {
+            // Programs exist for today but all are completed
+            content += `
+                <div style="text-align: center; padding: 40px 20px; background: #e8f5e9; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
+                    <h3 style="color: #2e7d32; margin-bottom: 8px;">Well done!</h3>
+                    <p style="color: var(--text-secondary);">You've completed all programs scheduled for today</p>
+                </div>
+            `;
+        } else {
+            content += `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">No programs scheduled for today</p>
+                    <button class="btn btn-primary" id="create-program-btn">Create a Program</button>
+                </div>
+            `;
+        }
+        
+        // Show completed programs for today if any
+        if (completedTodayPrograms.length > 0) {
+            content += '<h3 style="margin: 20px 0 12px; color: var(--text-secondary);">Completed Today</h3>';
+            content += '<div style="display: grid; gap: 12px;">';
+            completedTodayPrograms.forEach(program => {
+                content += `
+                    <div style="border: 1px solid var(--success-color); background: rgba(76, 175, 80, 0.05); padding: 16px; border-radius: 8px; opacity: 0.7;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                                    <span>✓</span>
+                                    <span>${program.name}</span>
+                                </h4>
+                                <p style="font-size: 14px; color: var(--text-secondary);">${program.exercises.length} exercises completed</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            content += '</div>';
+        }
+
+        // Quick stats
+        content += `
+            <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                <div id="programs-stat-box" style="background: var(--surface); padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-hover)'" onmouseout="this.style.background='var(--surface)'">
+                    <div style="font-size: 24px; font-weight: 600; color: var(--primary-color);">${programs.length}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">Programs</div>
+                </div>
+                <div id="this-week-stat-box" style="background: var(--surface); padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-hover)'" onmouseout="this.style.background='var(--surface)'">
+                    <div id="this-week-count" style="font-size: 24px; font-weight: 600; color: var(--success-color);">${thisWeekCount}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">This Week</div>
+                </div>
+            </div>
+        `;
+
+        content += '</div>';
+        this.container.innerHTML = content;
     }
 
     showSkeleton() {
