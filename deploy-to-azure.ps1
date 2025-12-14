@@ -270,7 +270,7 @@ Start-Sleep -Seconds 5
 # Get deployment status
 Write-Step "Checking deployment status..."
 try {
-    $deployments = az webapp deployment list `
+    $deployments = az webapp log deployment list `
         --resource-group $ResourceGroup `
         --name $AppName `
         --query "[0]" `
