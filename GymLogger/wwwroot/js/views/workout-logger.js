@@ -1384,14 +1384,12 @@ export class WorkoutLoggerView {
             timerEl = document.createElement('div');
             timerEl.id = 'rest-timer';
             
-            // Position at top-center initially
-            const centerX = (window.innerWidth - 200) / 2;
-            const topY = 80; // Below header
-            
+            // Position at center of visible screen area
             timerEl.style.cssText = `
                 position: fixed;
-                left: ${centerX}px;
-                top: ${topY}px;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
                 background: var(--primary-color);
                 color: white;
                 padding: 24px 32px;
@@ -1511,10 +1509,17 @@ export class WorkoutLoggerView {
             // Don't drag when clicking any button
             if (e.target.closest('button')) return;
             
+            // Clear transform centering on first drag
+            element.style.transform = 'none';
+            
             // Get current position from the element
             const rect = element.getBoundingClientRect();
             xOffset = rect.left;
             yOffset = rect.top;
+            
+            // Set explicit position before dragging
+            element.style.left = xOffset + 'px';
+            element.style.top = yOffset + 'px';
             
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
@@ -1559,10 +1564,17 @@ export class WorkoutLoggerView {
             // Don't drag when touching any button
             if (e.target.closest('button')) return;
             
+            // Clear transform centering on first drag
+            element.style.transform = 'none';
+            
             // Get current position from the element
             const rect = element.getBoundingClientRect();
             xOffset = rect.left;
             yOffset = rect.top;
+            
+            // Set explicit position before dragging
+            element.style.left = xOffset + 'px';
+            element.style.top = yOffset + 'px';
             
             const touch = e.touches[0];
             initialX = touch.clientX - xOffset;
