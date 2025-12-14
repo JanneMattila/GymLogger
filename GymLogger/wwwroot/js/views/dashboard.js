@@ -160,7 +160,8 @@ export class DashboardView {
             content += `
                 <div style="text-align: center; padding: 40px 20px;">
                     <p style="color: var(--text-secondary); margin-bottom: 16px;">No programs scheduled for today</p>
-                    <button class="btn btn-primary" id="create-program-btn">Create a Program</button>
+                    <button class="btn btn-primary" id="create-program-btn">Create a new program</button>
+                    ${programs.length > 0 ? `<button class="btn btn-secondary" id="use-existing-programs-btn" style="margin-left: 8px;">Use existing programs</button>` : ''}
                 </div>
             `;
         }
@@ -239,6 +240,10 @@ export class DashboardView {
 
         document.getElementById('create-program-btn')?.addEventListener('click', () => {
             eventBus.emit('navigate', 'programs');
+        });
+
+        document.getElementById('use-existing-programs-btn')?.addEventListener('click', () => {
+            eventBus.emit('navigate', 'workout-logger');
         });
 
         document.querySelectorAll('.program-card').forEach(card => {
