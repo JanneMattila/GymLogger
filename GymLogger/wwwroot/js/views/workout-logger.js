@@ -1245,17 +1245,17 @@ export class WorkoutLoggerView {
         try {
             const weightsMap = {};
             
-            // For each exercise in the program, find the last working set weight
+            // For each exercise in the program, find the 1st working set weight
             for (const programExercise of this.program.exercises) {
                 const exerciseSets = this.sets
                     .filter(s => s.exerciseId === programExercise.exerciseId && !s.isWarmup)
-                    .sort((a, b) => (b.setNumber || 0) - (a.setNumber || 0));
+                    .sort((a, b) => (a.setNumber || 0) - (b.setNumber || 0));
                 
                 if (exerciseSets.length > 0) {
-                    const lastSet = exerciseSets[0];
+                    const firstSet = exerciseSets[0];
                     weightsMap[programExercise.exerciseId] = {
-                        weight: lastSet.weight,
-                        reps: lastSet.reps,
+                        weight: firstSet.weight,
+                        reps: firstSet.reps,
                         timestamp: Date.now()
                     };
                 }
@@ -1706,18 +1706,22 @@ export class WorkoutLoggerView {
         // Filter out warmup sets for determining default weight
         const workingSets = exerciseSets.filter(s => !s.isWarmup);
         
-        // Determine default weight: last working set, program target, cached last session, or API fallback
+        // Determine default weight priority:
+        // 1. Last working set's weight from current session (during workout)
+        // 2. Cached weight from last session for this program (1st set)
+        // 3. Program's target weight
+        // 4. API fallback (last session via server)
         if (workingSets.length > 0) {
             // Use the last working set's weight from current session
             this.defaultWeightForNewSet = workingSets[workingSets.length - 1].weight;
-        } else if (currentProgramExercise.targetWeight) {
-            // Use program's target weight
-            this.defaultWeightForNewSet = currentProgramExercise.targetWeight;
         } else if (this.cachedLastWeights && this.cachedLastWeights[currentProgramExercise.exerciseId]) {
-            // Use cached weight from last session for this program (instant, no API call)
+            // Use cached weight from last session for this program (1st set, instant, no API call)
             this.defaultWeightForNewSet = this.cachedLastWeights[currentProgramExercise.exerciseId].weight;
+        } else if (currentProgramExercise.targetWeight) {
+            // Use program's target weight as fallback
+            this.defaultWeightForNewSet = currentProgramExercise.targetWeight;
         } else {
-            // Fallback: try to get from last session via API (only if cache miss)
+            // Final fallback: try to get from last session via API (only if cache miss)
             this.defaultWeightForNewSet = await this.getLastSessionWeight(currentProgramExercise.exerciseId);
         }
     }
