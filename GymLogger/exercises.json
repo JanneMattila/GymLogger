@@ -638,5 +638,15 @@
     "isCustom": false,
     "createdAt": "2025-12-05T00:00:00Z",
     "updatedAt": "2025-12-05T00:00:00Z"
+  },
+  {
+    "id": "ex-65",
+    "name": "Single-Arm Cable Lat Pulldown",
+    "muscleGroup": "Back",
+    "equipmentType": "Cable",
+    "description": "Setup: Attach single handle to high cable pulley. Sit on bench facing away from the machine or straddle the bench facing forward, using it to stabilize your torso. Grip handle with one hand, arm fully extended overhead. Technique: Pull handle down by driving elbow straight down alongside your body. Focus on lat contraction—squeeze at bottom when elbow is at your side. Return with control to full arm extension. Complete all reps on one side before switching. Hints: Keep torso stable by bracing against the bench—this isolates the lat and prevents cheating. Think 'elbow to hip pocket' rather than pulling with the hand. Maintain slight forward lean for optimal lat engagement. Unilateral training helps identify and correct strength imbalances between sides. Warnings: Don't rotate torso to assist the movement. Avoid using momentum or jerky motions. Keep shoulder down—don't shrug during the pull. Control the eccentric phase to maximize muscle tension.",
+    "isCustom": false,
+    "createdAt": "2025-12-14T00:00:00Z",
+    "updatedAt": "2025-12-14T00:00:00Z"
   }
 ]
