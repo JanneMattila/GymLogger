@@ -1509,15 +1509,13 @@ export class WorkoutLoggerView {
             // Don't drag when clicking any button
             if (e.target.closest('button')) return;
             
-            // Clear transform centering on first drag
-            element.style.transform = 'none';
-            
-            // Get current position from the element
+            // Get current position from the element BEFORE clearing transform
             const rect = element.getBoundingClientRect();
             xOffset = rect.left;
             yOffset = rect.top;
             
-            // Set explicit position before dragging
+            // Clear transform centering and set explicit pixel position
+            element.style.transform = 'none';
             element.style.left = xOffset + 'px';
             element.style.top = yOffset + 'px';
             
@@ -1564,15 +1562,13 @@ export class WorkoutLoggerView {
             // Don't drag when touching any button
             if (e.target.closest('button')) return;
             
-            // Clear transform centering on first drag
-            element.style.transform = 'none';
-            
-            // Get current position from the element
+            // Get current position from the element BEFORE clearing transform
             const rect = element.getBoundingClientRect();
             xOffset = rect.left;
             yOffset = rect.top;
             
-            // Set explicit position before dragging
+            // Clear transform centering and set explicit pixel position
+            element.style.transform = 'none';
             element.style.left = xOffset + 'px';
             element.style.top = yOffset + 'px';
             
@@ -1623,11 +1619,14 @@ export class WorkoutLoggerView {
             
             // Change color when time is running out
             const timerEl = document.getElementById('rest-timer');
-            if (seconds <= 10 && timerEl) {
-                timerEl.style.background = '#ff9800'; // Warning color
-            }
-            if (seconds === 0 && timerEl) {
-                timerEl.style.background = '#4caf50'; // Success color
+            if (timerEl) {
+                if (seconds === 0) {
+                    timerEl.style.background = '#4caf50'; // Success color
+                } else if (seconds <= 10) {
+                    timerEl.style.background = '#ff9800'; // Warning color
+                } else {
+                    timerEl.style.background = 'var(--primary-color)'; // Normal color
+                }
             }
         }
     }
