@@ -6,6 +6,7 @@ class OfflineManager {
     constructor() {
         this.isOnline = navigator.onLine;
         this.syncInProgress = false;
+        this.isReloading = false;
         this.setupEventListeners();
     }
 
@@ -29,6 +30,25 @@ class OfflineManager {
             try {
                 const registration = await navigator.serviceWorker.register('/service-worker.js');
                 console.log('Service Worker registered:', registration);
+
+                // Listen for messages from the service worker
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'SW_UPDATED') {
+                        console.log('Service worker updated to version:', event.data.version);
+                        // The page will reload automatically after skipWaiting + claim
+                        // This message confirms the new SW is in control
+                    }
+                });
+
+                // Listen for controller change (new service worker took over)
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    console.log('New service worker controller, reloading page...');
+                    // Only reload if we're not already reloading
+                    if (!this.isReloading) {
+                        this.isReloading = true;
+                        window.location.reload();
+                    }
+                });
 
                 // Check for updates
                 registration.addEventListener('updatefound', () => {
@@ -192,9 +212,20 @@ class OfflineManager {
             updateBtn.style.boxShadow = '0 4px 16px rgba(102, 126, 234, 0.4)';
         });
         
-        updateBtn.addEventListener('click', () => {
-            console.log('User clicked update, reloading page...');
-            window.location.reload();
+        updateBtn.addEventListener('click', async () => {
+            console.log('User clicked update, activating new service worker and reloading...');
+            
+            // Tell the waiting service worker to skip waiting and take control
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration && registration.waiting) {
+                registration.waiting.postMessage({ action: 'skipWaiting' });
+            }
+            
+            // Wait a moment for the new service worker to take control
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Force a hard reload to bypass all caches
+            window.location.reload(true);
         });
         
         // Add animations

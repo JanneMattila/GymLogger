@@ -47,6 +47,14 @@ self.addEventListener('activate', (event) => {
                 console.log('Service Worker: Taking control of all pages');
                 return self.clients.claim();
             })
+            .then(() => {
+                // Notify all clients that the service worker has been updated
+                return self.clients.matchAll({ type: 'window' }).then(clients => {
+                    clients.forEach(client => {
+                        client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION });
+                    });
+                });
+            })
     );
 });
 
