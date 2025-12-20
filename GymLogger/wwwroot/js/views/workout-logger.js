@@ -633,9 +633,11 @@ export class WorkoutLoggerView {
             this.renderWorkout();
         });
 
-        // Complete workout button
+        // Complete workout button (in body area when last exercise is done)
         document.getElementById('complete-workout-btn')?.addEventListener('click', async () => {
-            await this.completeWorkout();
+            if (confirm('Are you sure you want to finish this workout?')) {
+                await this.completeWorkout();
+            }
         });
 
         // Finish workout button

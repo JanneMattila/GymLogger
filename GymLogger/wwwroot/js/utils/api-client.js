@@ -441,9 +441,12 @@ class ApiClient {
 
     async updateProgram(programId, program) {
         const response = await this.put(`/users/me/programs/${programId}`, program, { queueOffline: true });
-        // Invalidate programs cache after updating (only if successful and not queued)
-        if (response.success && response.source !== 'queued') {
+        // Update caches after successful update (only if not queued)
+        if (response.success && response.source !== 'queued' && response.data) {
+            // Invalidate programs list cache (will be re-fetched when needed)
             await this.invalidateProgramsCache();
+            // Save updated program directly to individual cache (no re-fetch needed)
+            await offlineStorage.saveToCache(`program_${programId}`, response.data, 2592000000); // 30 days
         }
         return response;
     }
@@ -841,6 +844,8 @@ class ApiClient {
         // Invalidate programs cache after deleting (only if successful and not queued)
         if (response.success && response.source !== 'queued') {
             await this.invalidateProgramsCache();
+            // Also invalidate the individual program cache
+            await offlineStorage.deleteCacheEntry(`program_${programId}`);
         }
         return response;
     }
