@@ -648,5 +648,15 @@
     "isCustom": false,
     "createdAt": "2025-12-14T00:00:00Z",
     "updatedAt": "2025-12-14T00:00:00Z"
+  },
+  {
+    "id": "ex-66",
+    "name": "Adduction Machine",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Sit on machine with back against pad, legs spread apart on the leg pads. Adjust starting position width if available. Grip handles for stability. Technique: Squeeze legs together by contracting inner thigh muscles (adductors). Pause and squeeze at the center position. Return with control to starting position, stopping before weight stack touches. Hints: Focus on squeezing through the inner thighs, not just moving the legs. Keep back flat against pad throughout. Control both the concentric and eccentric phases. Adjust weight to allow 12-15 quality reps. Warnings: Don't use momentum or jerky movements. Avoid going too wide at start if flexibility is limited. Keep movement controlled to prevent groin strain. Stop if you feel sharp pain in inner thigh or groin area.",
+    "isCustom": false,
+    "createdAt": "2025-12-26T00:00:00Z",
+    "updatedAt": "2025-12-26T00:00:00Z"
   }
 ]
