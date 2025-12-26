@@ -64,7 +64,8 @@ builder.Services.AddAuthentication(options =>
             if (context.Properties != null)
             {
                 context.Properties.IsPersistent = true;
-                context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(180);
+                // Use 90-day expiration to match cookie policy
+                context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(90);
             }
         }
     };
@@ -81,10 +82,17 @@ builder.Services.ConfigureApplicationCookie(options =>
         ? CookieSecurePolicy.SameAsRequest 
         : CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Lax;
-    options.ExpireTimeSpan = TimeSpan.FromDays(180);
+    
+    // Sliding expiration: If user is active, cookie extends another 90 days
+    // This means weekly users will never be asked to login
+    options.ExpireTimeSpan = TimeSpan.FromDays(90);
     options.SlidingExpiration = true;
+    
+    // Absolute expiration: Cookie must be renewed at least every 90 days
+    // This provides a security boundary even for continuously active users
     options.Cookie.IsEssential = true;
-    options.Cookie.MaxAge = TimeSpan.FromDays(180);
+    options.Cookie.MaxAge = TimeSpan.FromDays(90);
+    
     options.LoginPath = "/signin-oidc";
     options.LogoutPath = "/signout-oidc";
     options.AccessDeniedPath = "/access-denied";

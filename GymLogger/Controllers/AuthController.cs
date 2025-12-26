@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
             new AuthenticationProperties
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(180)
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(90)
             });
 
         return Ok(new { isGuest = true, userId = appUserId });

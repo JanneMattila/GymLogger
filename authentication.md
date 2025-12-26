@@ -25,6 +25,29 @@ The Gym Logger app supports Microsoft Entra ID (Azure AD) authentication with gu
 - **Auth Manager**: Handles session state and localStorage
 - **User ID Storage**: Persists in localStorage for session continuity
 
+## Session Management & Cookie Security
+
+### Sliding Expiration (User-Friendly)
+The app uses **sliding expiration** for cookies:
+- Each time you use the app, your session extends another **90 days**
+- If you use the app every week, **you'll never be asked to log in again**
+- This balances security with convenience
+
+### Absolute Expiration (Security Boundary)
+- Cookies expire after **90 days maximum**, regardless of activity
+- After 90 days, you must log in again, even if you use the app daily
+- This provides a security boundary for password changes, permission updates, and device compromise recovery
+
+### Recommended Usage Pattern
+- **Active users** (weekly+): Never prompted to authenticate thanks to sliding expiration
+- **Dormant users**: Prompted to authenticate after 90 days of inactivity
+- **Security-conscious**: Can manually log out anytime via Settings → Logout
+
+This approach combines:
+- ✅ **Usability**: Active users have seamless experience
+- ✅ **Security**: Maximum 90-day session life limits exposure
+- ✅ **Best Practices**: Aligns with OWASP and industry standards
+
 ## Setup Steps
 
 ### 1. Azure AD App Registration
