@@ -535,15 +535,17 @@ export class HistoryView {
                                      text-align: center;
                                      transition: all 0.2s;
                                      min-height: 80px;
+                                     min-width: 0;
                                      display: flex;
                                      flex-direction: column;
                                      align-items: center;
+                                     position: relative;
                                  ">
-                                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500;">${dayName}</div>
-                                <div style="font-weight: ${hasWorkouts ? '700' : '600'}; font-size: 18px; color: ${hasWorkouts ? 'var(--success-color)' : 'inherit'}; margin-bottom: 4px;">${dayDate.getDate()}</div>
+                                <div class="week-day-name" style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500;">${dayName}</div>
+                                <div class="week-day-number" style="font-weight: ${hasWorkouts ? '700' : '600'}; font-size: 18px; color: ${hasWorkouts ? 'var(--success-color)' : 'inherit'};">${dayDate.getDate()}</div>
                                 ${hasWorkouts ? `
-                                    <div style="background: var(--success-color); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-top: auto;">
-                                        ${daySessions.length} workout${daySessions.length > 1 ? 's' : ''}
+                                    <div class="week-workout-badge" style="position: absolute; bottom: 4px; right: 4px; background: var(--success-color); color: white; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">
+                                        ${daySessions.length}
                                     </div>
                                 ` : ''}
                             </div>
@@ -582,28 +584,47 @@ export class HistoryView {
             /* Mobile responsive styles for week view */
             @media (max-width: 480px) {
                 .week-grid {
-                    gap: 4px !important;
+                    gap: 2px !important;
                 }
                 .week-day {
-                    padding: 8px 4px !important;
-                    min-height: 70px !important;
-                    border-radius: 6px !important;
+                    padding: 4px 2px !important;
+                    min-height: 60px !important;
+                    border-radius: 4px !important;
+                    border-width: 1px !important;
                 }
-                .week-day > div:first-child {
+                .week-day-name {
                     font-size: 10px !important;
                 }
-                .week-day > div:nth-child(2) {
-                    font-size: 16px !important;
+                .week-day-number {
+                    font-size: 14px !important;
+                }
+                .week-workout-badge {
+                    width: 14px !important;
+                    height: 14px !important;
+                    font-size: 8px !important;
+                    bottom: 2px !important;
+                    right: 2px !important;
                 }
             }
             
             @media (max-width: 360px) {
                 .week-grid {
-                    gap: 2px !important;
+                    gap: 1px !important;
                 }
                 .week-day {
-                    padding: 6px 2px !important;
-                    min-height: 60px !important;
+                    padding: 2px 1px !important;
+                    min-height: 50px !important;
+                }
+                .week-day-name {
+                    font-size: 9px !important;
+                }
+                .week-day-number {
+                    font-size: 12px !important;
+                }
+                .week-workout-badge {
+                    width: 12px !important;
+                    height: 12px !important;
+                    font-size: 7px !important;
                 }
             }
         `;
