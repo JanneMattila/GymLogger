@@ -180,19 +180,28 @@ export class WorkoutLoggerView {
         
         const options = { showLoader: false, preferCache: true };
         
-        // Load program, exercises, and cached weights in parallel
-        const [programRes, exercisesRes, lastWeights] = await Promise.all([
-            api.getProgram(this.session.programId, options),
+        // Load exercises and cached weights (program comes from draft snapshot)
+        const [exercisesRes, lastWeights] = await Promise.all([
             api.getExercises(options),
             offlineStorage.getLastWorkoutWeights(this.session.programId)
         ]);
         
-        if (!programRes.success || !programRes.data) {
-            console.error('Failed to load program:', programRes.error);
-            return false;
+        // Use stored program snapshot to preserve workout state even if program was edited
+        // Fall back to fetching from API only if draft doesn't have program snapshot
+        if (draftWorkout.program && draftWorkout.program.exercises) {
+            this.program = draftWorkout.program;
+            console.log(`[WorkoutLogger] Using stored program snapshot for workout`);
+        } else {
+            // Fallback: fetch from API (for older drafts without program snapshot)
+            const programRes = await api.getProgram(this.session.programId, options);
+            if (!programRes.success || !programRes.data) {
+                console.error('Failed to load program:', programRes.error);
+                return false;
+            }
+            this.program = programRes.data;
+            console.log(`[WorkoutLogger] Fetched program from API (no snapshot in draft)`);
         }
         
-        this.program = programRes.data;
         this.exercises = exercisesRes.data;
         this.cachedLastWeights = lastWeights || {};
         this.sets = draftWorkout.sets || [];
