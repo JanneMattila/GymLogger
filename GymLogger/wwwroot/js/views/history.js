@@ -11,8 +11,56 @@ export class HistoryView {
         this.exercises = [];
         this.preferences = null;
         this.currentMonth = new Date();
+        this.currentWeek = new Date(); // Track current week for week view
         this.selectedSession = null;
-        this.viewMode = 'month'; // 'month' or 'year'
+        this.viewMode = 'week'; // 'week', 'month' or 'year'
+        this.totalSets = 0; // Track total sets for the current period
+    }
+
+    // Get the week number for a given date
+    getWeekNumber(date, weekStartDay = 0) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        
+        if (weekStartDay === 1) {
+            // ISO week numbering (Monday start) - week 1 is the first week with 4+ days in new year
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            return { week: weekNo, year: d.getUTCFullYear() };
+        } else {
+            // US week numbering (Sunday start) - week 1 starts on Jan 1
+            const jan1 = new Date(d.getFullYear(), 0, 1);
+            const dayOfYear = Math.floor((d - jan1) / 86400000) + 1;
+            const jan1Day = jan1.getDay();
+            const weekNo = Math.ceil((dayOfYear + jan1Day) / 7);
+            return { week: weekNo, year: d.getFullYear() };
+        }
+    }
+
+    // Get the start date of a week
+    getWeekStartDate(date, weekStartDay = 0) {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = (day - weekStartDay + 7) % 7;
+        d.setDate(d.getDate() - diff);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
+
+    // Get the end date of a week
+    getWeekEndDate(date, weekStartDay = 0) {
+        const start = this.getWeekStartDate(date, weekStartDay);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 6);
+        return end;
+    }
+
+    // Format date as YYYY-MM-DD
+    formatDateStr(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     async render() {
@@ -92,6 +140,35 @@ export class HistoryView {
                 
                 this.sessions = sessionsResp.data;
                 this.renderYearView();
+            } else if (this.viewMode === 'week') {
+                // Get sessions for current week
+                const weekStartDay = this.preferences?.weekStartDay || 0;
+                const weekStart = this.getWeekStartDate(this.currentWeek, weekStartDay);
+                const weekEnd = this.getWeekEndDate(this.currentWeek, weekStartDay);
+                const startDate = this.formatDateStr(weekStart);
+                const endDate = this.formatDateStr(weekEnd);
+                
+                console.log('Fetching sessions for week:', startDate, 'to', endDate);
+                const sessionsResp = await api.getSessions(startDate, endDate);
+                
+                if (!sessionsResp.success) {
+                    this.container.innerHTML = `
+                        <div class="card">
+                            <div class="card-header">📅 Workout History</div>
+                            <div style="text-align: center; padding: 60px 20px;">
+                                <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">📡</div>
+                                <h3 style="margin-bottom: 12px; color: var(--text-secondary);">Offline Mode</h3>
+                                <p style="color: var(--text-secondary); max-width: 400px; margin: 0 auto;">
+                                    Workout history is not available offline. Please connect to the internet to view your training history.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                this.sessions = sessionsResp.data;
+                await this.renderWeekView();
             } else {
                 // Get sessions for current month
                 const year = this.currentMonth.getFullYear();
@@ -170,6 +247,9 @@ export class HistoryView {
         
         // Count workout days
         const workoutDays = Object.keys(sessionsByDate).filter(date => sessionsByDate[date].length > 0).length;
+        
+        // Count total sets for the month
+        this.totalSets = 0;
 
         let content = `
             <div class="card">
@@ -182,8 +262,8 @@ export class HistoryView {
                         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Workout Days</div>
                     </div>
                     <div style="flex: 1; text-align: center;">
-                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color);">${this.sessions.filter(s => s.status === 'completed').length}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Completed</div>
+                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color);" id="month-total-sets">...</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Sets</div>
                     </div>
                 </div>
                 
@@ -218,7 +298,7 @@ export class HistoryView {
                                      border-radius: 6px;
                                      padding: 4px;
                                      cursor: pointer;
-                                     background: ${hasWorkouts ? '#e8f5e9' : 'white'};
+                                     background: var(--surface);
                                      position: relative;
                                      transition: all 0.2s;
                                      min-width: 0;
@@ -241,6 +321,9 @@ export class HistoryView {
 
         this.container.innerHTML = content;
         this.attachCalendarListeners();
+        
+        // Load total sets asynchronously
+        this.loadTotalSetsForPeriod('month');
         
         // Show today's workouts by default if any exist (use setTimeout to ensure DOM is ready)
         setTimeout(async () => {
@@ -339,6 +422,223 @@ export class HistoryView {
 
         // Day clicks
         document.querySelectorAll('.calendar-day').forEach(dayEl => {
+            dayEl.addEventListener('click', async () => {
+                const date = dayEl.dataset.date;
+                const hasWorkouts = dayEl.classList.contains('has-workouts');
+                
+                if (!hasWorkouts) {
+                    // Navigate to week view for empty days
+                    this.currentWeek = new Date(date + 'T00:00:00');
+                    this.viewMode = 'week';
+                    this.render();
+                } else {
+                    await this.showSessionsForDate(date);
+                }
+            });
+        });
+    }
+
+    async loadTotalSetsForPeriod(period) {
+        let totalSets = 0;
+        for (const session of this.sessions) {
+            try {
+                const setsResp = await api.getSetsForSession(session.id);
+                if (setsResp.success) {
+                    totalSets += setsResp.data.length;
+                }
+            } catch (error) {
+                console.error('Error loading sets for session:', session.id, error);
+            }
+        }
+        this.totalSets = totalSets;
+        
+        // Update the UI
+        const setsEl = document.getElementById(`${period}-total-sets`);
+        if (setsEl) {
+            setsEl.textContent = totalSets;
+        }
+    }
+
+    async renderWeekView() {
+        const weekStartDay = this.preferences?.weekStartDay || 0;
+        const weekStart = this.getWeekStartDate(this.currentWeek, weekStartDay);
+        const weekEnd = this.getWeekEndDate(this.currentWeek, weekStartDay);
+        const weekInfo = this.getWeekNumber(this.currentWeek, weekStartDay);
+        
+        // Create day names array starting from the configured week start day
+        const allDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dayNames = [];
+        for (let i = 0; i < 7; i++) {
+            dayNames.push(allDayNames[(weekStartDay + i) % 7]);
+        }
+        
+        // Group sessions by date
+        const sessionsByDate = {};
+        this.sessions.forEach(session => {
+            const date = session.sessionDate;
+            if (!sessionsByDate[date]) {
+                sessionsByDate[date] = [];
+            }
+            sessionsByDate[date].push(session);
+        });
+        
+        // Count workout days
+        const workoutDays = Object.keys(sessionsByDate).filter(date => sessionsByDate[date].length > 0).length;
+
+        let content = `
+            <div class="card">
+                <div class="card-header">Workout History</div>
+                
+                <!-- Stats Summary -->
+                <div style="display: flex; gap: 16px; margin-bottom: 24px; padding: 16px; background: var(--surface); border-radius: 8px;">
+                    <div style="flex: 1; text-align: center;">
+                        <div style="font-size: 24px; font-weight: 600; color: var(--primary-color);">${workoutDays}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Workout Days</div>
+                    </div>
+                    <div style="flex: 1; text-align: center;">
+                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color);" id="week-total-sets">...</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Sets</div>
+                    </div>
+                </div>
+                
+                <!-- Week Navigation -->
+                <div class="calendar-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 8px;">
+                    <button class="btn btn-secondary calendar-nav-btn" id="prev-week-btn">← Prev</button>
+                    <h2 id="week-header" style="margin: 0; font-size: 18px; cursor: pointer; user-select: none; text-align: center; flex: 1;" title="Click to view month">Week ${weekInfo.week}</h2>
+                    <button class="btn btn-secondary calendar-nav-btn" id="next-week-btn">Next →</button>
+                </div>
+                
+                <!-- Week Date Range -->
+                <div style="text-align: center; margin-bottom: 16px; color: var(--text-secondary); font-size: 14px;">
+                    ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </div>
+
+                <!-- Week Grid -->
+                <div class="week-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 24px;">
+                    ${dayNames.map((dayName, i) => {
+                        const dayDate = new Date(weekStart);
+                        dayDate.setDate(weekStart.getDate() + i);
+                        const dateStr = this.formatDateStr(dayDate);
+                        const daySessions = sessionsByDate[dateStr] || [];
+                        const isToday = dateStr === new Date().toISOString().split('T')[0];
+                        const hasWorkouts = daySessions.length > 0;
+                        
+                        return `
+                            <div class="week-day ${hasWorkouts ? 'has-workouts' : ''}" 
+                                 data-date="${dateStr}"
+                                 style="
+                                     border: 2px solid ${isToday ? 'var(--primary-color)' : hasWorkouts ? 'var(--success-color)' : 'var(--border)'};
+                                     border-radius: 8px;
+                                     padding: 12px 8px;
+                                     cursor: pointer;
+                                     background: var(--surface);
+                                     text-align: center;
+                                     transition: all 0.2s;
+                                     min-height: 80px;
+                                     display: flex;
+                                     flex-direction: column;
+                                     align-items: center;
+                                 ">
+                                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500;">${dayName}</div>
+                                <div style="font-weight: ${hasWorkouts ? '700' : '600'}; font-size: 18px; color: ${hasWorkouts ? 'var(--success-color)' : 'inherit'}; margin-bottom: 4px;">${dayDate.getDate()}</div>
+                                ${hasWorkouts ? `
+                                    <div style="background: var(--success-color); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-top: auto;">
+                                        ${daySessions.length} workout${daySessions.length > 1 ? 's' : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- Session Details -->
+                <div id="session-details"></div>
+            </div>
+        `;
+
+        this.container.innerHTML = content;
+        this.attachWeekViewListeners();
+        
+        // Load total sets asynchronously
+        this.loadTotalSetsForPeriod('week');
+        
+        // Show today's workouts by default if any exist (use setTimeout to ensure DOM is ready)
+        setTimeout(async () => {
+            const today = new Date().toISOString().split('T')[0];
+            const todaySessions = this.sessions.filter(s => s.sessionDate === today);
+            if (todaySessions.length > 0) {
+                await this.showSessionsForDate(today);
+            }
+        }, 0);
+        
+        // Add hover styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .week-day:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            /* Mobile responsive styles for week view */
+            @media (max-width: 480px) {
+                .week-grid {
+                    gap: 4px !important;
+                }
+                .week-day {
+                    padding: 8px 4px !important;
+                    min-height: 70px !important;
+                    border-radius: 6px !important;
+                }
+                .week-day > div:first-child {
+                    font-size: 10px !important;
+                }
+                .week-day > div:nth-child(2) {
+                    font-size: 16px !important;
+                }
+            }
+            
+            @media (max-width: 360px) {
+                .week-grid {
+                    gap: 2px !important;
+                }
+                .week-day {
+                    padding: 6px 2px !important;
+                    min-height: 60px !important;
+                }
+            }
+        `;
+        if (!document.getElementById('week-view-styles')) {
+            style.id = 'week-view-styles';
+            document.head.appendChild(style);
+        }
+    }
+
+    attachWeekViewListeners() {
+        // Week header click - switch to month view
+        document.getElementById('week-header')?.addEventListener('click', () => {
+            // Set currentMonth to the month containing the current week
+            this.currentMonth = new Date(this.currentWeek.getFullYear(), this.currentWeek.getMonth(), 1);
+            this.viewMode = 'month';
+            this.render();
+        });
+
+        // Week navigation
+        document.getElementById('prev-week-btn')?.addEventListener('click', () => {
+            const newDate = new Date(this.currentWeek);
+            newDate.setDate(newDate.getDate() - 7);
+            this.currentWeek = newDate;
+            this.render();
+        });
+
+        document.getElementById('next-week-btn')?.addEventListener('click', () => {
+            const newDate = new Date(this.currentWeek);
+            newDate.setDate(newDate.getDate() + 7);
+            this.currentWeek = newDate;
+            this.render();
+        });
+
+        // Day clicks
+        document.querySelectorAll('.week-day').forEach(dayEl => {
             dayEl.addEventListener('click', async () => {
                 const date = dayEl.dataset.date;
                 await this.showSessionsForDate(date);
@@ -776,8 +1076,8 @@ export class HistoryView {
                         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Workout Days</div>
                     </div>
                     <div style="flex: 1; text-align: center;">
-                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color);">${totalWorkouts}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Completed</div>
+                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color);" id="year-total-sets">...</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Sets</div>
                     </div>
                 </div>
                 
@@ -808,7 +1108,7 @@ export class HistoryView {
                          border-radius: 12px;
                          padding: 20px;
                          cursor: pointer;
-                         background: ${hasWorkouts ? '#e8f5e9' : 'white'};
+                         background: var(--surface);
                          transition: all 0.2s;
                          position: relative;
                      ">
@@ -826,6 +1126,9 @@ export class HistoryView {
 
         this.container.innerHTML = content;
         this.attachYearViewListeners();
+        
+        // Load total sets asynchronously
+        this.loadTotalSetsForPeriod('year');
         
         // Add hover styles
         const style = document.createElement('style');
