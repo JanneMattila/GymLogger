@@ -155,6 +155,10 @@ builder.Services.AddScoped<TemplateService>();
 builder.Services.AddScoped<StatsService>();
 builder.Services.AddScoped<BodyMapService>();
 builder.Services.AddScoped<OutboundIntegrationService>();
+builder.Services.AddScoped<ReportService>();
+
+// Configure QuestPDF license (Community license is free)
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var app = builder.Build();
 
@@ -194,5 +198,6 @@ app.MapStatsEndpoints();
 app.MapIntegrationEndpoints();
 app.MapTemplateEndpoints();
 app.MapSyncEndpoints();
+app.MapReportEndpoints();
 
 app.Run();

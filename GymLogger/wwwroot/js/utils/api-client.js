@@ -920,6 +920,55 @@ class ApiClient {
             };
         }
     }
+
+    async generateWorkoutReport(startDate, endDate, format = 'pdf') {
+        // Report generation is online-only
+        if (!navigator.onLine) {
+            return {
+                success: false,
+                error: 'Cannot generate report while offline. Please connect to the internet.'
+            };
+        }
+
+        eventBus.emit('api:start');
+        
+        try {
+            const response = await fetch(`${API_BASE}/users/me/reports/workout?startDate=${startDate}&endDate=${endDate}&format=${format}`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                eventBus.emit('api:error');
+                eventBus.emit('api:end');
+                return {
+                    success: false,
+                    error: errorData.error || `HTTP error! status: ${response.status}`
+                };
+            }
+
+            // Get the file as a blob
+            const blob = await response.blob();
+            
+            eventBus.emit('api:success');
+            eventBus.emit('api:end');
+            
+            return {
+                success: true,
+                data: blob,
+                format: format
+            };
+        } catch (error) {
+            console.error('[API] Error generating workout report:', error);
+            eventBus.emit('api:error');
+            eventBus.emit('api:end');
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
 }
 
 export const api = new ApiClient();

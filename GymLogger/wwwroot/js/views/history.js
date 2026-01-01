@@ -3,6 +3,9 @@ import { formatDate } from '../utils/date-formatter.js?v=00000000000000';
 import { eventBus } from '../utils/event-bus.js?v=00000000000000';
 import { notification } from '../components/notification.js?v=00000000000000';
 
+const DROPDOWN_MENU_STYLE = 'position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 25px var(--shadow); min-width: 140px; z-index: 20; padding: 4px 0; display: none;';
+const DROPDOWN_ITEM_STYLE = 'display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 10px 16px; font-size: 14px; cursor: pointer; color: var(--text-primary); transition: background 0.2s ease, color 0.2s ease;';
+
 export class HistoryView {
     constructor() {
         this.container = document.getElementById('main');
@@ -15,6 +18,11 @@ export class HistoryView {
         this.selectedSession = null;
         this.viewMode = 'week'; // 'week', 'month' or 'year'
         this.totalSets = 0; // Track total sets for the current period
+        this.boundDropdownCloseHandler = (event) => {
+            if (!event.target.closest('.simple-dropdown')) {
+                this.closeAllDropdowns();
+            }
+        };
     }
 
     // Get the week number for a given date
@@ -251,9 +259,20 @@ export class HistoryView {
         // Count total sets for the month
         this.totalSets = 0;
 
+        const isOffline = !navigator.onLine;
+
         let content = `
             <div class="card">
-                <div class="card-header">Workout History</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="card-header" style="margin: 0;">Workout History</div>
+                    <div class="simple-dropdown" style="position: relative;">
+                        <button type="button" class="btn btn-primary" id="create-report-btn" data-dropdown-toggle="report-format-menu" ${isOffline ? 'disabled' : ''}>📄 Create Report ▾</button>
+                        <div class="simple-dropdown-menu" id="report-format-menu" data-open="false" style="${DROPDOWN_MENU_STYLE}">
+                            <button type="button" class="simple-dropdown-item" data-format="pdf" style="${DROPDOWN_ITEM_STYLE}">📄 PDF Report</button>
+                            <button type="button" class="simple-dropdown-item" data-format="csv" style="${DROPDOWN_ITEM_STYLE}">📊 CSV Export</button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Stats Summary -->
                 <div style="display: flex; gap: 16px; margin-bottom: 24px; padding: 16px; background: var(--surface); border-radius: 8px;">
@@ -403,6 +422,23 @@ export class HistoryView {
     }
 
     attachCalendarListeners() {
+        // Initialize dropdown for report format selection
+        this.initializeDropdowns();
+
+        // Report format selection
+        document.querySelectorAll('.simple-dropdown-item[data-format]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const format = btn.dataset.format;
+                const year = this.currentMonth.getFullYear();
+                const month = this.currentMonth.getMonth();
+                const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+                const lastDay = new Date(year, month + 1, 0).getDate();
+                const endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+                this.closeAllDropdowns();
+                this.generateReport(startDate, endDate, format);
+            });
+        });
+
         // Month header click - switch to year view
         document.getElementById('month-header')?.addEventListener('click', () => {
             this.viewMode = 'year';
@@ -485,9 +521,20 @@ export class HistoryView {
         // Count workout days
         const workoutDays = Object.keys(sessionsByDate).filter(date => sessionsByDate[date].length > 0).length;
 
+        const isOffline = !navigator.onLine;
+
         let content = `
             <div class="card">
-                <div class="card-header">Workout History</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="card-header" style="margin: 0;">Workout History</div>
+                    <div class="simple-dropdown" style="position: relative;">
+                        <button type="button" class="btn btn-primary" id="create-report-btn" data-dropdown-toggle="report-format-menu" ${isOffline ? 'disabled' : ''}>📄 Create Report ▾</button>
+                        <div class="simple-dropdown-menu" id="report-format-menu" data-open="false" style="${DROPDOWN_MENU_STYLE}">
+                            <button type="button" class="simple-dropdown-item" data-format="pdf" style="${DROPDOWN_ITEM_STYLE}">📄 PDF Report</button>
+                            <button type="button" class="simple-dropdown-item" data-format="csv" style="${DROPDOWN_ITEM_STYLE}">📊 CSV Export</button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Stats Summary -->
                 <div style="display: flex; gap: 16px; margin-bottom: 24px; padding: 16px; background: var(--surface); border-radius: 8px;">
@@ -635,6 +682,23 @@ export class HistoryView {
     }
 
     attachWeekViewListeners() {
+        // Initialize dropdown
+        this.initializeDropdowns();
+
+        // Format selection in dropdown
+        document.querySelectorAll('.simple-dropdown-item[data-format]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const format = btn.dataset.format;
+                const weekStartDay = this.preferences?.weekStartDay || 0;
+                const weekStart = this.getWeekStartDate(this.currentWeek, weekStartDay);
+                const weekEnd = this.getWeekEndDate(this.currentWeek, weekStartDay);
+                const startDate = this.formatDateStr(weekStart);
+                const endDate = this.formatDateStr(weekEnd);
+                this.closeAllDropdowns();
+                this.generateReport(startDate, endDate, format);
+            });
+        });
+
         // Week header click - switch to month view
         document.getElementById('week-header')?.addEventListener('click', () => {
             // Set currentMonth to the month containing the current week
@@ -1086,9 +1150,20 @@ export class HistoryView {
         const totalWorkouts = this.sessions.filter(s => s.status === 'completed').length;
         const workoutDays = new Set(this.sessions.map(s => s.sessionDate)).size;
 
+        const isOffline = !navigator.onLine;
+
         let content = `
             <div class="card">
-                <div class="card-header">Workout History</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="card-header" style="margin: 0;">Workout History</div>
+                    <div class="simple-dropdown" style="position: relative;">
+                        <button type="button" class="btn btn-primary" id="create-report-btn" data-dropdown-toggle="report-format-menu" ${isOffline ? 'disabled' : ''}>📄 Create Report ▾</button>
+                        <div class="simple-dropdown-menu" id="report-format-menu" data-open="false" style="${DROPDOWN_MENU_STYLE}">
+                            <button type="button" class="simple-dropdown-item" data-format="pdf" style="${DROPDOWN_ITEM_STYLE}">📄 PDF Report</button>
+                            <button type="button" class="simple-dropdown-item" data-format="csv" style="${DROPDOWN_ITEM_STYLE}">📊 CSV Export</button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Year Stats Summary -->
                 <div style="display: flex; gap: 16px; margin-bottom: 24px; padding: 16px; background: var(--surface); border-radius: 8px;">
@@ -1166,6 +1241,21 @@ export class HistoryView {
     }
 
     attachYearViewListeners() {
+        // Initialize dropdown
+        this.initializeDropdowns();
+
+        // Format selection in dropdown
+        document.querySelectorAll('.simple-dropdown-item[data-format]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const format = btn.dataset.format;
+                const year = this.currentMonth.getFullYear();
+                const startDate = `${year}-01-01`;
+                const endDate = `${year}-12-31`;
+                this.closeAllDropdowns();
+                this.generateReport(startDate, endDate, format);
+            });
+        });
+
         // Year navigation
         document.getElementById('prev-year-btn')?.addEventListener('click', () => {
             this.currentMonth = new Date(this.currentMonth.getFullYear() - 1, this.currentMonth.getMonth(), 1);
@@ -1186,5 +1276,68 @@ export class HistoryView {
                 this.render();
             });
         });
+    }
+
+    initializeDropdowns() {
+        document.querySelectorAll('[data-dropdown-toggle]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const menuId = btn.dataset.dropdownToggle;
+                this.toggleDropdown(menuId);
+            });
+        });
+    }
+
+    toggleDropdown(menuId) {
+        const menu = document.getElementById(menuId);
+        if (!menu) return;
+
+        const isVisible = menu.style.display === 'block';
+        this.closeAllDropdowns();
+
+        if (!isVisible) {
+            menu.style.display = 'block';
+            // Add click outside listener
+            document.addEventListener('click', this.boundDropdownCloseHandler);
+        }
+    }
+
+    closeAllDropdowns() {
+        document.querySelectorAll('.simple-dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+        document.removeEventListener('click', this.boundDropdownCloseHandler);
+    }
+
+    async generateReport(startDate, endDate, format = 'pdf') {
+        // Show notification that report generation has started
+        notification.info(`Generating ${format.toUpperCase()} report...`);
+
+        try {
+            const response = await api.generateWorkoutReport(startDate, endDate, format);
+            
+            if (response.success && response.data) {
+                // Create a blob from the data and trigger download
+                const contentType = format === 'csv' ? 'text/csv' : 'application/pdf';
+                const extension = format === 'csv' ? 'csv' : 'pdf';
+                const blob = new Blob([response.data], { type: contentType });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `workout-report-${startDate}-to-${endDate}.${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                notification.success('Report downloaded successfully!');
+            } else {
+                notification.error(response.error || 'Failed to generate report');
+            }
+        } catch (error) {
+            console.error('Error generating report:', error);
+            notification.error('Error generating report: ' + error.message);
+        }
     }
 }

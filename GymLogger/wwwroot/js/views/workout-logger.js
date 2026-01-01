@@ -1419,12 +1419,40 @@ export class WorkoutLoggerView {
             
             // Make timer draggable
             this.makeDraggable(timerEl);
+            
+            // Always start in expanded (large) state
+            timerEl.dataset.minimized = 'false';
         }
         
+        const isMinimized = timerEl.dataset.minimized === 'true';
+        
         timerEl.innerHTML = `
-            <div style="font-size: 14px; font-weight: 500; opacity: 0.9;">Rest Timer</div>
-            <div id="rest-timer-display" style="font-size: 48px; font-weight: 700; line-height: 1;">${this.formatTime(duration)}</div>
-            <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+            <div style="position: relative; width: 100%;">
+                <button id="rest-timer-toggle-btn" style="
+                    position: absolute;
+                    top: ${isMinimized ? '-8px' : '-12px'};
+                    right: ${isMinimized ? '-16px' : '-20px'};
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    width: ${isMinimized ? '24px' : '28px'};
+                    height: ${isMinimized ? '24px' : '28px'};
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: ${isMinimized ? '12px' : '14px'};
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background 0.2s;
+                    -webkit-tap-highlight-color: transparent;
+                    touch-action: manipulation;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'"
+                title="${isMinimized ? 'Maximize' : 'Minimize'}">${isMinimized ? '⬜' : '➖'}</button>
+            </div>
+            <div style="font-size: ${isMinimized ? '10px' : '14px'}; font-weight: 500; opacity: 0.9;">Rest Timer</div>
+            <div id="rest-timer-display" style="font-size: ${isMinimized ? '24px' : '48px'}; font-weight: 700; line-height: 1;">${this.formatTime(duration)}</div>
+            ${!isMinimized ? `
+            <div id="rest-timer-buttons" style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
                 <button id="rest-timer-minus-btn" style="
                     background: rgba(255, 255, 255, 0.2);
                     border: none;
@@ -1465,9 +1493,26 @@ export class WorkoutLoggerView {
                     touch-action: manipulation;
                 " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">+1</button>
             </div>
+            ` : ''}
         `;
         
-        // Attach skip button listener
+        // Update timer padding based on minimized state
+        timerEl.style.padding = isMinimized ? '12px 20px' : '24px 32px';
+        timerEl.style.minWidth = isMinimized ? '100px' : '200px';
+        
+        // Attach minimize/maximize toggle button listener
+        const toggleBtn = document.getElementById('rest-timer-toggle-btn');
+        toggleBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleRestTimerSize();
+        });
+        toggleBtn?.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleRestTimerSize();
+        });
+        
+        // Attach skip button listener (only when not minimized)
         const skipBtn = document.getElementById('skip-rest-btn');
         skipBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1479,7 +1524,7 @@ export class WorkoutLoggerView {
             this.stopRestTimer();
         });
         
-        // Attach minus button listener (-1 minute)
+        // Attach minus button listener (-1 minute, only when not minimized)
         const minusBtn = document.getElementById('rest-timer-minus-btn');
         minusBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1491,7 +1536,7 @@ export class WorkoutLoggerView {
             this.adjustRestTimer(-60);
         });
         
-        // Attach plus button listener (+1 minute)
+        // Attach plus button listener (+1 minute, only when not minimized)
         const plusBtn = document.getElementById('rest-timer-plus-btn');
         plusBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1502,6 +1547,22 @@ export class WorkoutLoggerView {
             e.stopPropagation();
             this.adjustRestTimer(60);
         });
+    }
+
+    toggleRestTimerSize() {
+        const timerEl = document.getElementById('rest-timer');
+        if (!timerEl) return;
+        
+        const isCurrentlyMinimized = timerEl.dataset.minimized === 'true';
+        timerEl.dataset.minimized = isCurrentlyMinimized ? 'false' : 'true';
+        
+        // Re-render with current remaining time
+        const displayEl = document.getElementById('rest-timer-display');
+        const currentTimeText = displayEl?.textContent || '0:00';
+        const parts = currentTimeText.split(':');
+        const currentSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        
+        this.showRestTimer(currentSeconds);
     }
 
     makeDraggable(element) {
