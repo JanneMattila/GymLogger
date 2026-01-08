@@ -361,7 +361,7 @@
   },
   {
     "id": "ex-37",
-    "name": "Swing Squat",
+    "name": "Pendulum Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Machine",
     "description": "Setup: Position yourself on the swing squat machine with back against pad, feet on platform shoulder-width apart. Technique: Lower body by bending knees while keeping back pressed to pad. Descend until thighs parallel or deeper. Drive through heels to return to start. Hints: Machine provides guided movement pattern. Keep core engaged. Full range of motion for maximum effectiveness. Warnings: Don't let knees cave inward. Avoid locking out completely at top. Keep lower back against pad.",
@@ -658,5 +658,15 @@
     "isCustom": false,
     "createdAt": "2025-12-26T00:00:00Z",
     "updatedAt": "2025-12-26T00:00:00Z"
+  },
+  {
+    "id": "ex-67",
+    "name": "Abduction Machine",
+    "muscleGroup": "Legs",
+    "equipmentType": "Machine",
+    "description": "Setup: Sit on machine with back against pad, legs together on the leg pads. Adjust starting position if available. Grip handles for stability. Technique: Push legs apart by contracting outer thigh muscles (abductors). Pause and squeeze at the widest position. Return with control to starting position, stopping before weight stack touches. Hints: Focus on pushing through the outer thighs, not just moving the legs. Keep back flat against pad throughout. Control both the concentric and eccentric phases. Adjust weight to allow 12-15 quality reps. Warnings: Don't use momentum or jerky movements. Avoid going too wide if flexibility is limited. Keep movement controlled to prevent strain. Stop if you feel sharp pain in hip or outer thigh area.",
+    "isCustom": false,
+    "createdAt": "2026-01-08T00:00:00Z",
+    "updatedAt": "2026-01-08T00:00:00Z"
   }
 ]
