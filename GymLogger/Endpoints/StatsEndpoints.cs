@@ -30,9 +30,9 @@ public static class StatsEndpoints
             return Results.Ok(await service.GetStatsByMuscleGroupAsync(user.Id, muscleGroup));
         });
 
-        group.MapGet("/history/{exerciseId}", async (ClaimsPrincipal user, string exerciseId, StatsService service) =>
+        group.MapGet("/history/{exerciseId}", async (ClaimsPrincipal user, string exerciseId, int? limit, StatsService service) =>
         {
-            return await service.GetExerciseHistoryAsync(user.Id, exerciseId);
+            return await service.GetExerciseHistoryAsync(user.Id, exerciseId, limit ?? -1);
         });
 
         // Body map endpoint for muscle advancement visualization

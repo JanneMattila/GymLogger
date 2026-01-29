@@ -2,6 +2,7 @@ import { api } from '../utils/api-client.js?v=00000000000000';
 import { eventBus } from '../utils/event-bus.js?v=00000000000000';
 import { getDayName } from '../utils/date-formatter.js?v=00000000000000';
 import { notification } from '../components/notification.js?v=00000000000000';
+import { exerciseHistoryDialog } from '../components/exercise-history-dialog.js?v=00000000000000';
 
 const DROPDOWN_MENU_STYLE = 'position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 25px var(--shadow); min-width: 180px; z-index: 20; padding: 4px 0; display: none;';
 const DROPDOWN_ITEM_STYLE = 'display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 10px 16px; font-size: 14px; cursor: pointer; color: var(--text-primary); transition: background 0.2s ease, color 0.2s ease;';
@@ -447,8 +448,12 @@ export class ProgramsView {
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-danger" data-action="remove-exercise" data-index="${index}" 
-                            style="padding: 8px 12px; min-height: 36px; align-self: flex-end; margin-bottom: 8px;">🗑️</button>
+                    <div style="display: flex; gap: 4px; align-self: flex-end; margin-bottom: 8px;">
+                        <button type="button" class="btn btn-secondary" data-action="view-history" data-index="${index}" data-exercise-id="${exercise.exerciseId}"
+                                style="padding: 8px 12px; min-height: 36px; font-size: 16px;" title="View exercise history">📊</button>
+                        <button type="button" class="btn btn-danger" data-action="remove-exercise" data-index="${index}" 
+                                style="padding: 8px 12px; min-height: 36px;">🗑️</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -477,6 +482,17 @@ export class ProgramsView {
             btn.addEventListener('click', () => {
                 const index = parseInt(btn.dataset.index);
                 this.removeExerciseRow(index);
+            });
+        });
+
+        // View exercise history buttons
+        document.querySelectorAll('[data-action="view-history"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const exerciseId = btn.dataset.exerciseId;
+                const exerciseData = this.exercises.find(e => e.id === exerciseId);
+                if (exerciseData) {
+                    exerciseHistoryDialog.show(exerciseData, this.preferences);
+                }
             });
         });
 
@@ -575,6 +591,16 @@ export class ProgramsView {
             this.removeExerciseRow(index);
         });
 
+        // Attach history button listener for the new row
+        const historyBtn = newRow.querySelector('[data-action="view-history"]');
+        historyBtn?.addEventListener('click', () => {
+            const exerciseId = historyBtn.dataset.exerciseId;
+            const exerciseData = this.exercises.find(e => e.id === exerciseId);
+            if (exerciseData) {
+                exerciseHistoryDialog.show(exerciseData, this.preferences);
+            }
+        });
+
         // Attach dropdown listeners for the new row
         const input = newRow.querySelector('.exercise-search');
         const dropdown = newRow.querySelector('.exercise-dropdown');
@@ -666,6 +692,17 @@ export class ProgramsView {
             btn.addEventListener('click', () => {
                 const index = parseInt(btn.dataset.index);
                 this.removeExerciseRow(index);
+            });
+        });
+
+        // Reattach history button listeners
+        document.querySelectorAll('[data-action="view-history"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const exerciseId = btn.dataset.exerciseId;
+                const exerciseData = this.exercises.find(e => e.id === exerciseId);
+                if (exerciseData) {
+                    exerciseHistoryDialog.show(exerciseData, this.preferences);
+                }
             });
         });
 

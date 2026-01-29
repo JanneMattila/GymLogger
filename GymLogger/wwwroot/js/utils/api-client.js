@@ -799,9 +799,10 @@ class ApiClient {
         };
     }
 
-    async getExerciseHistory(exerciseId) {
-        const response = await this.get(`/users/me/stats/history/${exerciseId}`, {
-            cacheKey: `history_${exerciseId}`,
+    async getExerciseHistory(exerciseId, limit = -1) {
+        const queryStr = limit > 0 ? `?limit=${limit}` : '';
+        const response = await this.get(`/users/me/stats/history/${exerciseId}${queryStr}`, {
+            cacheKey: `history_${exerciseId}_${limit}`,
             cacheTTL: 3600000 // 1 hour
         });
         // Collection endpoint - guarantee empty array

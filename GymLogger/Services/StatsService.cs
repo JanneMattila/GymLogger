@@ -136,7 +136,7 @@ public class StatsService
         return allStats.Where(s => exerciseIds.Contains(s.ExerciseId)).ToList();
     }
 
-    public async Task<List<HistoryDataPoint>> GetExerciseHistoryAsync(string userId, string exerciseId)
+    public async Task<List<HistoryDataPoint>> GetExerciseHistoryAsync(string userId, string exerciseId, int limit = -1)
     {
         var sessions = await _sessionRepo.GetSessionsAsync(userId);
         var history = new List<HistoryDataPoint>();
@@ -166,7 +166,8 @@ public class StatsService
             }
         }
 
-        return history;
+        // Return limited results if limit > 0, otherwise return all
+        return limit > 0 ? history.TakeLast(limit).ToList() : history;
     }
 
     private static decimal ConvertToKilograms(decimal weight, string? weightUnit)

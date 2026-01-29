@@ -5,6 +5,7 @@ import { notification } from '../components/notification.js?v=00000000000000';
 import { offlineManager } from '../utils/offline-manager.js?v=00000000000000';
 import { offlineStorage } from '../utils/offline-storage.js?v=00000000000000';
 import { wakeLockManager } from '../utils/wake-lock-manager.js?v=00000000000000';
+import { exerciseHistoryDialog } from '../components/exercise-history-dialog.js?v=00000000000000';
 
 // Fixed key for the active local workout session
 const LOCAL_SESSION_ID = 'active_local_workout';
@@ -323,6 +324,9 @@ export class WorkoutLoggerView {
                 <div style="background: var(--surface); padding: 20px; border-radius: 8px; margin-bottom: 24px;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                         <h2 style="margin: 0; flex: 1;">${exerciseData?.name || 'Unknown Exercise'}</h2>
+                        <button class="btn btn-secondary" id="view-exercise-history-btn" style="padding: 8px 12px; font-size: 20px;" title="View previous weights">
+                            📊
+                        </button>
                         <button class="btn btn-secondary" id="view-exercise-details-btn" style="padding: 8px 12px; font-size: 20px;" title="View exercise details">
                             ℹ️
                         </button>
@@ -542,6 +546,15 @@ export class WorkoutLoggerView {
     }
 
     attachWorkoutListeners() {
+        // View exercise history button
+        document.getElementById('view-exercise-history-btn')?.addEventListener('click', () => {
+            const currentProgramExercise = this.program.exercises[this.currentExerciseIndex];
+            const exerciseData = this.exercises.find(e => e.id === currentProgramExercise.exerciseId);
+            if (exerciseData) {
+                exerciseHistoryDialog.show(exerciseData, this.preferences);
+            }
+        });
+
         // View exercise details button
         document.getElementById('view-exercise-details-btn')?.addEventListener('click', () => {
             const currentProgramExercise = this.program.exercises[this.currentExerciseIndex];
@@ -1779,21 +1792,17 @@ export class WorkoutLoggerView {
         
         // Determine default weight priority:
         // 1. Last working set's weight from current session (during workout)
-        // 2. Cached weight from last session for this program (1st set)
-        // 3. Program's target weight
-        // 4. API fallback (last session via server)
+        // 2. Program's target weight (from program defaults only)
+        // 3. Empty (user must enter)
         if (workingSets.length > 0) {
             // Use the last working set's weight from current session
             this.defaultWeightForNewSet = workingSets[workingSets.length - 1].weight;
-        } else if (this.cachedLastWeights && this.cachedLastWeights[currentProgramExercise.exerciseId]) {
-            // Use cached weight from last session for this program (1st set, instant, no API call)
-            this.defaultWeightForNewSet = this.cachedLastWeights[currentProgramExercise.exerciseId].weight;
         } else if (currentProgramExercise.targetWeight) {
             // Use program's target weight as fallback
             this.defaultWeightForNewSet = currentProgramExercise.targetWeight;
         } else {
-            // Final fallback: try to get from last session via API (only if cache miss)
-            this.defaultWeightForNewSet = await this.getLastSessionWeight(currentProgramExercise.exerciseId);
+            // No default - user must enter weight
+            this.defaultWeightForNewSet = '';
         }
     }
 
