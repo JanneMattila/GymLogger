@@ -168,10 +168,29 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<GymLoggerDbContext>();
     try
     {
-        // Apply any pending migrations
-        Console.WriteLine("[Database] Applying migrations...");
-        dbContext.Database.Migrate();
-        Console.WriteLine("[Database] Database is up to date");
+        // Check for pending migrations
+        var pendingMigrations = dbContext.Database.GetPendingMigrations().ToList();
+        var appliedMigrations = dbContext.Database.GetAppliedMigrations().ToList();
+        
+        Console.WriteLine($"[Database] Applied migrations: {appliedMigrations.Count}");
+        Console.WriteLine($"[Database] Pending migrations: {pendingMigrations.Count}");
+        
+        if (pendingMigrations.Count > 0)
+        {
+            Console.WriteLine("[Database] Migrations to apply:");
+            foreach (var migration in pendingMigrations)
+            {
+                Console.WriteLine($"[Database]   - {migration}");
+            }
+            
+            Console.WriteLine("[Database] Applying migrations...");
+            dbContext.Database.Migrate();
+            Console.WriteLine("[Database] All migrations applied successfully");
+        }
+        else
+        {
+            Console.WriteLine("[Database] Database is up to date");
+        }
         
         await DatabaseSeeder.SeedSharedExercisesAsync(dbContext);
     }
