@@ -45,6 +45,20 @@ body.theme-dark .loader-overlay {
     background: rgba(32, 33, 36, 0.95);
 }
 
+html.theme-dark .loader-cancel-btn,
+body.theme-dark .loader-cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ccc;
+}
+
+html.theme-dark .loader-cancel-btn:hover,
+body.theme-dark .loader-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
 html.theme-dark body {
     background: var(--background);
 }
@@ -170,6 +184,7 @@ body {
     bottom: 0;
     background: rgba(255, 255, 255, 0.95);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 9999;
@@ -187,6 +202,33 @@ body {
     border-radius: 50%;
     background: linear-gradient(135deg, #0d47a1 0%, #42a5f5 50%, #90caf9 100%);
     animation: spin 2s linear infinite, zoom 0.5s ease-out;
+}
+
+.loader-cancel-btn {
+    position: absolute;
+    bottom: 60px;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.loader-cancel-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.3);
+    color: #333;
+    transform: scale(1.05);
+}
+
+.loader-cancel-btn:active {
+    transform: scale(0.95);
 }
 
 @keyframes spin {

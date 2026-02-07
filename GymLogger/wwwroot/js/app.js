@@ -46,6 +46,10 @@ class App {
         const loader = new LoaderWidget();
         loader.init();
         
+        // Make loader accessible globally for cancel callbacks
+        window.gymLogger = window.gymLogger || {};
+        window.gymLogger.loader = loader;
+        
         // App is now ready - remove loading state and show content
         const appElement = document.getElementById('app');
         appElement.classList.remove('app-loading');

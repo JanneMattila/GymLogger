@@ -7,8 +7,24 @@ import { offlineStorage } from './offline-storage.js?v=00000000000000';
 const API_BASE = '/api';
 
 class ApiClient {
+    constructor() {
+        this.activeControllers = new Set();
+        
+        // Listen for cancel events from loader
+        eventBus.on('loader:cancel', () => {
+            this.cancelAllRequests();
+        });
+    }
+
     // User ID is now managed entirely by backend via authentication cookies
     // Frontend uses /api/users/me/... endpoints instead of passing user IDs
+
+    cancelAllRequests() {
+        this.activeControllers.forEach(controller => {
+            controller.abort();
+        });
+        this.activeControllers.clear();
+    }
 
 
     async get(url, options = { cacheKey: null, cacheTTL: 3600000, showLoader: true, skipCache: false, preferCache: false }) {
@@ -45,9 +61,35 @@ class ApiClient {
 
             // Network-first strategy when online
             if (online) {
-                const response = await fetch(`${API_BASE}${url}`, {
-                    credentials: 'include'
-                });
+                const controller = new AbortController();
+                this.activeControllers.add(controller);
+                
+                let response;
+                try {
+                    response = await fetch(`${API_BASE}${url}`, {
+                        credentials: 'include',
+                        signal: controller.signal
+                    });
+                } catch (fetchError) {
+                    this.activeControllers.delete(controller);
+                    
+                    // Handle request cancellation
+                    if (fetchError.name === 'AbortError') {
+                        if (showLoader) eventBus.emit('api:end');
+                        return {
+                            source: 'none',
+                            online: true,
+                            success: false,
+                            data: null,
+                            error: 'Request cancelled'
+                        };
+                    }
+                    
+                    // Re-throw other errors to be handled by outer catch
+                    throw fetchError;
+                }
+                
+                this.activeControllers.delete(controller);
                 
                 if (!response.ok) {
                     // Network error - try cache fallback (unless skipCache is true)

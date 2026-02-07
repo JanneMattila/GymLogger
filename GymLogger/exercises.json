@@ -668,5 +668,75 @@
     "isCustom": false,
     "createdAt": "2026-01-08T00:00:00Z",
     "updatedAt": "2026-01-08T00:00:00Z"
+  },
+  {
+    "id": "ex-68",
+    "name": "Hammer Strength High Row",
+    "muscleGroup": "Back",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Sit facing the chest pad with upper chest resting against it. Grip the overhead handles with palms facing down—arms angled upward at roughly 45°. Feet flat on floor. Technique: Pull handles downward and back in an arc toward your upper ribcage, leading with elbows. Squeeze upper back and rear delts at peak contraction. Return with control. Hints: This specifically targets upper lats, mid-traps, and rear delts—a different angle than standard rows or pulldowns. Keep chest pressed into pad to eliminate momentum. Think 'pull elbows into back pockets at an angle.' The high-pull path is unique to this machine and hard to replicate with free weights. Warnings: Don't lean back away from the pad. Avoid shrugging shoulders—keep them depressed. Don't use momentum or jerk the weight.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-69",
+    "name": "Hammer Strength V-Squat",
+    "muscleGroup": "Legs",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Stand on the angled platform with shoulders under the pads. Feet shoulder-width, positioned forward on the platform. Release safety handles. Technique: Descend by bending knees and hips, keeping torso guided along the fixed V-shaped track. Lower until thighs are at or below parallel. Drive through heels to stand back up. The angled track keeps your torso more upright than a barbell squat. Hints: The fixed path reduces spinal loading compared to free-weight squats while still hitting quads and glutes hard. Adjust foot placement—higher for more glute/hamstring, lower for quad emphasis. The V-angle uniquely combines squat and hack squat mechanics. Warnings: Don't round your lower back at the bottom. Keep knees tracking over toes—avoid valgus collapse. Engage the safety catches between sets.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-70",
+    "name": "Hammer Strength Iso-Lateral Low Row",
+    "muscleGroup": "Back",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Sit with chest against pad, feet on footrests. Grip the low handles with palms facing each other (neutral grip). Each arm operates independently. Technique: Pull one or both handles back toward your hips, driving elbows straight back. Focus on lower lat contraction. Squeeze at peak, then return with control. Can train one arm at a time or both simultaneously. Hints: The low-pull angle specifically targets the lower lats and teres major—different from cable rows which pull to mid-torso. Iso-lateral design lets you work each side independently to fix imbalances. Keep chest on pad and avoid torso rotation when doing single-arm work. Warnings: Don't rotate torso when pulling single-arm. Avoid rounding upper back. Keep movements controlled—no jerking.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-71",
+    "name": "Hammer Strength Seated Dip",
+    "muscleGroup": "Arms",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Sit with back against pad, feet flat on floor. Grip handles at your sides with palms facing inward. Adjust seat so arms start bent at roughly 90°. Technique: Press handles downward by extending elbows, squeezing triceps at full extension. Return with control to the starting position. Keep elbows close to body throughout. Hints: Unlike bodyweight dips, this isolates triceps without requiring shoulder stability or risking shoulder impingement. The seated position eliminates lower body momentum entirely. Focus on lockout squeeze for peak tricep contraction. Can load heavier than bodyweight dips safely. Warnings: Don't flare elbows outward. Avoid using shoulder depression to push weight—isolate the tricep extension. Don't slam the weight stack at bottom.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-72",
+    "name": "Hammer Strength Behind-the-Neck Press",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Sit facing away from the machine with back against pad. Grip handles positioned behind head at ear level with palms facing forward. Feet flat on floor. Technique: Press handles upward and together in a converging arc until arms are fully extended overhead. Lower with control back to ear level. Keep core braced throughout. Hints: The machine's guided path makes behind-the-neck pressing safer than the free-weight version by controlling the bar path and preventing excessive shoulder external rotation. Targets lateral deltoid heads more than front presses. Excellent for building capped shoulder appearance. Start with lighter weight to assess shoulder mobility. Warnings: Skip this exercise if you have any shoulder impingement issues. Don't lower below ear level. Keep head neutral—don't push it forward.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-73",
+    "name": "Hammer Strength Pullover",
+    "muscleGroup": "Back",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Sit with back against pad, feet flat. Place elbows on the arm pads and grip handles above head. Seat belt optional for stability. Technique: Pull handles down in an arc from overhead to hip level using lat contraction—elbows remain fixed at approximately 90°. Squeeze lats hard at the bottom position. Return with control overhead. Hints: This is one of the few machines that isolates the lats without bicep involvement—pure lat contraction through shoulder extension. The pullover motion uniquely stretches lats at the top and contracts them at the bottom. Think 'drive elbows into your sides.' Cannot be replicated well with free weights or cables. Warnings: Don't use excessive range of motion overhead if shoulder mobility is limited. Avoid arching back off the pad. Keep the movement smooth—no jerking at the start.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-74",
+    "name": "Hammer Strength Calf Raise",
+    "muscleGroup": "Legs",
+    "equipmentType": "Hammer Strength",
+    "description": "Setup: Stand with shoulders under the pads, balls of feet on the foot platform edge, heels hanging off. Select weight on the plate-loaded lever arms. Slight knee bend for standing version, or sit for seated version. Technique: Lower heels below platform level for a full stretch. Drive up onto toes as high as possible, squeezing calves at peak for 2 seconds. Lower with a controlled 3-second eccentric. Hints: The linear lever-arm design provides consistent resistance unlike the variable resistance of standard stack machines. Plate-loaded allows for precise micro-loading. Alternate toe angles across sets (straight, inward, outward) to target different calf heads. The stretch at the bottom is key—don't short-change range of motion. Warnings: Don't bounce at the bottom—controlled stretch only. Avoid locking knees on standing version. Keep shoulders level under pads—don't lean.",
+    "isCustom": false,
+    "createdAt": "2026-02-07T00:00:00Z",
+    "updatedAt": "2026-02-07T00:00:00Z"
   }
 ]
