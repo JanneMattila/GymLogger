@@ -738,5 +738,15 @@
     "isCustom": false,
     "createdAt": "2026-02-07T00:00:00Z",
     "updatedAt": "2026-02-07T00:00:00Z"
+  },
+  {
+    "id": "ex-75",
+    "name": "45-Degree Back Extension",
+    "muscleGroup": "Back",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Position hips on the angled pad of a 45-degree back extension bench, feet secured under the foot pads. Begin with torso in line with the body angle (45 degrees to the floor). Technique: Hinge at hips to lower torso toward the floor while maintaining a neutral spine. Raise back up by contracting glutes and lower back until torso returns to the starting position. Hints: Focus on hip hinge movement rather than spinal extension. Squeeze glutes at the top of the movement. Can hold a weight plate at chest to add resistance. Keep neck in neutral alignment. Warnings: Do not hyperextend the spine at the top—stop when torso is in line with the bench angle. Avoid rounding the lower back. Control the movement throughout; do not use momentum.",
+    "isCustom": false,
+    "createdAt": "2026-03-01T00:00:00Z",
+    "updatedAt": "2026-03-01T00:00:00Z"
   }
 ]
