@@ -748,5 +748,15 @@
     "isCustom": false,
     "createdAt": "2026-03-01T00:00:00Z",
     "updatedAt": "2026-03-01T00:00:00Z"
+  },
+  {
+    "id": "ex-76",
+    "name": "Dumbbell Romanian Deadlift",
+    "muscleGroup": "Legs",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand holding a dumbbell in each hand at hip height, feet hip-width apart, slight bend in knees. Technique: Hinge at hips, pushing them back while maintaining a neutral spine and keeping the dumbbells close to your legs. Lower the dumbbells down the front of your thighs until you feel a deep stretch in the hamstrings (typically mid-shin level). Drive hips forward and squeeze glutes to return to the starting position. Hints: This is a hip hinge movement—minimize knee bend and focus on moving hips backward. Feel the stretch in the hamstrings, not the lower back. Keep chest up, shoulders back, and neck in neutral alignment. Dumbbells travel in a straight line close to the body. Warnings: Never round the lower back under load. Avoid squatting the weight—hips move back, not down. Do not overextend at the top or lower beyond your flexibility limit.",
+    "isCustom": false,
+    "createdAt": "2026-03-02T00:00:00Z",
+    "updatedAt": "2026-03-02T00:00:00Z"
   }
 ]
