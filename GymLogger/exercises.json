@@ -741,6 +741,16 @@
   },
   {
     "id": "ex-75",
+    "name": "45-Degree Back Extension",
+    "muscleGroup": "Back",
+    "equipmentType": "Bodyweight",
+    "description": "Setup: Position hips on the angled pad of a 45-degree back extension bench, feet secured under the foot pads. Begin with torso in line with the body angle (45 degrees to the floor). Technique: Hinge at hips to lower torso toward the floor while maintaining a neutral spine. Raise back up by contracting glutes and lower back until torso returns to the starting position. Hints: Focus on hip hinge movement rather than spinal extension. Squeeze glutes at the top of the movement. Can hold a weight plate at chest to add resistance. Keep neck in neutral alignment. Warnings: Do not hyperextend the spine at the top—stop when torso is in line with the bench angle. Avoid rounding the lower back. Control the movement throughout; do not use momentum.",
+    "isCustom": false,
+    "createdAt": "2026-03-01T00:00:00Z",
+    "updatedAt": "2026-03-01T00:00:00Z"
+  },
+  {
+    "id": "ex-76",
     "name": "Push-ups",
     "muscleGroup": "Chest",
     "equipmentType": "Bodyweight",
@@ -750,7 +760,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-76",
+    "id": "ex-77",
     "name": "Diamond Push-ups",
     "muscleGroup": "Chest",
     "equipmentType": "Bodyweight",
@@ -760,7 +770,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-77",
+    "id": "ex-78",
     "name": "Cable Crossover",
     "muscleGroup": "Chest",
     "equipmentType": "Cable",
@@ -770,7 +780,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-78",
+    "id": "ex-79",
     "name": "Dumbbell Pullover",
     "muscleGroup": "Chest",
     "equipmentType": "Dumbbell",
@@ -780,7 +790,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-79",
+    "id": "ex-80",
     "name": "Smith Machine Bench Press",
     "muscleGroup": "Chest",
     "equipmentType": "Smith Machine",
@@ -790,7 +800,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-80",
+    "id": "ex-81",
     "name": "Machine Incline Press",
     "muscleGroup": "Chest",
     "equipmentType": "Machine",
@@ -800,7 +810,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-81",
+    "id": "ex-82",
     "name": "Svend Press",
     "muscleGroup": "Chest",
     "equipmentType": "Dumbbell",
@@ -810,7 +820,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-82",
+    "id": "ex-83",
     "name": "Wide Grip Dips",
     "muscleGroup": "Chest",
     "equipmentType": "Bodyweight",
@@ -820,7 +830,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-83",
+    "id": "ex-84",
     "name": "Feet-Elevated Push-ups",
     "muscleGroup": "Chest",
     "equipmentType": "Bodyweight",
@@ -830,7 +840,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-84",
+    "id": "ex-85",
     "name": "Single-Arm Cable Press",
     "muscleGroup": "Chest",
     "equipmentType": "Cable",
@@ -840,7 +850,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-85",
+    "id": "ex-86",
     "name": "Incline Dumbbell Fly",
     "muscleGroup": "Chest",
     "equipmentType": "Dumbbell",
@@ -850,7 +860,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-86",
+    "id": "ex-87",
     "name": "Hex Press",
     "muscleGroup": "Chest",
     "equipmentType": "Dumbbell",
@@ -860,7 +870,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-87",
+    "id": "ex-88",
     "name": "Sumo Deadlift",
     "muscleGroup": "Back",
     "equipmentType": "Barbell",
@@ -870,7 +880,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-88",
+    "id": "ex-89",
     "name": "Stiff-Leg Deadlift",
     "muscleGroup": "Back",
     "equipmentType": "Barbell",
@@ -880,7 +890,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-89",
+    "id": "ex-90",
     "name": "Seated Cable Row",
     "muscleGroup": "Back",
     "equipmentType": "Cable",
@@ -890,7 +900,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-90",
+    "id": "ex-91",
     "name": "Inverted Row",
     "muscleGroup": "Back",
     "equipmentType": "Bodyweight",
@@ -900,7 +910,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-91",
+    "id": "ex-92",
     "name": "Straight-Arm Pulldown",
     "muscleGroup": "Back",
     "equipmentType": "Cable",
@@ -910,7 +920,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-92",
+    "id": "ex-93",
     "name": "Meadows Row",
     "muscleGroup": "Back",
     "equipmentType": "Barbell",
@@ -920,7 +930,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-93",
+    "id": "ex-94",
     "name": "Pendlay Row",
     "muscleGroup": "Back",
     "equipmentType": "Barbell",
@@ -930,7 +940,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-94",
+    "id": "ex-95",
     "name": "Rack Pull",
     "muscleGroup": "Back",
     "equipmentType": "Barbell",
@@ -940,7 +950,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-95",
+    "id": "ex-96",
     "name": "Machine Row",
     "muscleGroup": "Back",
     "equipmentType": "Machine",
@@ -950,7 +960,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-96",
+    "id": "ex-97",
     "name": "Reverse Grip Lat Pulldown",
     "muscleGroup": "Back",
     "equipmentType": "Cable",
@@ -960,7 +970,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-97",
+    "id": "ex-98",
     "name": "Smith Machine Row",
     "muscleGroup": "Back",
     "equipmentType": "Smith Machine",
@@ -970,7 +980,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-98",
+    "id": "ex-99",
     "name": "Chest-Supported Dumbbell Row",
     "muscleGroup": "Back",
     "equipmentType": "Dumbbell",
@@ -980,7 +990,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-99",
+    "id": "ex-100",
     "name": "Single-Arm Cable Row",
     "muscleGroup": "Back",
     "equipmentType": "Cable",
@@ -990,7 +1000,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-100",
+    "id": "ex-101",
     "name": "Wide Grip Lat Pulldown",
     "muscleGroup": "Back",
     "equipmentType": "Cable",
@@ -1000,7 +1010,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-101",
+    "id": "ex-102",
     "name": "Renegade Row",
     "muscleGroup": "Back",
     "equipmentType": "Dumbbell",
@@ -1010,7 +1020,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-102",
+    "id": "ex-103",
     "name": "Trap Bar Deadlift",
     "muscleGroup": "Back",
     "equipmentType": "Trap Bar",
@@ -1020,7 +1030,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-103",
+    "id": "ex-104",
     "name": "Band Pull-Apart",
     "muscleGroup": "Back",
     "equipmentType": "Resistance Band",
@@ -1030,7 +1040,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-104",
+    "id": "ex-105",
     "name": "Front Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Barbell",
@@ -1040,7 +1050,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-105",
+    "id": "ex-106",
     "name": "Goblet Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Kettlebell",
@@ -1050,7 +1060,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-106",
+    "id": "ex-107",
     "name": "Hack Squat Machine",
     "muscleGroup": "Legs",
     "equipmentType": "Machine",
@@ -1060,7 +1070,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-107",
+    "id": "ex-108",
     "name": "Bulgarian Split Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Dumbbell",
@@ -1070,7 +1080,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-108",
+    "id": "ex-109",
     "name": "Step-ups",
     "muscleGroup": "Legs",
     "equipmentType": "Dumbbell",
@@ -1080,7 +1090,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-109",
+    "id": "ex-110",
     "name": "Reverse Lunges",
     "muscleGroup": "Legs",
     "equipmentType": "Dumbbell",
@@ -1090,7 +1100,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-110",
+    "id": "ex-111",
     "name": "Hip Thrust",
     "muscleGroup": "Legs",
     "equipmentType": "Barbell",
@@ -1100,7 +1110,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-111",
+    "id": "ex-112",
     "name": "Glute Bridge",
     "muscleGroup": "Legs",
     "equipmentType": "Barbell",
@@ -1110,7 +1120,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-112",
+    "id": "ex-113",
     "name": "Good Morning",
     "muscleGroup": "Legs",
     "equipmentType": "Barbell",
@@ -1120,7 +1130,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-113",
+    "id": "ex-114",
     "name": "Sissy Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Bodyweight",
@@ -1130,7 +1140,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-114",
+    "id": "ex-115",
     "name": "Smith Machine Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Smith Machine",
@@ -1140,7 +1150,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-115",
+    "id": "ex-116",
     "name": "Box Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Barbell",
@@ -1150,7 +1160,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-116",
+    "id": "ex-117",
     "name": "Donkey Calf Raise",
     "muscleGroup": "Legs",
     "equipmentType": "Machine",
@@ -1160,7 +1170,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-117",
+    "id": "ex-118",
     "name": "Single Leg Press",
     "muscleGroup": "Legs",
     "equipmentType": "Machine",
@@ -1170,7 +1180,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-118",
+    "id": "ex-119",
     "name": "Nordic Hamstring Curl",
     "muscleGroup": "Legs",
     "equipmentType": "Bodyweight",
@@ -1180,7 +1190,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-119",
+    "id": "ex-120",
     "name": "Kettlebell Swing",
     "muscleGroup": "Legs",
     "equipmentType": "Kettlebell",
@@ -1190,7 +1200,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-120",
+    "id": "ex-121",
     "name": "Dumbbell Romanian Deadlift",
     "muscleGroup": "Legs",
     "equipmentType": "Dumbbell",
@@ -1200,7 +1210,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-121",
+    "id": "ex-122",
     "name": "Cossack Squat",
     "muscleGroup": "Legs",
     "equipmentType": "Bodyweight",
@@ -1210,7 +1220,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-122",
+    "id": "ex-123",
     "name": "Curtsy Lunge",
     "muscleGroup": "Legs",
     "equipmentType": "Dumbbell",
@@ -1220,7 +1230,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-123",
+    "id": "ex-124",
     "name": "Barbell Walking Lunge",
     "muscleGroup": "Legs",
     "equipmentType": "Barbell",
@@ -1230,7 +1240,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-124",
+    "id": "ex-125",
     "name": "Machine Standing Calf Raise",
     "muscleGroup": "Legs",
     "equipmentType": "Machine",
@@ -1240,7 +1250,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-125",
+    "id": "ex-126",
     "name": "Arnold Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Dumbbell",
@@ -1250,7 +1260,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-126",
+    "id": "ex-127",
     "name": "Machine Shoulder Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Machine",
@@ -1260,7 +1270,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-127",
+    "id": "ex-128",
     "name": "Push Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Barbell",
@@ -1270,7 +1280,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-128",
+    "id": "ex-129",
     "name": "Upright Row",
     "muscleGroup": "Shoulders",
     "equipmentType": "Barbell",
@@ -1280,7 +1290,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-129",
+    "id": "ex-130",
     "name": "Smith Machine Overhead Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Smith Machine",
@@ -1290,7 +1300,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-130",
+    "id": "ex-131",
     "name": "Bradford Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Barbell",
@@ -1300,7 +1310,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-131",
+    "id": "ex-132",
     "name": "Lu Raise",
     "muscleGroup": "Shoulders",
     "equipmentType": "Dumbbell",
@@ -1310,7 +1320,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-132",
+    "id": "ex-133",
     "name": "Plate Front Raise",
     "muscleGroup": "Shoulders",
     "equipmentType": "Dumbbell",
@@ -1320,7 +1330,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-133",
+    "id": "ex-134",
     "name": "Kettlebell Clean",
     "muscleGroup": "Shoulders",
     "equipmentType": "Kettlebell",
@@ -1330,7 +1340,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-134",
+    "id": "ex-135",
     "name": "Kettlebell Snatch",
     "muscleGroup": "Shoulders",
     "equipmentType": "Kettlebell",
@@ -1340,7 +1350,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-135",
+    "id": "ex-136",
     "name": "Trap Bar Shrug",
     "muscleGroup": "Shoulders",
     "equipmentType": "Trap Bar",
@@ -1350,7 +1360,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-136",
+    "id": "ex-137",
     "name": "Banded Face Pull",
     "muscleGroup": "Shoulders",
     "equipmentType": "Resistance Band",
@@ -1360,7 +1370,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-137",
+    "id": "ex-138",
     "name": "Dumbbell Shoulder Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Dumbbell",
@@ -1370,7 +1380,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-138",
+    "id": "ex-139",
     "name": "Cable Front Raise",
     "muscleGroup": "Shoulders",
     "equipmentType": "Cable",
@@ -1380,7 +1390,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-139",
+    "id": "ex-140",
     "name": "Cuban Press",
     "muscleGroup": "Shoulders",
     "equipmentType": "Dumbbell",
@@ -1390,7 +1400,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-140",
+    "id": "ex-141",
     "name": "Dumbbell Y Raise",
     "muscleGroup": "Shoulders",
     "equipmentType": "Dumbbell",
@@ -1400,7 +1410,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-141",
+    "id": "ex-142",
     "name": "EZ-Bar Curl",
     "muscleGroup": "Arms",
     "equipmentType": "EZ-Bar",
@@ -1410,7 +1420,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-142",
+    "id": "ex-143",
     "name": "Concentration Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1420,7 +1430,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-143",
+    "id": "ex-144",
     "name": "Spider Curl",
     "muscleGroup": "Arms",
     "equipmentType": "EZ-Bar",
@@ -1430,7 +1440,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-144",
+    "id": "ex-145",
     "name": "Bayesian Cable Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Cable",
@@ -1440,7 +1450,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-145",
+    "id": "ex-146",
     "name": "Machine Bicep Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Machine",
@@ -1450,7 +1460,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-146",
+    "id": "ex-147",
     "name": "Cable Overhead Tricep Extension",
     "muscleGroup": "Arms",
     "equipmentType": "Cable",
@@ -1460,7 +1470,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-147",
+    "id": "ex-148",
     "name": "Dumbbell Kickback",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1470,7 +1480,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-148",
+    "id": "ex-149",
     "name": "Overhead Dumbbell Tricep Extension",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1480,7 +1490,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-149",
+    "id": "ex-150",
     "name": "JM Press",
     "muscleGroup": "Arms",
     "equipmentType": "Barbell",
@@ -1490,7 +1500,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-150",
+    "id": "ex-151",
     "name": "Farmer's Walk",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1500,7 +1510,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-151",
+    "id": "ex-152",
     "name": "Reverse Wrist Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Barbell",
@@ -1510,7 +1520,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-152",
+    "id": "ex-153",
     "name": "Zottman Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1520,7 +1530,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-153",
+    "id": "ex-154",
     "name": "EZ-Bar Skull Crusher",
     "muscleGroup": "Arms",
     "equipmentType": "EZ-Bar",
@@ -1530,7 +1540,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-154",
+    "id": "ex-155",
     "name": "EZ-Bar Preacher Curl",
     "muscleGroup": "Arms",
     "equipmentType": "EZ-Bar",
@@ -1540,7 +1550,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-155",
+    "id": "ex-156",
     "name": "EZ-Bar Reverse Curl",
     "muscleGroup": "Arms",
     "equipmentType": "EZ-Bar",
@@ -1550,7 +1560,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-156",
+    "id": "ex-157",
     "name": "Cable Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Cable",
@@ -1560,7 +1570,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-157",
+    "id": "ex-158",
     "name": "Reverse-Grip Pushdown",
     "muscleGroup": "Arms",
     "equipmentType": "Cable",
@@ -1570,7 +1580,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-158",
+    "id": "ex-159",
     "name": "Cross-Body Hammer Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1580,7 +1590,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-159",
+    "id": "ex-160",
     "name": "Tate Press",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1590,7 +1600,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-160",
+    "id": "ex-161",
     "name": "Dumbbell Wrist Curl",
     "muscleGroup": "Arms",
     "equipmentType": "Dumbbell",
@@ -1600,7 +1610,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-161",
+    "id": "ex-162",
     "name": "Bicycle Crunch",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1610,7 +1620,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-162",
+    "id": "ex-163",
     "name": "Hanging Leg Raise",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1620,7 +1630,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-163",
+    "id": "ex-164",
     "name": "Lying Leg Raise",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1630,7 +1640,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-164",
+    "id": "ex-165",
     "name": "Cable Woodchopper",
     "muscleGroup": "Core",
     "equipmentType": "Cable",
@@ -1640,7 +1650,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-165",
+    "id": "ex-166",
     "name": "Ab Wheel Rollout",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1650,7 +1660,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-166",
+    "id": "ex-167",
     "name": "Mountain Climbers",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1660,7 +1670,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-167",
+    "id": "ex-168",
     "name": "Reverse Crunch",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1670,7 +1680,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-168",
+    "id": "ex-169",
     "name": "Dead Bug",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1680,7 +1690,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-169",
+    "id": "ex-170",
     "name": "Pallof Press",
     "muscleGroup": "Core",
     "equipmentType": "Cable",
@@ -1690,7 +1700,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-170",
+    "id": "ex-171",
     "name": "Side Plank",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1700,7 +1710,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-171",
+    "id": "ex-172",
     "name": "Turkish Get-Up",
     "muscleGroup": "Core",
     "equipmentType": "Kettlebell",
@@ -1710,7 +1720,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-172",
+    "id": "ex-173",
     "name": "Hollow Body Hold",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1720,7 +1730,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-173",
+    "id": "ex-174",
     "name": "V-Up",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1730,7 +1740,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-174",
+    "id": "ex-175",
     "name": "Plank Shoulder Tap",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
@@ -1740,7 +1750,7 @@
     "updatedAt": "2026-03-14T00:00:00Z"
   },
   {
-    "id": "ex-175",
+    "id": "ex-176",
     "name": "Bear Crawl",
     "muscleGroup": "Core",
     "equipmentType": "Bodyweight",
