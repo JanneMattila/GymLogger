@@ -69,7 +69,8 @@ body.theme-dark .exercise-card,
 body.theme-dark .no-results,
 body.theme-dark .custom-dropdown-trigger,
 body.theme-dark .custom-dropdown-menu,
-body.theme-dark .exercise-dropdown {
+body.theme-dark .exercise-dropdown,
+body.theme-dark .add-to-program-item {
     background: var(--surface);
     color: var(--text-primary);
 }
@@ -672,6 +673,13 @@ footer {
 
 .exercise-card-header {
     margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.exercise-card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .exercise-card-header h3 {
@@ -679,6 +687,16 @@ footer {
     font-weight: 600;
     margin-bottom: 8px;
     color: var(--text-primary);
+}
+
+.expand-icon {
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: transform 0.2s;
+}
+
+.exercise-description-collapsed {
+    display: none;
 }
 
 .exercise-badges {
@@ -739,6 +757,133 @@ footer {
 
 .desc-warnings {
     color: #d32f2f;
+}
+
+/* Muscle group quick-filter pills */
+.muscle-group-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.pill {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.pill:hover {
+    border-color: var(--primary-color);
+    background: var(--primary-hover);
+}
+
+.pill-active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pill-active:hover {
+    background: var(--primary-dark);
+}
+
+/* Clear filters button */
+.btn-clear-filters {
+    padding: 10px 16px;
+    border: 1px solid var(--danger-color);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--danger-color);
+    font-size: 14px;
+    cursor: pointer;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.btn-clear-filters:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+/* Exercise card actions */
+.exercise-card-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.btn-add-to-program {
+    padding: 6px 14px;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--primary-color);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-to-program:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Add to program dialog */
+.add-to-program-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-to-program-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+}
+
+.add-to-program-item:hover {
+    border-color: var(--primary-color);
+}
+
+.add-to-program-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
 }
 
 .drag-handle {
@@ -827,6 +972,15 @@ footer {
 
     .view-header h1 {
         font-size: 24px;
+    }
+
+    .muscle-group-pills {
+        gap: 6px;
+    }
+
+    .pill {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
 
