@@ -11,8 +11,9 @@ import { unitConverterDialog } from '../components/unit-converter.js?v=000000000
 // Fixed key for the active local workout session
 const LOCAL_SESSION_ID = 'active_local_workout';
 
-window.addEventListener('pagehide', () => wakeLockManager.disable());
-window.addEventListener('beforeunload', () => wakeLockManager.disable());
+// A wake lock is released by the browser while the page is hidden. Keep the
+// desired state intact so a bfcache-restored workout can reacquire it.
+window.addEventListener('pageshow', () => wakeLockManager.resume());
 
 export class WorkoutLoggerView {
     constructor() {
@@ -1157,16 +1158,17 @@ export class WorkoutLoggerView {
             }
 
             const success = await wakeLockManager.enable();
-            this.screenAwakeEnabled = success;
+            this.screenAwakeEnabled = wakeLockManager.isEnabled();
 
             if (!success && !this.wakeLockWarningShown) {
-                notification.info('Keeping the screen awake is not supported on this device.');
+                const message = wakeLockManager.isSupported()
+                    ? 'Screen awake mode is temporarily unavailable. The app will keep trying; check Battery Saver if this continues.'
+                    : 'Keeping the screen awake is not supported on this device.';
+                notification.info(message);
                 this.wakeLockWarningShown = true;
             }
         } else {
-            if (this.screenAwakeEnabled) {
-                await wakeLockManager.disable();
-            }
+            await wakeLockManager.disable();
             this.screenAwakeEnabled = false;
         }
     }
