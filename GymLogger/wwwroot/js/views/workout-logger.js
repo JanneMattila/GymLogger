@@ -6,6 +6,7 @@ import { offlineManager } from '../utils/offline-manager.js?v=00000000000000';
 import { offlineStorage } from '../utils/offline-storage.js?v=00000000000000';
 import { wakeLockManager } from '../utils/wake-lock-manager.js?v=00000000000000';
 import { exerciseHistoryDialog } from '../components/exercise-history-dialog.js?v=00000000000000';
+import { unitConverterDialog } from '../components/unit-converter.js?v=00000000000000';
 
 // Fixed key for the active local workout session
 const LOCAL_SESSION_ID = 'active_local_workout';
@@ -297,9 +298,11 @@ export class WorkoutLoggerView {
 
         let content = `
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
                     <div class="card-header" style="margin: 0;">${this.program.name}</div>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" id="show-rest-timer-btn">⏱️ Show timer</button>
+                        <button class="btn btn-secondary" id="show-unit-converter-btn">⇄ Unit Converter</button>
                         <button class="btn btn-secondary" id="cancel-workout-btn">Cancel</button>
                         <button class="btn btn-danger" id="finish-workout-btn">Finish Workout</button>
                     </div>
@@ -546,6 +549,15 @@ export class WorkoutLoggerView {
     }
 
     attachWorkoutListeners() {
+        // Workout utility shortcuts
+        document.getElementById('show-rest-timer-btn')?.addEventListener('click', () => {
+            this.startRestTimer();
+        });
+
+        document.getElementById('show-unit-converter-btn')?.addEventListener('click', () => {
+            unitConverterDialog.show();
+        });
+
         // View exercise history button
         document.getElementById('view-exercise-history-btn')?.addEventListener('click', () => {
             const currentProgramExercise = this.program.exercises[this.currentExerciseIndex];

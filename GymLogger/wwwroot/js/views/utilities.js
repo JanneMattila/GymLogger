@@ -1,4 +1,5 @@
 import { api } from '../utils/api-client.js';
+import { attachUnitConverterListeners, renderUnitConverter } from '../components/unit-converter.js';
 
 export class UtilitiesView {
     constructor() {
@@ -94,64 +95,7 @@ export class UtilitiesView {
     }
 
     renderUnitConverter() {
-        return `
-            <div class="utility-section">
-                <h3 style="margin-bottom: 16px;">Weight Unit Converter</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 24px;">
-                    Convert between kilograms (KG) and pounds (LBS).
-                </p>
-
-                <!-- Converter Cards -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 800px;">
-                    <!-- KG to LBS -->
-                    <div class="converter-card">
-                        <h4 style="margin-bottom: 12px;">KG → LBS</h4>
-                        <div style="margin-bottom: 12px;">
-                            <label class="form-label">Kilograms</label>
-                            <input type="number" id="kg-input" class="form-input" 
-                                   placeholder="Enter kg" value="100" min="0">
-                        </div>
-                        <div style="background: var(--surface); padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Result</div>
-                            <div id="lbs-result" style="font-size: 32px; font-weight: 700; color: var(--primary-color);">220.46</div>
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">LBS</div>
-                        </div>
-                    </div>
-
-                    <!-- LBS to KG -->
-                    <div class="converter-card">
-                        <h4 style="margin-bottom: 12px;">LBS → KG</h4>
-                        <div style="margin-bottom: 12px;">
-                            <label class="form-label">Pounds</label>
-                            <input type="number" id="lbs-input" class="form-input" 
-                                   placeholder="Enter lbs" value="220" min="0">
-                        </div>
-                        <div style="background: var(--surface); padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Result</div>
-                            <div id="kg-result" style="font-size: 32px; font-weight: 700; color: var(--primary-color);">99.79</div>
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">KG</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Reference -->
-                <div style="margin-top: 32px; max-width: 600px;">
-                    <h4 style="margin-bottom: 12px;">Quick Reference</h4>
-                    <div style="background: var(--surface); padding: 16px; border-radius: 8px;">
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 14px;">
-                            <div><strong>20 kg</strong> = 44.09 lbs</div>
-                            <div><strong>45 lbs</strong> = 20.41 kg</div>
-                            <div><strong>25 kg</strong> = 55.12 lbs</div>
-                            <div><strong>35 lbs</strong> = 15.88 kg</div>
-                            <div><strong>50 kg</strong> = 110.23 lbs</div>
-                            <div><strong>100 lbs</strong> = 45.36 kg</div>
-                            <div><strong>100 kg</strong> = 220.46 lbs</div>
-                            <div><strong>200 lbs</strong> = 90.72 kg</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        return renderUnitConverter();
     }
 
     renderWarmupCalculator() {
@@ -328,32 +272,7 @@ export class UtilitiesView {
     }
 
     attachConverterListeners() {
-        const kgInput = document.getElementById('kg-input');
-        const lbsInput = document.getElementById('lbs-input');
-        const lbsResult = document.getElementById('lbs-result');
-        const kgResult = document.getElementById('kg-result');
-
-        kgInput?.addEventListener('input', (e) => {
-            const kg = parseFloat(e.target.value) || 0;
-            const lbs = kg * 2.20462;
-            lbsResult.textContent = lbs.toFixed(2);
-        });
-
-        lbsInput?.addEventListener('input', (e) => {
-            const lbs = parseFloat(e.target.value) || 0;
-            const kg = lbs / 2.20462;
-            kgResult.textContent = kg.toFixed(2);
-        });
-
-        // Initial conversion
-        if (kgInput?.value) {
-            const kg = parseFloat(kgInput.value);
-            lbsResult.textContent = (kg * 2.20462).toFixed(2);
-        }
-        if (lbsInput?.value) {
-            const lbs = parseFloat(lbsInput.value);
-            kgResult.textContent = (lbs / 2.20462).toFixed(2);
-        }
+        attachUnitConverterListeners(document);
     }
 
     attachWarmupCalculatorListeners() {
