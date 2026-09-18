@@ -106,6 +106,11 @@ builder.Services.AddControllers();
 
 // Configure database
 var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
+if (!databaseProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
+{
+    throw new InvalidOperationException("Only the SqlServer database provider is supported.");
+}
+
 var connectionString = builder.Configuration.GetConnectionString(databaseProvider);
 
 if (string.IsNullOrEmpty(connectionString))
@@ -117,21 +122,14 @@ Console.WriteLine($"[Database] Using provider: {databaseProvider}");
 
 builder.Services.AddDbContext<GymLoggerDbContext>(options =>
 {
-    if (databaseProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
+    options.UseSqlServer(connectionString, sqlOptions =>
     {
-        options.UseSqlServer(connectionString, sqlOptions =>
-        {
-            // Enable retry on transient failures (connection resets, timeouts, etc.)
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-        });
-    }
-    else
-    {
-        options.UseSqlite(connectionString);
-    }
+        // Enable retry on transient failures (connection resets, timeouts, etc.)
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    });
 
     if (builder.Environment.IsDevelopment())
     {

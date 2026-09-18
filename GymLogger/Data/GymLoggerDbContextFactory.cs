@@ -20,25 +20,21 @@ public class GymLoggerDbContextFactory : IDesignTimeDbContextFactory<GymLoggerDb
             .AddJsonFile("appsettings.Development.json", optional: true)
             .Build();
 
-        var databaseProvider = configuration.GetValue<string>("DatabaseProvider") ?? "SQLite";
+        var databaseProvider = configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
+        if (!databaseProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Only the SqlServer database provider is supported.");
+        }
+
         var connectionString = configuration.GetConnectionString(databaseProvider);
 
         if (string.IsNullOrEmpty(connectionString))
         {
-            // Fallback to SQLite if configuration is missing
-            Console.WriteLine("[Migration] No connection string found, using SQLite default");
-            optionsBuilder.UseSqlite("Data Source=data/gymlogger.db");
+            throw new InvalidOperationException("SqlServer connection string not found in configuration");
         }
-        else if (databaseProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
-        {
-            Console.WriteLine($"[Migration] Using SQL Server: {connectionString.Split(';')[0]}");
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-        else
-        {
-            Console.WriteLine($"[Migration] Using SQLite: {connectionString}");
-            optionsBuilder.UseSqlite(connectionString);
-        }
+
+        Console.WriteLine("[Migration] Using SQL Server");
+        optionsBuilder.UseSqlServer(connectionString);
         
         return new GymLoggerDbContext(optionsBuilder.Options);
     }

@@ -1758,5 +1758,15 @@
     "isCustom": false,
     "createdAt": "2026-03-14T00:00:00Z",
     "updatedAt": "2026-03-14T00:00:00Z"
+  },
+  {
+    "id": "ex-177",
+    "name": "Standing Barbell Finger Curl",
+    "muscleGroup": "Arms",
+    "equipmentType": "Barbell",
+    "description": "Setup: Stand upright with feet hip-width apart, holding a light barbell in front of your thighs with both hands in an overhand grip. Keep your arms hanging straight, shoulders relaxed, and wrists neutral. Technique: Slowly open your fingers enough to let the bar roll down toward your fingertips while keeping it securely supported. Close your fingers to curl the bar back into your palms, then briefly squeeze your grip before repeating. Hints: Also called a barbell finger curl or finger roll, this exercise trains the finger flexors in the forearms and can help improve grip strength. Keep your elbows and wrists still so the movement comes from the fingers rather than a biceps or wrist curl. Warnings: Start with a very light load and use a clear area where a dropped bar cannot hit your feet. Never let the bar roll beyond your control or force your fingers open under heavy weight. Stop if you feel pain in your fingers, wrists, or elbows.",
+    "isCustom": false,
+    "createdAt": "2026-09-18T00:00:00Z",
+    "updatedAt": "2026-09-18T00:00:00Z"
   }
 ]

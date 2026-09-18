@@ -85,26 +85,6 @@ A comprehensive workout tracking application built with ASP.NET Core and vanilla
    dotnet ef database update
    ```
 
-### SQLite (Development Only)
-
-To use SQLite instead:
-
-1. **Update `appsettings.json`:**
-   ```json
-   {
-     "DatabaseProvider": "SQLite",
-     "ConnectionStrings": {
-       "SQLite": "Data Source=data/gymlogger.db;Cache=Shared"
-     }
-   }
-   ```
-
-2. **Run migrations:**
-   ```powershell
-   cd GymLogger
-   dotnet ef database update
-   ```
-
 ## Running the Application
 
 1. **Restore dependencies:**
@@ -228,7 +208,7 @@ Update `appsettings.json`:
 ### Environment Variables
 
 You can also use environment variables (recommended for production):
-- `DatabaseProvider`: "SqlServer" or "SQLite"
+- `DatabaseProvider`: "SqlServer" (the only supported provider)
 - `ConnectionStrings__SqlServer`: SQL Server connection string
 - `AzureAd__ClientId`: Azure AD Client ID
 - `AzureAd__ClientSecret`: Azure AD Client Secret
@@ -236,7 +216,7 @@ You can also use environment variables (recommended for production):
 ## Tech Stack
 
 - **Backend:** ASP.NET Core 10.0 (Minimal APIs)
-- **Database:** SQL Server / SQLite
+- **Database:** SQL Server / Azure SQL
 - **ORM:** Entity Framework Core
 - **Frontend:** Vanilla JavaScript (ES6+)
 - **Authentication:** Entra ID with OpenID Connect

@@ -900,7 +900,7 @@ export class WorkoutLoggerView {
         const warmupReps = this.preferences?.warmupReps || [5, 5, 3, 2, 1];
         
         try {
-            let setNumber = 1;
+            let setNumber = this.sets.filter(set => set.exerciseId === currentProgramExercise.exerciseId).length + 1;
             
             // Generate warmup sets based on percentages
             for (let i = 0; i < warmupPercentages.length; i++) {
@@ -917,20 +917,31 @@ export class WorkoutLoggerView {
                     timestamp: new Date().toISOString()
                 };
                 
-                const response = await api.addSet(this.session.id, warmupSet);
-                if (response.success) {
-                    this.sets.push(response.data);
+                if (this.session.id === LOCAL_SESSION_ID) {
+                    this.sets.push({
+                        ...warmupSet,
+                        id: `local-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                        sessionId: this.session.id,
+                        weightUnit: this.preferences?.defaultWeightUnit || 'KG',
+                        loggedAt: warmupSet.timestamp,
+                        createdAt: warmupSet.timestamp,
+                        source: 'local'
+                    });
+                } else {
+                    const response = await api.addSet(this.session.id, warmupSet);
+                    if ((response.success || response.source === 'queued') && response.data) {
+                        this.sets.push(response.data);
+                    } else {
+                        throw new Error(response.error || 'Failed to save warmup set');
+                    }
                 }
-                
-                // Small delay between sets
-                await new Promise(resolve => setTimeout(resolve, 50));
             }
             
             // Auto-save draft workout
             await this.saveDraftWorkout();
             
             notification.success('Warmup sets added!');
-            this.renderWorkout();
+            await this.renderWorkout();
         } catch (error) {
             console.error('Error adding warmup sets:', error);
             notification.error('Failed to add warmup sets: ' + error.message);

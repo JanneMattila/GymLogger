@@ -1,8 +1,10 @@
 # Gym Logger Database Design
 
+The application uses SQL Server / Azure SQL. See [README.md](README.md) for setup instructions.
+
 ## Executive Summary
 
-This document outlines the database design for Gym Logger application, moving from file-system based storage to a proper relational database.
+This document outlines the database design for Gym Logger application.
 
 ## Database Schema Design
 
@@ -137,7 +139,7 @@ CREATE TABLE Users (
     ExternalId TEXT NOT NULL UNIQUE,        -- Azure AD oid or guest session ID
     AuthType TEXT NOT NULL,                 -- 'EntraID' or 'Guest'
     Name TEXT NOT NULL,
-    IsAdmin INTEGER NOT NULL DEFAULT 0,     -- SQLite uses INTEGER for boolean
+    IsAdmin BIT NOT NULL DEFAULT 0,
     CreatedAt TEXT NOT NULL,                -- ISO 8601 datetime
     UpdatedAt TEXT
 );
@@ -308,7 +310,7 @@ public class FileSystemToDbMigrator
 {
     // Read from data/*.json files
     // Transform to database entities
-    // Bulk insert into SQLite
+    // Bulk insert into SQL Server
     // Validate data integrity
     // Archive old JSON files
 }
@@ -346,16 +348,10 @@ public class FileSystemToDbMigrator
 
 ## Backup and Recovery Strategy
 
-### SQLite Backup
-```bash
-# Automated backup script
-sqlite3 /home/data/gymlogger.db ".backup /home/backups/gymlogger_$(date +%Y%m%d_%H%M%S).db"
-
-# Retention policy
-# - Daily backups: Keep 7 days
-# - Weekly backups: Keep 4 weeks
-# - Monthly backups: Keep 12 months
-```
+### SQL Server Backup
+- Schedule full database backups and test restores regularly
+- Configure differential and transaction log backups according to recovery requirements
+- Define retention policies for daily, weekly, and monthly backups
 
 ### Azure SQL Backup
 - Automatic backups enabled (built-in feature)
@@ -373,7 +369,7 @@ sqlite3 /home/data/gymlogger.db ".backup /home/backups/gymlogger_$(date +%Y%m%d_
 - ✅ Row-level security not needed (application enforces authorization)
 
 ### Connection Security
-- **SQLite:** File system permissions (chmod 600)
+- **SQL Server:** TLS encryption, restricted network access, least-privilege database permissions
 - **Azure SQL:** TLS encryption, firewall rules, managed identity
 
 ### Sensitive Data
@@ -387,25 +383,18 @@ sqlite3 /home/data/gymlogger.db ".backup /home/backups/gymlogger_$(date +%Y%m%d_
 
 ### Health Checks
 - Database connectivity check
-- Storage space monitoring (SQLite file size)
+- Monitor database and transaction log storage usage
 - Query performance logging (slow query log)
 - Connection pool statistics
 
 ### Maintenance Tasks
-- **SQLite:** VACUUM command (reclaim space) - monthly
+- **SQL Server:** Schedule index and statistics maintenance as needed
 - **Azure SQL:** Automatic maintenance by Azure
 - **Both:** Monitor database growth, archive old sessions (>1 year)
 
 ---
 
 ## Cost Analysis (Monthly Estimates)
-
-### SQLite Option
-| Component | Cost |
-|-----------|------|
-| Azure App Service (B1) | $13 |
-| Persistent Storage | $0.20/GB |
-| **Total** | **~$13.20** |
 
 ### Azure SQL Option
 | Component | Cost |
@@ -415,11 +404,7 @@ sqlite3 /home/data/gymlogger.db ".backup /home/backups/gymlogger_$(date +%Y%m%d_
 | **Total** | **~$18** |
 
 ### Recommendation
-Start with **SQLite** for $13.20/month. Migrate to **Azure SQL** when:
-- User base exceeds 100 concurrent users
-- Data size exceeds 50GB
-- Need multi-instance scaling
-- Require advanced analytics/reporting
+Use SQL Server for local development and Azure SQL for hosted deployments. Select the Azure SQL tier based on measured workload, storage, and availability requirements; verify current regional pricing before deployment.
 
 ---
 
@@ -428,7 +413,7 @@ Start with **SQLite** for $13.20/month. Migrate to **Azure SQL** when:
 ### Week 1: Database Setup
 - [ ] Install Entity Framework Core packages
 - [ ] Create entity models matching diagram
-- [ ] Set up DbContext with SQLite provider
+- [ ] Set up DbContext with SQL Server provider
 - [ ] Create initial migration
 - [ ] Test local database creation
 
@@ -456,18 +441,17 @@ Start with **SQLite** for $13.20/month. Migrate to **Azure SQL** when:
 
 ### Package Requirements
 ```xml
-<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.8" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.8" />
 ```
 
 ### Connection String Examples
 ```json
 {
+    "DatabaseProvider": "SqlServer",
   "ConnectionStrings": {
-    "SQLite": "Data Source=/home/data/gymlogger.db;Cache=Shared",
-    "SQLiteLocal": "Data Source=gymlogger.db",
-    "AzureSQL": "Server=tcp:gymlogger.database.windows.net,1433;Database=gymlogger;Authentication=Active Directory Default;"
+        "SqlServer": "Server=tcp:gymlogger.database.windows.net,1433;Database=gymlogger;Authentication=Active Directory Default;"
   }
 }
 ```
@@ -476,10 +460,7 @@ Start with **SQLite** for $13.20/month. Migrate to **Azure SQL** when:
 ```csharp
 services.AddDbContext<GymLoggerDbContext>(options =>
 {
-    if (environment.IsDevelopment())
-        options.UseSqlite(configuration.GetConnectionString("SQLiteLocal"));
-    else
-        options.UseSqlite(configuration.GetConnectionString("SQLite"));
+    options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
         
     options.EnableSensitiveDataLogging(environment.IsDevelopment());
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
