@@ -24,6 +24,7 @@ export class ExerciseHistoryDialog {
 
         this.preferences = preferences;
         const weightUnit = preferences?.defaultWeightUnit || 'KG';
+        this.close();
 
         // Create overlay
         const overlay = document.createElement('div');
@@ -62,22 +63,24 @@ export class ExerciseHistoryDialog {
 
         // Fetch history data
         try {
-            const historyResp = await api.getExerciseHistory(exercise.id, 5);
+            const historyResp = await api.getExerciseHistory(exercise.id, 5, { showLoader: false });
+            if (!overlay.isConnected) return;
             
             if (!historyResp.success) {
-                this.showError(overlay, exercise, 'Failed to load exercise history');
+                this.showError(overlay, exercise, historyResp.error || 'Failed to load exercise history');
                 return;
             }
 
             const history = historyResp.data || [];
-            this.renderHistory(overlay, exercise, history, weightUnit);
+            this.renderHistory(overlay, exercise, history, weightUnit, historyResp.source === 'cache');
         } catch (error) {
             console.error('Error loading exercise history:', error);
+            if (!overlay.isConnected) return;
             this.showError(overlay, exercise, 'Error loading history: ' + error.message);
         }
     }
 
-    renderHistory(overlay, exercise, history, weightUnit) {
+    renderHistory(overlay, exercise, history, weightUnit, fromCache = false) {
         // Sort history by date descending (most recent first)
         const sortedHistory = [...history].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -87,6 +90,12 @@ export class ExerciseHistoryDialog {
                     <div class="card-header" style="margin: 0;">📊 ${exercise.name} - History</div>
                     <button class="btn btn-secondary" id="close-history-overlay-btn" style="padding: 8px 16px;">✕</button>
                 </div>
+                ${fromCache ? `
+                    <div role="status" style="margin-bottom: 16px; color: var(--text-secondary);">
+                        Showing saved history. Recent workouts may be missing because the latest history could not be fetched.
+                        <button class="btn btn-secondary" id="retry-history-btn" style="margin-top: 8px;">Retry</button>
+                    </div>
+                ` : ''}
         `;
 
         if (sortedHistory.length === 0) {
@@ -179,6 +188,7 @@ export class ExerciseHistoryDialog {
         }
 
         this.attachCloseListener(overlay);
+        this.attachRetryListener(overlay, exercise);
     }
 
     showError(overlay, exercise, message) {
@@ -193,6 +203,7 @@ export class ExerciseHistoryDialog {
                     <h3 style="margin-bottom: 8px; color: var(--danger-color);">Error</h3>
                     <p style="color: var(--text-secondary);">${message}</p>
                 </div>
+                <button class="btn btn-primary" id="retry-history-btn" style="width: 100%; margin-top: 16px;">Retry</button>
                 <button class="btn btn-secondary" id="close-history-bottom-btn" style="width: 100%; margin-top: 16px;">Close</button>
             </div>
         `;
@@ -203,6 +214,13 @@ export class ExerciseHistoryDialog {
         }
 
         this.attachCloseListener(overlay);
+        this.attachRetryListener(overlay, exercise);
+    }
+
+    attachRetryListener(overlay, exercise) {
+        overlay.querySelector('#retry-history-btn')?.addEventListener('click', () => {
+            this.show(exercise, this.preferences);
+        });
     }
 
     attachCloseListener(overlay) {

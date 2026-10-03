@@ -65,16 +65,26 @@ class ApiClient {
                 this.activeControllers.add(controller);
                 
                 let response;
+                let data;
+                let timedOut = false;
+                const timeoutId = options.timeoutMs > 0 ? setTimeout(() => {
+                    timedOut = true;
+                    controller.abort();
+                }, options.timeoutMs) : null;
                 try {
                     response = await fetch(`${API_BASE}${url}`, {
                         credentials: 'include',
                         signal: controller.signal
                     });
+                    if (response.ok) data = await response.json();
                 } catch (fetchError) {
                     this.activeControllers.delete(controller);
                     
                     // Handle request cancellation
                     if (fetchError.name === 'AbortError') {
+                        if (timedOut) {
+                            throw new Error('Request timed out. Please try again.');
+                        }
                         if (showLoader) eventBus.emit('api:end');
                         return {
                             source: 'none',
@@ -87,6 +97,8 @@ class ApiClient {
                     
                     // Re-throw other errors to be handled by outer catch
                     throw fetchError;
+                } finally {
+                    if (timeoutId !== null) clearTimeout(timeoutId);
                 }
                 
                 this.activeControllers.delete(controller);
@@ -109,19 +121,19 @@ class ApiClient {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const data = await response.json();
+                const fromOfflineCache = response.headers.get('X-Offline-Response') === 'true';
                 
                 // Cache successful responses (unless skipCache is true)
-                if (options.cacheKey && !skipCache) {
+                if (options.cacheKey && !skipCache && !fromOfflineCache) {
                     await offlineManager.cacheData(options.cacheKey, data, options.cacheTTL);
                 }
 
-                if (showLoader) eventBus.emit('api:success');
+                if (showLoader) eventBus.emit(fromOfflineCache ? 'api:offline' : 'api:success');
                 if (showLoader) eventBus.emit('api:end');
                 
                 return {
-                    source: 'network',
-                    online: true,
+                    source: fromOfflineCache ? 'cache' : 'network',
+                    online: !fromOfflineCache,
                     success: true,
                     data: data
                 };
@@ -841,11 +853,13 @@ class ApiClient {
         };
     }
 
-    async getExerciseHistory(exerciseId, limit = -1) {
+    async getExerciseHistory(exerciseId, limit = -1, options = {}) {
         const queryStr = limit > 0 ? `?limit=${limit}` : '';
         const response = await this.get(`/users/me/stats/history/${exerciseId}${queryStr}`, {
             cacheKey: `history_${exerciseId}_${limit}`,
-            cacheTTL: 3600000 // 1 hour
+            cacheTTL: 604800000, // 7 days for offline workouts; still network-first
+            timeoutMs: 10000,
+            showLoader: options.showLoader
         });
         // Collection endpoint - guarantee empty array
         return {
