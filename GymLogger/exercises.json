@@ -1768,5 +1768,15 @@
     "isCustom": false,
     "createdAt": "2026-09-18T00:00:00Z",
     "updatedAt": "2026-09-18T00:00:00Z"
+  },
+  {
+    "id": "ex-178",
+    "name": "Wrist Roller",
+    "muscleGroup": "Arms",
+    "equipmentType": "Wrist Roller",
+    "description": "Setup: Stand upright holding a wrist roller with both hands at shoulder height, arms extended in front of you. Attach a light weight to the cord and let it hang freely. Technique: Roll the handle with alternating wrist movements to wind the cord up and raise the weight. Reverse the motion under control to lower the weight back down. Hints: Keep your arms extended and shoulders relaxed so the forearms do the work. Use a smooth, steady pace and roll the weight all the way up and down. Warnings: Start with a light weight and avoid swinging the handle or letting the weight drop suddenly. Stop if you feel pain in your wrists or elbows.",
+    "isCustom": false,
+    "createdAt": "2026-10-09T00:00:00Z",
+    "updatedAt": "2026-10-09T00:00:00Z"
   }
 ]
