@@ -1,6 +1,14 @@
 import { api } from '../utils/api-client.js?v=00000000000000';
 import { formatDate } from '../utils/date-formatter.js?v=00000000000000';
 
+const HISTORY_LIMIT = 10;
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+}
+
 /**
  * Generic exercise history dialog component that shows previous workout results
  * for a specific exercise. This is a read-only view that can be used in both
@@ -63,7 +71,7 @@ export class ExerciseHistoryDialog {
 
         // Fetch history data
         try {
-            const historyResp = await api.getExerciseHistory(exercise.id, 5, { showLoader: false });
+            const historyResp = await api.getExerciseHistory(exercise.id, HISTORY_LIMIT, { showLoader: false });
             if (!overlay.isConnected) return;
             
             if (!historyResp.success) {
@@ -82,7 +90,9 @@ export class ExerciseHistoryDialog {
 
     renderHistory(overlay, exercise, history, weightUnit, fromCache = false) {
         // Sort history by date descending (most recent first)
-        const sortedHistory = [...history].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedHistory = [...history].sort((a, b) =>
+            (new Date(b.date) - new Date(a.date)) ||
+            (new Date(b.completedAt || 0) - new Date(a.completedAt || 0)));
 
         let content = `
             <div class="card" style="max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; margin: 0; animation: slideUp 0.3s ease-out;">
@@ -142,9 +152,12 @@ export class ExerciseHistoryDialog {
                 content += `
                     <div style="border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: var(--surface);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <h4 style="margin: 0;">${formattedDate}</h4>
-                                ${idx === 0 ? '<span style="background: var(--primary-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px;">LATEST</span>' : ''}
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h4 style="margin: 0;">${formattedDate}</h4>
+                                    ${idx === 0 ? '<span style="background: var(--primary-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px;">LATEST</span>' : ''}
+                                </div>
+                                ${dataPoint.programName ? `<div class="history-program-name" style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">${escapeHtml(dataPoint.programName)}</div>` : ''}
                             </div>
                             <span style="font-size: 12px; color: var(--text-secondary);">
                                 ${sessionSets.length} sets

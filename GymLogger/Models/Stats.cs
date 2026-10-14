@@ -39,6 +39,15 @@ public class HistoryDataPoint
 {
     [JsonPropertyName("date")]
     public string Date { get; set; } = string.Empty;
+
+    [JsonPropertyName("completedAt")]
+    public DateTime? CompletedAt { get; set; }
+
+    [JsonPropertyName("programId")]
+    public string? ProgramId { get; set; }
+
+    [JsonPropertyName("programName")]
+    public string? ProgramName { get; set; }
     
     [JsonPropertyName("sets")]
     public List<SetData> Sets { get; set; } = new();
