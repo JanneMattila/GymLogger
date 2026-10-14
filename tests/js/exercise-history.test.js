@@ -140,6 +140,7 @@ function dialogHarness(response) {
     const overlays = [];
     const Dialog = vm.runInNewContext(`${dialogSource}\nExerciseHistoryDialog;`, {
         console: { error() {} },
+        formatDate: date => date,
         api: { async getExerciseHistory(...args) { requests.push(args); return await response; } },
         document: {
             createElement() {
@@ -215,4 +216,26 @@ test('dialog surfaces the specific failure and provides retry', async () => {
     renderedHarness.dialog.showError(overlay, { name: 'Squat' }, message);
     assert.match(html, /retry-history-btn/);
     assert.match(html, /timed out/);
+});
+
+test('history includes sessions from every program, newest first with program names', () => {
+    const harness = dialogHarness();
+    harness.dialog.attachRetryListener = () => {};
+    let html;
+    const overlay = { querySelector() { return { set outerHTML(value) { html = value; } }; } };
+    harness.dialog.renderHistory(overlay, { name: 'Squat' }, [
+        { date: '2026-10-06', completedAt: '2026-10-06T08:00:00Z', programName: 'Day A', sets: [{ weight: 80, reps: 5 }] },
+        { date: '2026-10-08', completedAt: '2026-10-08T08:00:00Z', programName: 'Day B', sets: [{ weight: 70, reps: 8 }] },
+        { date: '2026-10-08', completedAt: '2026-10-08T18:00:00Z', programName: 'Day <C>', sets: [{ weight: 85, reps: 3 }] }
+    ], 'KG');
+    const order = [...html.matchAll(/history-program-name[^>]*>([^<]*)</g)].map(m => m[1]);
+    assert.deepEqual(order, ['Day &lt;C&gt;', 'Day B', 'Day A']);
+    assert.match(html, />3<\/div><div[^>]*>Workouts/);
+});
+
+test('dialog requests more than one week of history', async () => {
+    const harness = dialogHarness({ success: true, source: 'network', data: [] });
+    harness.dialog.renderHistory = () => {};
+    await harness.dialog.show({ id: 'squat', name: 'Squat' }, {});
+    assert.equal(harness.requests[0][1], 10);
 });

@@ -141,7 +141,12 @@ public class StatsService
         var sessions = await _sessionRepo.GetSessionsAsync(userId);
         var history = new List<HistoryDataPoint>();
 
-        foreach (var session in sessions.Where(s => s.Status == "completed").OrderBy(s => s.SessionDate))
+        // Include every completed session regardless of program/day so the same exercise
+        // performed in different programs shows up in a single chronological history.
+        foreach (var session in sessions
+            .Where(s => s.Status == "completed")
+            .OrderBy(s => s.SessionDate)
+            .ThenBy(s => s.CompletedAt ?? s.StartedAt))
         {
             var sets = await _sessionRepo.GetSetsForSessionAsync(userId, session.Id);
             var exerciseSets = sets.Where(s => s.ExerciseId == exerciseId && !s.IsWarmup && s.Reps.HasValue && s.Weight.HasValue).ToList();
@@ -151,6 +156,9 @@ public class StatsService
                 var dataPoint = new HistoryDataPoint
                 {
                     Date = session.SessionDate,
+                    CompletedAt = session.CompletedAt ?? session.StartedAt,
+                    ProgramId = session.ProgramId,
+                    ProgramName = session.ProgramName,
                     Sets = exerciseSets.Select(s =>
                         {
                             var weightInKg = ConvertToKilograms(s.Weight!.Value, s.WeightUnit);
