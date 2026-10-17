@@ -1781,10 +1781,10 @@
   },
   {
     "id": "ex-179",
-    "name": "Dumbbell External Rotation",
+    "name": "Standing Cable External Rotation",
     "muscleGroup": "Shoulders",
-    "equipmentType": "Dumbbell",
-    "description": "Setup: Lie on your side on a bench or the floor with a light dumbbell in your top hand. Bend the elbow to 90° and tuck it against your side, with a small towel between elbow and ribs. Technique: Keeping the elbow pinned, rotate the forearm upward until it points toward the ceiling. Pause briefly, then lower slowly back to the start. Hints: This trains the rotator cuff (infraspinatus and teres minor), so use a very light weight and high reps (12-20). Keep the wrist straight and the movement slow and controlled. Warnings: Don't let the elbow drift away from your side or use momentum. Avoid heavy weights that cause shoulder shrugging. Stop if you feel sharp pain in the shoulder.",
+    "equipmentType": "Cable",
+    "description": "Setup: Stand sideways to a cable station with the pulley at elbow height and a single handle attached. Hold the handle with the hand farthest from the stack, elbow bent to 90° and tucked against your side with a small towel between elbow and ribs. Technique: Keeping the elbow pinned, rotate the forearm outward, away from your stomach, as far as comfortable. Pause briefly, then return slowly to the start. Hints: This trains the rotator cuff (infraspinatus and teres minor), so use a very light weight and high reps (12-20). Stand tall, keep the wrist straight and the movement slow and controlled. Warnings: Don't let the elbow drift away from your side or twist your torso to help. Avoid heavy weights that cause shoulder shrugging. Stop if you feel sharp pain in the shoulder.",
     "isCustom": false,
     "createdAt": "2026-10-17T00:00:00Z",
     "updatedAt": "2026-10-17T00:00:00Z"
