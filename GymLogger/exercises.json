@@ -1778,5 +1778,15 @@
     "isCustom": false,
     "createdAt": "2026-10-09T00:00:00Z",
     "updatedAt": "2026-10-09T00:00:00Z"
+  },
+  {
+    "id": "ex-179",
+    "name": "Standing External Rotation",
+    "muscleGroup": "Shoulders",
+    "equipmentType": "Dumbbell",
+    "description": "Setup: Stand tall holding a light dumbbell in one hand, elbow bent to 90° and tucked against your side with a small towel between elbow and ribs. Forearm points forward. (A cable handle with the pulley at elbow height, standing sideways to the stack, works too.) Technique: Keeping the elbow pinned, rotate the forearm outward, away from your stomach, as far as comfortable. Pause briefly, then return slowly to the start. Hints: This trains the rotator cuff (infraspinatus and teres minor), so use a very light weight and high reps (12-20). Stand tall, keep the wrist straight and the movement slow and controlled. Warnings: Don't let the elbow drift away from your side or twist your torso to help. Avoid heavy weights that cause shoulder shrugging. Stop if you feel sharp pain in the shoulder.",
+    "isCustom": false,
+    "createdAt": "2026-10-17T00:00:00Z",
+    "updatedAt": "2026-10-17T00:00:00Z"
   }
 ]
