@@ -1488,7 +1488,7 @@ export class WorkoutLoggerView {
                 title="${isMinimized ? 'Maximize' : 'Minimize'}">${isMinimized ? '⬜' : '➖'}</button>
             </div>
             <div style="font-size: ${isMinimized ? '10px' : '14px'}; font-weight: 500; opacity: 0.9;">Rest Timer</div>
-            <div id="rest-timer-display" style="font-size: ${isMinimized ? '24px' : '48px'}; font-weight: 700; line-height: 1;">${this.formatTime(duration)}</div>
+            <div id="rest-timer-display" style="font-size: ${isMinimized ? '24px' : '48px'}; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums;">${this.formatTimeHtml(duration)}</div>
             ${!isMinimized ? `
             <div id="rest-timer-buttons" style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
                 <button id="rest-timer-minus-btn" style="
@@ -1725,7 +1725,7 @@ export class WorkoutLoggerView {
     updateRestTimerDisplay(seconds) {
         const display = document.getElementById('rest-timer-display');
         if (display) {
-            display.textContent = this.formatTime(seconds);
+            display.innerHTML = this.formatTimeHtml(seconds);
             
             // Change color when time is running out
             const timerEl = document.getElementById('rest-timer');
@@ -1752,6 +1752,13 @@ export class WorkoutLoggerView {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Wrap each digit in a fixed-width slot so the timer doesn't shift as digits change,
+    // even with fonts that lack tabular figures.
+    formatTimeHtml(seconds) {
+        return this.formatTime(seconds).replace(/\d/g,
+            d => `<span style="display: inline-block; width: 1ch; text-align: center;">${d}</span>`);
     }
 
     playRestCompleteSound() {
